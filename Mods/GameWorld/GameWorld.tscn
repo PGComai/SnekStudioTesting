@@ -1,0 +1,106 @@
+[gd_scene load_steps=9 format=3 uid="uid://dtkm6diaw504t"]
+
+[ext_resource type="Script" uid="uid://bv33gioiigmr2" path="res://Mods/GameWorld/game_world.gd" id="1_wv6bo"]
+
+[sub_resource type="Gradient" id="Gradient_wv6bo"]
+offsets = PackedFloat32Array(0.964912, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ofdl7"]
+gradient = SubResource("Gradient_wv6bo")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wv6bo"]
+albedo_color = Color(0.332881, 0.332881, 0.332881, 1)
+albedo_texture = SubResource("GradientTexture2D_ofdl7")
+uv1_triplanar = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wv6bo"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_wv6bo"]
+radius = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ofdl7"]
+radius = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_afllp"]
+radius = 0.1
+
+[node name="GameWorld" type="Node"]
+script = ExtResource("1_wv6bo")
+
+[node name="Window" type="Window" parent="."]
+handle_input_locally = false
+initial_position = 2
+size = Vector2i(1280, 720)
+
+[node name="WorldRoot" type="Node3D" parent="Window"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Window/WorldRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+collision_layer = 128
+collision_mask = 128
+size = Vector3(20, 1, 20)
+material = SubResource("StandardMaterial3D_wv6bo")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="Window/WorldRoot"]
+collision_layer = 128
+collision_mask = 128
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_wv6bo")
+
+[node name="CamH" type="Node3D" parent="Window/WorldRoot/CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.886022, 0)
+
+[node name="CamV" type="Node3D" parent="Window/WorldRoot/CharacterBody3D/CamH"]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="Window/WorldRoot/CharacterBody3D/CamH/CamV"]
+shape = SubResource("SphereShape3D_wv6bo")
+spring_length = 5.0
+
+[node name="CamHolder" type="Node3D" parent="Window/WorldRoot/CharacterBody3D/CamH/CamV/SpringArm3D"]
+
+[node name="MainCamH" type="Node3D" parent="Window/WorldRoot/CharacterBody3D"]
+
+[node name="MainCameraHolder" type="AnimatableBody3D" parent="Window/WorldRoot/CharacterBody3D/MainCamH"]
+collision_layer = 4096
+collision_mask = 4096
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder"]
+shape = SubResource("SphereShape3D_ofdl7")
+
+[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="Window/WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder"]
+node_a = NodePath("..")
+node_b = NodePath("../../../../RigidMainCameraHolder")
+linear_limit_x/softness = 0.02
+linear_limit_x/restitution = 0.1
+linear_limit_x/damping = 2.0
+linear_limit_y/softness = 0.02
+linear_limit_y/restitution = 0.1
+linear_limit_y/damping = 2.0
+linear_limit_z/softness = 0.02
+linear_limit_z/restitution = 0.1
+linear_limit_z/damping = 2.0
+angular_limit_x/softness = 0.02
+angular_limit_y/softness = 0.02
+angular_limit_z/softness = 0.02
+
+[node name="RigidMainCameraHolder" type="RigidBody3D" parent="Window/WorldRoot"]
+collision_layer = 4096
+collision_mask = 4096
+mass = 100.0
+gravity_scale = 0.0
+can_sleep = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/RigidMainCameraHolder"]
+shape = SubResource("SphereShape3D_afllp")
+
+[node name="Camera3D" type="Camera3D" parent="Window"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
+
+[connection signal="window_input" from="Window" to="." method="_on_window_window_input"]
