@@ -55,7 +55,7 @@ func handle_channel_raid(_raider_username, _raider_display_name, _raid_user_coun
 	pass
 
 func get_redeem_names():
-	
+
 	# By default, just return and string properties that we've flagged as
 	# redeems.
 	var redeem_list = []
@@ -65,7 +65,7 @@ func get_redeem_names():
 			if prop["args"].has("is_redeem"):
 				if prop["args"]["is_redeem"]:
 					redeem_list.append(prop_val)
-					
+
 	return redeem_list
 
 # Settings interface.
@@ -109,9 +109,9 @@ func _parse_string_vec3(s : String) -> Vector3:
 
 # FIXME: We don't really want this to be virtual anymore.
 func load_settings(_settings_dict):
-	
+
 	var old_settings = save_settings()
-	
+
 	# Make the new complete settings by taking the old ones and copying over the
 	# new settings into it.
 	var new_settings = old_settings.duplicate()
@@ -205,7 +205,7 @@ func add_tracked_setting(
 			new_setting_prop["args"].get("values", {}),
 			new_setting_prop["args"].get("allow_multiple", false),
 			new_setting_prop["args"].get("combobox", false))
-			
+
 	elif prop_val is Color:
 		new_widget = settings_window_add_colorpicker(
 			new_setting_prop["label"], new_setting_prop["name"])
@@ -239,30 +239,30 @@ func _test_redeem_with_settings_value(prop_name, local=true):
 func _get_file_path(prop_name, widget: LineEdit, filter: PackedStringArray):
 	var prop_val = get(prop_name)
 	var file_dialog = get_app()._get_ui_root().get_node("LineEditFileDialog")
-	
+
 	# Set the file format filter
 	file_dialog.set_filters(filter)
 	file_dialog.popup()
-	
+
 	prop_val = await file_dialog.file_selected
 	modify_setting(prop_name, prop_val)
 	widget.set_text(prop_val)
-	
+
 	# clear filter
 	file_dialog.clear_filters()
 
-# Pull settings from app and update UI widgets to reflect them.	
+# Pull settings from app and update UI widgets to reflect them.
 #
 # Default version here. Can be overridden.
 func update_settings_ui(_ui_window = null):
 	var current_settings = save_settings()
-	
+
 	var keys = current_settings.keys()
 	for key in keys:
 		if key in _settings_widgets_by_setting_name:
 			var value = current_settings[key]
 			var widget = _settings_widgets_by_setting_name[key]
-			
+
 			# Checkbox/boolean
 			if widget is CheckBox:
 				widget.button_pressed = value
@@ -274,16 +274,16 @@ func update_settings_ui(_ui_window = null):
 			if widget is SpinBox:
 				value = roundi(value)
 				widget.value = value
-			
+
 			# BasicSliderWithNumber/float
 			if widget is BasicSliderWithNumber:
 				value = roundf((value - widget.min_value) / widget.step) * widget.step + widget.min_value
 				widget.value = value
-			
+
 			if widget is ColorPickerButton:
 				widget.color = value
 				value = Color(value)
-			
+
 			# ItemList/array
 			if widget is ItemList:
 				widget.deselect_all()
@@ -302,7 +302,7 @@ func update_settings_ui(_ui_window = null):
 
 			if widget is VectorSettingWidget:
 				widget.value = value
-			
+
 			var default_value = widget.get_meta("default")
 			var is_default = false
 			if value is float:
@@ -413,27 +413,27 @@ func get_files_in_directory(
 	var folders_to_search = [
 		path
 	]
-	
+
 	# Add a directory with the same path, but relative to the binary. This will
 	# let runtime-loaded files override internal files.
 	if path.begins_with("res://"):
 		folders_to_search.append(
 			OS.get_executable_path().get_base_dir().path_join(
 				path.substr(len("res://"))))
-	
+
 	var output_list = []
-	
+
 	# Search those directories for any throwable objects, and load them.
 	for path_to_list in folders_to_search:
-		
+
 		print(path_to_list)
-		
+
 		var dir = DirAccess.open(path_to_list)
 		if dir:
 			dir.list_dir_begin()
 			var file_name = dir.get_next()
 			while file_name != "":
-				
+
 				# Filter out files or directories.
 				if dir.current_is_dir():
 					if not include_dirs:
@@ -443,7 +443,7 @@ func get_files_in_directory(
 						continue
 
 				var full_path = path_to_list.path_join(file_name)
-				
+
 				# Load scene files directly.
 				if len(suffix_filter) == 0:
 					output_list.append(full_path)
@@ -583,7 +583,7 @@ func settings_window_add_spinbox(
 	spinbox_widget.max_value = max_value
 
 	var default_value = get(setting_name)
-	
+
 	var reset_default = Button.new()
 	var reset_default_action = func(val):
 		modify_setting(setting_name, val)
@@ -625,7 +625,7 @@ func settings_window_add_lineedit(
 
 	var label_widget = Label.new()
 	label_widget.text = setting_label
-	
+
 	var group_widget = BoxContainer.new()
 	group_widget.vertical = false
 	group_widget.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -648,7 +648,7 @@ func settings_window_add_lineedit(
 		group_widget.add_child(test_button)
 		test_button.button_down.connect(
 			_test_redeem_with_settings_value.bind(setting_name, true))
-		
+
 		test_button = Button.new()
 		test_button.text = "Test All"
 		test_button.tooltip_text = "Test this redeem, but send it to the entire application (including other modules)."
@@ -657,7 +657,7 @@ func settings_window_add_lineedit(
 			_test_redeem_with_settings_value.bind(setting_name, false))
 
 	var default_value = get(setting_name)
-	
+
 	var reset_default = Button.new()
 	var reset_default_action = func(val):
 		modify_setting(setting_name, val)
@@ -677,7 +677,7 @@ func settings_window_add_lineedit(
 			reset_default.disabled = is_default
 			reset_default.self_modulate = 0xFFFFFFFF * int(!is_default)
 	)
-	
+
 	group_widget.add_child(reset_default)
 
 	outer_container.add_child(label_widget)
@@ -691,7 +691,7 @@ func settings_window_add_slider_with_number(
 	setting_label : String, setting_name : String,
 	min_value : float = 0.0, max_value : float = 1.0,
 	step : float = 0.1) -> Control:
-	
+
 	var outer_container : VBoxContainer = VBoxContainer.new()
 	outer_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -700,16 +700,16 @@ func settings_window_add_slider_with_number(
 	if setting_label != "":
 		label_widget = Label.new()
 		label_widget.text = setting_label
-	
+
 	var slider_widget = preload("res://Core/UI/BasicSliderWithNumber.tscn").instantiate()
 	slider_widget.min_value = min_value
 	slider_widget.max_value = max_value
 	slider_widget.step = step
 	slider_widget.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
+
 	var default_value = get(setting_name)
 	default_value = roundf((default_value - min_value) / step) * step + min_value
-	
+
 	var reset_default = Button.new()
 	var reset_default_action = func(val):
 		modify_setting(setting_name, val)
@@ -719,7 +719,7 @@ func settings_window_add_slider_with_number(
 	reset_default.pressed.connect(
 		reset_default_action.bind(default_value)
 	)
-	
+
 	slider_widget.set_meta("default", default_value)
 	slider_widget.set_meta("reset_button", reset_default)
 	slider_widget.value_changed.connect(
@@ -729,11 +729,11 @@ func settings_window_add_slider_with_number(
 			reset_default.disabled = is_default
 			reset_default.self_modulate = 0xFFFFFFFF * int(!is_default)
 	)
-	
+
 	var container_widget : HBoxContainer = HBoxContainer.new()
 	container_widget.add_child(slider_widget)
 	container_widget.add_child(reset_default)
-	
+
 	if label_widget:
 		outer_container.add_child(label_widget)
 	outer_container.add_child(container_widget)
@@ -753,16 +753,16 @@ func settings_window_add_selector(
 
 	var label_widget = Label.new()
 	label_widget.text = setting_label
-	
+
 	var selection_widget = null
-	
+
 	var reset_default_action = null
 	var reset_default = Button.new()
 	reset_default.text = defaults_text_get_rid_of_me
 	reset_default.flat = true
-	
+
 	var default_value = get(setting_name)
-	
+
 	var callback = func(widget):
 		var new_value = []
 		var selected_items = []
@@ -770,19 +770,19 @@ func settings_window_add_selector(
 			selected_items = widget.get_selected_items()
 		elif widget is OptionButton:
 			selected_items.append(widget.get_selected_id())
-		for k in selected_items:			
+		for k in selected_items:
 			new_value.append(widget.get_item_text(k))
 		modify_setting(setting_name, new_value)
 		var is_default = new_value == default_value
 		reset_default.disabled = is_default
 		reset_default.self_modulate = 0xFFFFFFFF * int(!is_default)
-	
+
 	if use_combobox:
 		selection_widget = OptionButton.new()
 		selection_widget.fit_to_longest_item = false
 		selection_widget.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		selection_widget.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		
+
 		reset_default_action = func(val):
 			modify_setting(setting_name, val)
 			for value in val:
@@ -797,7 +797,7 @@ func settings_window_add_selector(
 		selection_widget.select_mode = ItemList.SELECT_SINGLE
 		if allow_multiple:
 			selection_widget.select_mode = ItemList.SELECT_MULTI
-		
+
 		reset_default_action = func(val):
 			var single = selection_widget.select_mode != ItemList.SELECT_MULTI
 			modify_setting(setting_name, val)
@@ -822,7 +822,7 @@ func settings_window_add_selector(
 
 	for item in initial_values:
 		selection_widget.add_item(item)
-	
+
 	outer_container.add_child(label_widget)
 
 	var container_widget : HBoxContainer = HBoxContainer.new()
@@ -842,14 +842,14 @@ func settings_window_add_colorpicker(
 
 	var label_widget = Label.new()
 	label_widget.text = setting_label
-	
+
 	var colorpicker_widget = ColorPickerButton.new()
-	
+
 	colorpicker_widget.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	colorpicker_widget.custom_minimum_size.y = 32
-	
+
 	var default_value = get(setting_name)
-	
+
 	var reset_default = Button.new()
 	var reset_default_action = func(val):
 		modify_setting(setting_name, val)
@@ -859,7 +859,7 @@ func settings_window_add_colorpicker(
 	reset_default.pressed.connect(
 		reset_default_action.bind(default_value)
 	)
-	
+
 	colorpicker_widget.set_meta("default", default_value)
 	colorpicker_widget.set_meta("reset_button", reset_default)
 	colorpicker_widget.color_changed.connect(
@@ -871,7 +871,7 @@ func settings_window_add_colorpicker(
 	)
 
 	outer_container.add_child(label_widget)
-	
+
 	var container_widget : HBoxContainer = HBoxContainer.new()
 	container_widget.add_child(colorpicker_widget)
 	container_widget.add_child(reset_default)
@@ -896,9 +896,9 @@ func settings_window_add_vector3(
 	vec3_widget.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	outer_container.add_child(label_widget)
-	
+
 	var default_value = get(setting_name)
-	
+
 	var reset_default = Button.new()
 	var reset_default_action = func(val):
 		modify_setting(setting_name, val)
@@ -908,7 +908,7 @@ func settings_window_add_vector3(
 	reset_default.pressed.connect(
 		reset_default_action.bind(default_value)
 	)
-	
+
 	vec3_widget.set_meta("default", default_value)
 	vec3_widget.set_meta("reset_button", reset_default)
 	vec3_widget.value_changed.connect(
@@ -918,7 +918,7 @@ func settings_window_add_vector3(
 			reset_default.disabled = is_default
 			reset_default.self_modulate = 0xFFFFFFFF * int(!is_default)
 	)
-	
+
 	var container_widget : HBoxContainer = HBoxContainer.new()
 	container_widget.add_child(vec3_widget)
 	container_widget.add_child(reset_default)
@@ -941,7 +941,7 @@ func modify_setting(setting_name, value):
 #region external
 
 func get_settings_window():
-	
+
 	# Add cleanup callback.
 	if not tree_exiting.is_connected(_cleanup_settings_window):
 		tree_exiting.connect(_cleanup_settings_window)
@@ -949,7 +949,7 @@ func get_settings_window():
 	# Create the window if it doesn't exist.
 	if not _settings_window:
 		_settings_window = _create_settings_window()
-	
+
 		update_settings_ui(_settings_window)
 
 	return _settings_window
@@ -965,7 +965,7 @@ func _cleanup_settings_window():
 	if _settings_window:
 		if is_instance_valid(_settings_window):
 			_settings_window.queue_free()
-	
+
 	_settings_widgets_by_setting_name = {}
 
 func _autodelete_remove_everything():

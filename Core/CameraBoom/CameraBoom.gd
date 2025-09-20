@@ -2,10 +2,10 @@ extends Node3D
 
 func set_camera_rotation(pitch : float, yaw : float):
 	set_rotation_degrees(Vector3(pitch, yaw, 0.0))
-	
+
 func get_camera_pitch():
 	return get_rotation_degrees()[0]
-	
+
 func get_camera_yaw():
 	return get_rotation_degrees()[1]
 
@@ -23,14 +23,14 @@ func pan_camera(horizontal : float, vertical : float):
 
 func get_camera_position():
 	return transform.origin
-	
+
 func set_camera_position(pos):
 	transform.origin = pos
 
 func get_camera_distance():
 	var camera_distance = $Camera3D.transform.origin[2]
 	return camera_distance
-	
+
 func set_camera_distance(new_camera_distance):
 	$Camera3D.transform.origin[2] = new_camera_distance
 
@@ -62,7 +62,7 @@ func save_settings():
 		get_camera_position()[2]]
 	output_dict["fov"] = get_camera_fov()
 	return output_dict
-	
+
 func load_settings(settings_dict):
 	set_camera_rotation(settings_dict["pitch"], settings_dict["yaw"])
 	set_camera_distance(settings_dict["distance"])
@@ -78,9 +78,3 @@ func load_settings(settings_dict):
 func reset_to_default():
 	transform = Transform3D(Basis(), Vector3(0.0, 1.45, 0.0))
 	set_camera_distance(4.5)
-	
-	
-	
-	
-	
-	

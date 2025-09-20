@@ -142,11 +142,11 @@ func _process(delta: float) -> void:
 
 		for side in ["left", "right"]:
 			if not tracker_dict["hand_" + side]["active"]:
-				
+
 				var hand_tracker : Node3D = hand_right
 				if side == "left":
 					hand_tracker = hand_left
-				
+
 				tracker_dict["hand_" + side]["active"] = true
 				tracker_dict["hand_" + side]["transform"] = hand_tracker.global_transform
 

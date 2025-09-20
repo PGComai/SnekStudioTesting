@@ -33,7 +33,7 @@ script = ExtResource("1_wv6bo")
 [node name="Window" type="Window" parent="."]
 handle_input_locally = false
 initial_position = 2
-size = Vector2i(1280, 720)
+size = Vector2i(2560, 1440)
 
 [node name="WorldRoot" type="Node3D" parent="Window"]
 
@@ -59,6 +59,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.886022, 0)
 [node name="CamV" type="Node3D" parent="Window/WorldRoot/CharacterBody3D/CamH"]
 
 [node name="SpringArm3D" type="SpringArm3D" parent="Window/WorldRoot/CharacterBody3D/CamH/CamV"]
+collision_mask = 0
 shape = SubResource("SphereShape3D_wv6bo")
 spring_length = 5.0
 

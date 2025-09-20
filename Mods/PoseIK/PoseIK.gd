@@ -213,9 +213,18 @@ func _update_local_trackers() -> void:
 
 	var tracker_dict : Dictionary = get_global_mod_data("trackers")
 
-	$Head.global_transform = tracker_dict["head"].transform
-	$Hand_Left.global_transform = tracker_dict["hand_left"].transform
-	$Hand_Right.global_transform = tracker_dict["hand_right"].transform
+	var model = get_model()
+
+	$Head.global_transform = Transform3D(tracker_dict["head"].transform.basis.rotated(Vector3.UP, model.global_rotation.y),
+										tracker_dict["head"].transform.origin.rotated(Vector3.UP, model.global_rotation.y) + model.global_position)
+	$Hand_Left.global_transform = Transform3D(tracker_dict["hand_left"].transform.basis.rotated(Vector3.UP, model.global_rotation.y),
+										tracker_dict["hand_left"].transform.origin.rotated(Vector3.UP, model.global_rotation.y) + model.global_position)
+	$Hand_Right.global_transform = Transform3D(tracker_dict["hand_right"].transform.basis.rotated(Vector3.UP, model.global_rotation.y),
+										tracker_dict["hand_right"].transform.origin.rotated(Vector3.UP, model.global_rotation.y) + model.global_position)
+
+	#$Head.global_transform = tracker_dict["head"].transform
+	#$Hand_Left.transform = tracker_dict["hand_left"].transform
+	#$Hand_Right.transform = tracker_dict["hand_right"].transform
 
 	# https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker
 	var mediapipe_hand_landmark_names : Array = [
@@ -296,18 +305,18 @@ func _process(delta : float) -> void:
 	# This just moves the body based on the head position.
 	var head_pos = $Head.transform.origin
 	var model_pos = model_root.transform.origin
-	
+
 	if true: # FIXME: ???????
 		model_root.transform.origin = model_pos.lerp(head_pos, delta * hip_adjustment_speed)
 		#model_root.transform.origin = head_pos
-		#model_root.transform.origin.y = model_y 
+		#model_root.transform.origin.y = model_y
 		#model_root.transform.origin.y = lerp(model_pos.y, head_pos.y - 1.9, 0.01)
-		
+
 		# FIXME: Another hack!
 		var head_rest_transform = get_skeleton().get_bone_global_rest(
 			get_skeleton().find_bone("Head"))
 		#print(head_rest_transform.origin.y)
-		
+
 		# FIXME: Hard-coded fudge factor.
 		# FIXME: Why can't we just map this directly again? It looks like we're shrugging when the arms get set up wrong or something.
 		model_root.transform.origin.y = lerp(
@@ -322,7 +331,7 @@ func _process(delta : float) -> void:
 	var z_pole_dist = 10.0
 	var y_pole_dist = 5.0
 
-	for chain_name in ["arm_left", "arm_right"]:
+	for chain_name: String in ["arm_left", "arm_right"]:
 
 		var tracker_to_use = $Hand_Left
 		var compensation_alpha_scale = 1.0
@@ -332,12 +341,12 @@ func _process(delta : float) -> void:
 			compensation_alpha_scale *= -1.0
 			pole_target_x = -x_pole_dist
 
-		var tracker_local_position = \
-			skel.get_global_transform().inverse() * tracker_to_use.get_global_transform()
+		var tracker_local_transform = \
+			tracker_dict[chain_name.replace("arm", "hand")].transform
+			#skel.get_global_transform().inverse() * tracker_to_use.get_global_transform()
 		var base_bone_position = skel.get_bone_global_pose(
 			skel.find_bone(_ikchains_dict[chain_name].base_bone)).origin
-		#print(tracker_local_position.origin.x - bone_position.x)
-		
+
 		# See if we can raise the shoulders for when arms go too far up.
 		if chain_name == "arm_left" or chain_name == "arm_right":
 			var chest_bone_index : int = skel.find_bone("Chest")
@@ -357,28 +366,35 @@ func _process(delta : float) -> void:
 					var shoulder_pose = skel.get_bone_global_pose(shoulder_bone_index)
 					var chest_pose_inv = chest_pose.inverse()
 					var shoulder_y = (chest_pose_inv * shoulder_pose).origin.y
-					var tracker_local_chest = chest_pose_inv * tracker_local_position
+					var tracker_local_chest = chest_pose_inv * tracker_local_transform
 					if tracker_local_chest.origin.y > shoulder_y:
 						#print(tracker_local_chest.origin.y - shoulder_y)
-						skel.set_bone_pose_rotation(shoulder_bone_index,
-							Quaternion(Vector3(0.0, 0.0, 1.0), (tracker_local_chest.origin.y - shoulder_y) * 2.0 * rotation_scale) *
-							skel.get_bone_rest(shoulder_bone_index).basis.get_rotation_quaternion())
+						var shoulder_rest: Transform3D = skel.get_bone_rest(shoulder_bone_index)
+						var shoulder_rot_quat: Quaternion = shoulder_rest.basis.get_rotation_quaternion()
+						skel.set_bone_pose_rotation(
+								shoulder_bone_index,
+								Quaternion(
+									Vector3(0.0, 0.0, 1.0),
+									(tracker_local_chest.origin.y - shoulder_y)
+										* 2.0
+										* rotation_scale)
+										* shoulder_rot_quat)
 
 		var pole_target_y = -y_pole_dist
 		var pole_target_z = -z_pole_dist
 
 		# Rotate pole target upwards when the arm reaches across the
 		# chest.
-		if (tracker_local_position.origin.x - base_bone_position.x) * compensation_alpha_scale < 0:
-			var alpha = -(tracker_local_position.origin.x - base_bone_position.x) * 3.0 * compensation_alpha_scale
+		if (tracker_local_transform.origin.x - base_bone_position.x) * compensation_alpha_scale < 0:
+			var alpha = -(tracker_local_transform.origin.x - base_bone_position.x) * 3.0 * compensation_alpha_scale
 			#print(alpha)
 			pole_target_y = lerp(-y_pole_dist, 0.0, alpha)
 			pole_target_z = lerp(-z_pole_dist, 0.0, alpha)
-		
+
 		# Move pole target backwards when the arm is lowered.
 		#
 		# FIXME: Hardcoded values.
-		var arm_below_factor = (tracker_local_position.origin.y - base_bone_position.y) + 0.25
+		var arm_below_factor = (tracker_local_transform.origin.y - base_bone_position.y) + 0.25
 		arm_below_factor *= 1.0
 		if arm_below_factor < 0.0:
 			var alpha = arm_below_factor
@@ -386,7 +402,7 @@ func _process(delta : float) -> void:
 			pole_target_z = lerp(pole_target_z, 100.0, alpha)
 			pole_target_x = lerp(pole_target_x, 100.0 * compensation_alpha_scale, alpha)
 
-		
+
 		_ikchains_dict[chain_name].pole_direction_target = Vector3(
 			pole_target_x, pole_target_y, pole_target_z)
 
@@ -403,9 +419,10 @@ func _process(delta : float) -> void:
 	# ---------------------------------------------------------------------------------------------
 	# Handle Leaning
 
-	var lean_check_axis : Vector3 = (skel.transform * skel.get_bone_global_pose(skel.find_bone("Hips"))).basis * Vector3(1.0, 0.0, 0.0)
+	var lean_check_axis : Vector3 = (skel.get_bone_global_pose(
+												skel.find_bone("Hips"))).basis.x
 	lean_check_axis = lean_check_axis.normalized()
-	var head_offset : Vector3 = tracker_dict["head"]["transform"].origin - model_root.transform.origin
+	var head_offset : Vector3 = tracker_dict["head"]["transform"].origin
 	var lean_amount : float = sin(lean_check_axis.dot(head_offset))
 	handle_lean(skel, lean_amount * lean_scale)
 
@@ -447,7 +464,7 @@ func _setup_ik_chains():
 	var x_pole_dist = 10.0
 	var z_pole_dist = 10.0
 	var y_pole_dist = 5.0
-	
+
 	var arm_rotation_axis = Vector3(0.0, 1.0, 0.0).normalized()
 
 	var hand_tracker_left : Node3D = $Hand_Left
@@ -482,7 +499,7 @@ func _setup_ik_chains():
 func _reset_hand_landmarks():
 
 	for tracker : Node3D in [ $Hand_Left, $Hand_Right ]:
-		
+
 		# Make sure we have all the children.
 		while tracker.get_child_count() < 21:
 			var new_finger_tracker : MeshInstance3D = MeshInstance3D.new()
@@ -520,10 +537,14 @@ static func rotate_bone_in_global_space(
 	if axis.length() <= 0.0001:
 		return
 
-	var parent_bone_index = skel.get_bone_parent(bone_index)	
-	var gs_rotation = Basis(axis.normalized(),  angle).get_rotation_quaternion()
-	var gs_rotation_parent = skel.get_bone_global_rest(parent_bone_index).basis.get_rotation_quaternion()
-	var gs_rotation_rest = skel.get_bone_global_rest(bone_index).basis.get_rotation_quaternion()
+	var parent_bone_index = skel.get_bone_parent(bone_index)
+	var gs_basis := Basis(axis.normalized(), angle)
+	var gs_basis_parent: Basis = skel.get_bone_global_rest(parent_bone_index).basis
+	var gs_basis_rest: Basis = skel.get_bone_global_rest(bone_index).basis
+
+	var gs_rotation = gs_basis.get_rotation_quaternion()
+	var gs_rotation_parent = gs_basis_parent.get_rotation_quaternion()
+	var gs_rotation_rest = gs_basis_rest.get_rotation_quaternion()
 	var bs_rotation = gs_rotation_parent.inverse() * gs_rotation * gs_rotation_rest
 
 	if relative:
@@ -535,13 +556,12 @@ static func rotate_bone_in_global_space(
 			bone_index,
 			bs_rotation)
 
-
 func handle_lean(skel : Skeleton3D, angle : float):
 
 	var current_bone : int = skel.find_bone("Head")
 	var hips_bone : int = skel.find_bone("Hips")
 	var bone_count : int = 0
-	
+
 	while current_bone != hips_bone and current_bone != -1:
 		bone_count += 1
 		current_bone = skel.get_bone_parent(current_bone)
@@ -550,7 +570,11 @@ func handle_lean(skel : Skeleton3D, angle : float):
 
 	current_bone = skel.find_bone("Head")
 	while current_bone != hips_bone and current_bone != -1:
-		rotate_bone_in_global_space(skel, current_bone, Vector3(0.0, 0.0, 1.0), angle, true)
+		rotate_bone_in_global_space(skel,
+									current_bone,
+									Vector3(0.0, 0.0, 1.0),
+									angle,
+									true)
 		current_bone = skel.get_bone_parent(current_bone)
 
 func update_hand(hand_landmarks : Array, which_hand : String):
@@ -585,7 +609,7 @@ func _update_finger_chain(finger_bone_array : Array, hand_landmarks : Array, whi
 		var bone_name_parent_of_next : String = finger_bone["bone_name_parent_of_next"]
 		var finger_bone_reference_1 = hand_name + bone_name_next
 		var finger_bone_reference_2 = hand_name + bone_name_parent_of_next
-	
+
 		var bone_to_modify_index : int = skel.find_bone(finger_bone_to_modify)
 
 		if bone_to_modify_index == -1:

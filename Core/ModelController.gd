@@ -6,14 +6,14 @@ var _last_loaded_vrm = ""
 func _set_lod_bias_recursively(node):
 	if node is MeshInstance3D:
 		node.lod_bias = 128
-	
+
 	for child in node.get_children():
 		_set_lod_bias_recursively(child)
 
 func _rotate_meshinstances_recursively(node):
 	if node is MeshInstance3D:
 		node.basis = Basis(Vector3(0.0, 1.0, 0.0), PI)
-	
+
 	for child in node.get_children():
 		_rotate_meshinstances_recursively(child)
 
@@ -37,13 +37,13 @@ func load_vrm(path) -> Node3D:
 	var state: GLTFState = GLTFState.new()
 	state.handle_binary_image = GLTFState.HANDLE_BINARY_EMBED_AS_UNCOMPRESSED
 	var err = gltf.append_from_file(path, state,
-		16 | #EditorSceneFormatImporter.IMPORT_USE_NAMED_SKIN_BINDS | 
+		16 | #EditorSceneFormatImporter.IMPORT_USE_NAMED_SKIN_BINDS |
 		8 | #EditorSceneFormatImporter.IMPORT_GENERATE_TANGENT_ARRAYS |
 		2) #EditorSceneFormatImporter.IMPORT_ANIMATION) #16 #EditorSceneFormatImporter.IMPORT_USE_NAMED_SKIN_BINDS)
 
 	var generated_scene = null
 	if err == OK:
-		
+
 		# Remove whatever was already there.
 		var existing_model = get_node_or_null("Model")
 		if existing_model:
@@ -53,7 +53,7 @@ func load_vrm(path) -> Node3D:
 			# and queue_free().
 			existing_model.name = "Old_Model"
 			existing_model.queue_free()
-	
+
 		# Add new model to the scene.
 		generated_scene = gltf.generate_scene(state)
 		generated_scene.name = "Model"
@@ -109,14 +109,14 @@ func find_mapped_bone_index(bone_name : String):
 	var fixed_bone_name = bone_name
 
 	var skeleton : Skeleton3D = get_skeleton()
-	
+
 	var bone_index = bone_mapping.profile.find_bone(fixed_bone_name)
 	if bone_index != -1:
-		
+
 		var mapped_bone_name = bone_mapping.get_skeleton_bone_name(fixed_bone_name)
 		if mapped_bone_name != "":
 			#var mapped_bone_name = bone_mapping[fixed_bone_name]
-		
+
 			var bone_index2 = skeleton.find_bone(mapped_bone_name)
 			#print("  MAPPED BONE: ", mapped_bone_name, " ", bone_index2)
 			if bone_index2 != -1:

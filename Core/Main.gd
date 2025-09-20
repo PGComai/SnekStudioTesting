@@ -35,7 +35,7 @@ func set_background_color(c : Color):
 	var env = get_node("WorldEnvironment")
 	var env2 : Environment = env.environment
 	env2.background_color = c
-	
+
 	var current_style : StyleBoxFlat = %BackgroundPanel.get("theme_override_styles/panel")
 	current_style.bg_color = c
 
@@ -46,13 +46,13 @@ func set_background_transparency(transparent : bool):
 		env2.background_mode = Environment.BG_CLEAR_COLOR
 		get_node("BackgroundLayer").visible = false
 		get_tree().get_root().set_transparent_background(true) # Needed for compatibility mode.
-		
+
 #		get_viewport().transparent_bg = true
 #		DisplayServer.window_set_flag(
 #			DisplayServer.WINDOW_FLAG_TRANSPARENT, true,
 #			DisplayServer.MAIN_WINDOW_ID)
 #		get_tree().root.transparent_bg = true
-		
+
 	else:
 		var env = get_node("WorldEnvironment")
 		var env2 : Environment = env.environment
@@ -98,14 +98,14 @@ func _load_mods() -> void:
 	_mods_loaded = true
 
 func _ready():
-	
+
 	_load_mods()
 
 	set_background_transparency(true)
 
 	# Auto-load on startup.
 	load_settings()
-	
+
 	$AudioStreamRecord.play()
 
 func _exit_tree():
@@ -117,7 +117,7 @@ func _exit_tree():
 	save_settings()
 
 func _on_handle_channel_points_redeem(redeemer_username, redeemer_display_name, redeem_title, user_input):
-	
+
 	# Relay message to all mods.
 	for child in $Mods.get_children():
 		if child is Mod_Base:
@@ -131,14 +131,14 @@ func _on_handle_channel_chat_message(cheerer_username, cheerer_display_name, mes
 			child.handle_channel_chat_message(cheerer_username, cheerer_display_name, message, bits_count)
 
 func _on_handle_channel_raid(raider_username, raider_display_name, raid_user_count):
-	
+
 	# Relay message to all mods.
 	for child in $Mods.get_children():
 		if child is Mod_Base:
 			child.handle_channel_raid(raider_username, raider_display_name, raid_user_count)
 
 func _input(event):
-	
+
 	# Handle "esc" for UI toggling.
 	if event is InputEventKey:
 		if event.pressed:
@@ -153,10 +153,10 @@ func _get_ui_root():
 	return $CanvasLayer2/UI_Root
 
 func _force_update_ui():
-	
+
 	# Update mods list.
 	get_node("%UI_Root/%ModsWindow").update_mods_list()
-	
+
 	# Update settings window.
 	%UI_Root/%SettingsWindow_General.settings_changed_from_app()
 	%UI_Root/%SettingsWindow_Sound.settings_changed_from_app()
@@ -167,7 +167,7 @@ func _force_update_ui():
 func _get_current_model_base_name():
 	var last_vrm_path = $ModelController.get_last_loaded_vrm()
 	var model_base_name = last_vrm_path.get_file()
-	return model_base_name	
+	return model_base_name
 
 func _save_colliders_for_current_model():
 	var model_base_name = _get_current_model_base_name()
@@ -267,7 +267,7 @@ func reset_settings_to_default() -> void:
 	# Reset camera.
 	$CameraBoom.reset_to_default()
 
-	# Reset transparency.	
+	# Reset transparency.
 	set_background_transparency(false)
 
 	# Reset background color.
@@ -295,7 +295,7 @@ func serialize_settings(do_settings=true, do_mods=true):
 
 	# General app settings.
 	if do_settings:
-		
+
 		# Save camera.
 		settings_to_save["camera"] = $CameraBoom.save_settings()
 
@@ -316,7 +316,7 @@ func serialize_settings(do_settings=true, do_mods=true):
 		settings_to_save["volume_output"] = AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Master"))
 		settings_to_save["sound_device_output"] = AudioServer.get_output_device()
 		settings_to_save["sound_device_input"] = AudioServer.get_input_device()
-		
+
 		# Save colliders.
 		settings_to_save["colliders"] = colliders_by_model_name
 
@@ -328,7 +328,7 @@ func serialize_settings(do_settings=true, do_mods=true):
 			window_size[1]]
 		settings_to_save["window_position"] = [
 			window_position[0],
-			window_position[1]]	
+			window_position[1]]
 		settings_to_save["window_maximized"] = not not \
 			(get_viewport().mode & Window.MODE_MAXIMIZED)
 
@@ -351,7 +351,7 @@ func serialize_settings(do_settings=true, do_mods=true):
 	return settings_to_save
 
 func _compare_values(a, b):
-	
+
 	if a is Dictionary and b is Dictionary:
 		var keys_a = a.keys()
 		var keys_b = b.keys()
@@ -377,26 +377,26 @@ func _compare_values(a, b):
 				return false
 		# No non-matching value found.
 		return true
-	
+
 	if a is float and b is float:
 		return is_equal_approx(a, b)
-	
+
 	if a == b:
 		return true
-		
+
 	return false
 
 func _setting_changed(key, old, new):
 	if key in new:
-		
+
 		if key in old:
 
 			# Key in both. Check difference.
 			return not _compare_values(new[key], old[key])
-		
+
 		# Key in new but not old.
 		return true
-	
+
 	# No new key.
 	return false
 
@@ -407,10 +407,10 @@ func _update_window_decorations():
 		get_viewport().borderless = false
 
 func deserialize_settings(settings_dict, do_settings=true, do_mods=true):
-	
+
 	# Get the old settings so we only apply stuff that's changed.
 	var old_settings_dict = serialize_settings()
-	
+
 	# General app settings
 	if do_settings:
 
@@ -458,7 +458,7 @@ func deserialize_settings(settings_dict, do_settings=true, do_mods=true):
 			AudioServer.set_bus_volume_db(
 				AudioServer.get_bus_index("Record"),
 				settings_dict["volume_input"])
-				
+
 		if _setting_changed("sound_device_input", old_settings_dict, settings_dict):
 			print("output device before setting input: ", AudioServer.get_output_device())
 			AudioServer.set_input_device(settings_dict["sound_device_input"])
@@ -474,15 +474,15 @@ func deserialize_settings(settings_dict, do_settings=true, do_mods=true):
 			AudioServer.set_output_device(settings_dict["sound_device_output"])
 		#elif not "sound_device_output" in settings_dict:
 		#	AudioServer.set_output_device("Default")
-			
+
 		# Window size/position settings
 		if _setting_changed("window_size", old_settings_dict, settings_dict):
 			get_viewport().set_size(Vector2i(
-				settings_dict["window_size"][0], 
+				settings_dict["window_size"][0],
 				settings_dict["window_size"][1]))
 		if _setting_changed("window_position", old_settings_dict, settings_dict):
 			get_viewport().set_position(Vector2i(
-				settings_dict["window_position"][0], 
+				settings_dict["window_position"][0],
 				settings_dict["window_position"][1]))
 		if _setting_changed("window_maximized", old_settings_dict, settings_dict):
 			if settings_dict["window_maximized"]:
@@ -516,21 +516,21 @@ func deserialize_settings(settings_dict, do_settings=true, do_mods=true):
 				subwindow._deserialize_window(subwindow_dict)
 
 func save_settings(path : String = ""):
-	
+
 	var settings_to_save = serialize_settings()
-	
-	# Figure out actual save path.	
+
+	# Figure out actual save path.
 	var settings_filename = path
 	if settings_filename == "":
 		settings_filename = _get_default_settings_path()
-	
+
 	# Create settings directory if it doesn't already exist
 	var settings_dir = ProjectSettings.globalize_path(settings_filename.get_basename())
 	if not DirAccess.dir_exists_absolute(settings_dir):
 		if DirAccess.make_dir_recursive_absolute(settings_dir) != OK:
 			push_error("Failed to create settings directory: " + settings_dir)
 			return
-	
+
 	# Convert settings to JSON and save.
 	var save_string = JSON.stringify(settings_to_save, "  ")
 	var file = FileAccess.open(settings_filename, FileAccess.WRITE)
@@ -538,10 +538,10 @@ func save_settings(path : String = ""):
 	file.close()
 
 func load_settings(path : String = ""):
-	
+
 	_load_mods()
 	print("Loading settings...")
-	
+
 	# Get actual save path.
 	var settings_filename = path
 	if settings_filename == "":
@@ -614,12 +614,12 @@ func load_settings(path : String = ""):
 		var file_contents = file.get_as_text()
 		file.close()
 		settings_dict = JSON.parse_string(file_contents)
-	
+
 	# Set everything to default.
 	reset_settings_to_default()
-	
+
 	deserialize_settings(settings_dict)
-	
+
 	_force_update_ui()
 
 ## Load a new VRM file from a given path. Returns true on success and false on
@@ -663,26 +663,26 @@ func load_vrm(path) -> bool:
 					if sphere_collider.is_capsule:
 						continue
 
-					var bone_name = sphere_collider.bone			
+					var bone_name = sphere_collider.bone
 
 					var new_collider = {}
-					
+
 					new_collider["position"] = [
 						sphere_collider.offset[0],
 						sphere_collider.offset[1],
 						sphere_collider.offset[2]]
-						
+
 					new_collider["radius"] = sphere_collider.radius
-					new_collider["bone_name"] = bone_name	
+					new_collider["bone_name"] = bone_name
 					new_collider["from_vrm"] = true
-					
+
 					# See if this new one matches and existing collider.
 					var found_collider = null
 					for existing_collider in collider_data:
 						var fields_to_compare = [
 							"position", "radius",
 							"bone_name" ]
-						
+
 						var is_this_collider = true
 						for field in fields_to_compare:
 							if not _compare_values(existing_collider[field], new_collider[field]):
@@ -693,7 +693,7 @@ func load_vrm(path) -> bool:
 							existing_collider["from_vrm"] = true
 							found_collider = existing_collider
 							break
-					
+
 					# No loaded collider found? Add it.
 					if found_collider == null:
 						collider_data.append(new_collider)

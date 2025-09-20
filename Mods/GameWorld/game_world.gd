@@ -46,9 +46,9 @@ func create_input_event_key(phys_keycode: Key) -> InputEventKey:
 func _process(delta: float) -> void:
 	cam_h.rotation.y = rot_h
 	cam_v.rotation.x = rot_v
-	
+
 	camera_3d.global_transform = cam_holder.global_transform
-	
+
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var app = get_app()
 		var boom: Node3D = app.find_child("CameraBoom")
@@ -61,36 +61,36 @@ func _physics_process(delta: float) -> void:
 	else:
 		if Input.is_action_just_pressed("jump") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			char.velocity.y = JUMP
-	
+
 	var input := Input.get_vector("left", "right", "fwd", "back")
 	var dir := cam_h.global_basis * Vector3(input.x, 0.0, input.y)
-	
+
 	var accel: float
-	
+
 	if char.is_on_floor():
 		accel = ACCEL
 	else:
 		accel = ACCEL_AIR
-	
+
 	if dir and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		char.velocity.x = lerpf(char.velocity.x, dir.x * SPEED, accel)
 		char.velocity.z = lerpf(char.velocity.z, dir.z * SPEED, accel)
 	else:
 		char.velocity.x = lerpf(char.velocity.x, 0.0, accel)
 		char.velocity.z = lerpf(char.velocity.z, 0.0, accel)
-	
+
 	char.move_and_slide()
-	
+
 	var model := get_model()
 	if model:
 		model.global_position = char.global_position
-		
+
 		var dir_2d := Vector2(dir.x, dir.z)
 		if dir_2d and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			model.global_rotation.y = lerp_angle(model.global_rotation.y, -dir_2d.angle() + (PI/2.0), 0.1)
-		
+
 		main_cam_h.global_rotation.y = lerp_angle(main_cam_h.global_rotation.y, model.global_rotation.y, 0.4)
-	
+
 	if Input.is_action_just_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		var app = get_app()

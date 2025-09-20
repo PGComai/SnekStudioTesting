@@ -1,7 +1,7 @@
 extends Mod_Base
 
 var yaw_offset : float = 0.0;
-var pitch_offset : float = 0.0; 
+var pitch_offset : float = 0.0;
 
 func _ready() -> void:
 	add_tracked_setting("yaw_offset", "Yaw Offset", { "min" : -180.0, "max" : 180.0 })
@@ -31,4 +31,3 @@ func _process(delta: float) -> void:
 	#if "finger_positions" in trackers:
 	#	for k in trackers["finger_positions"].keys():
 	#		trackers["finger_positions"][k] = rotation_transform.basis * trackers["finger_positions"][k]
-		

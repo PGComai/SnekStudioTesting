@@ -221,7 +221,7 @@ func load_after(_settings_old : Dictionary, _settings_new : Dictionary):
 	if reset_blend_shapes:
 		for k in blend_shape_last_values.keys():
 			blend_shape_last_values[k] = 0.0
-	
+
 	if _settings_old["blendshape_calibration"] != _settings_new["blendshape_calibration"]:
 		blendshape_calibration = _settings_new["blendshape_calibration"]
 
@@ -248,13 +248,14 @@ func scene_init():
 	last_parsed_data = {}
 
 	# Move hand "rest" trackers into the scene.
-	var root = get_skeleton().get_parent()
-	var left_rest = $LeftHandRestReference
-	var right_rest = $RightHandRestReference
-	remove_child(left_rest)
-	remove_child(right_rest)
-	root.add_child(left_rest)
-	root.add_child(right_rest)
+	# I don't believe this is necessary
+	#var root = get_skeleton().get_parent()
+	#var left_rest = $LeftHandRestReference
+	#var right_rest = $RightHandRestReference
+	#remove_child(left_rest)
+	#remove_child(right_rest)
+	#root.add_child(left_rest)
+	#root.add_child(right_rest)
 
 	# Set the head tracker to match the model's head position.
 	var head_bone_index = get_skeleton().find_bone("Head")
@@ -296,11 +297,11 @@ func scene_shutdown():
 
 func _update_arm_rest_positions():
 	var skel : Skeleton3D = get_skeleton()
-	
+
 	if skel:
-		
+
 		for side in [ "Left", "Right" ]:
-			
+
 			var rotation_axis : Vector3 = Vector3(0.0, 0.0, 1.0)
 			if side == "Left":
 				rotation_axis *= -1
@@ -359,7 +360,7 @@ func _scan_video_devices():
 	_devices_by_list_entry["None"] = { "index" : -1 }
 
 func _start_tracker():
-	
+
 	tracker_python_process.call_rpc_async(
 		"set_udp_port_number", [_udp_port])
 
@@ -367,7 +368,7 @@ func _start_tracker():
 		"set_hand_confidence_time_threshold", [hand_confidence_time_threshold])
 
 	var video_device_index_to_use = 0
-	
+
 	if len(video_device) > 0:
 		if video_device[0] in _devices_by_list_entry:
 			var actual_device_data = _devices_by_list_entry[video_device[0]]
@@ -416,7 +417,7 @@ func _send_settings_to_tracker():
 
 	tracker_python_process.call_rpc_async(
 		"set_hand_confidence_time_threshold", [hand_confidence_time_threshold])
-		
+
 	tracker_python_process.call_rpc_async(
 		"set_hand_count_change_time_threshold", [hand_count_change_time_threshold])
 
@@ -446,9 +447,9 @@ static func _mirror_parsed_data(parsed_data : Dictionary) -> Dictionary:
 	# First, just swap the names.
 	for hand_name in [ "left", "right" ]:
 		var opposite_hand : String = "left"
-		if hand_name == "left": 
+		if hand_name == "left":
 			opposite_hand = "right"
-		
+
 		new_parsed_data["hand_" + hand_name + "_score"] = parsed_data["hand_" + opposite_hand + "_score"]
 		new_parsed_data["hand_" + hand_name + "_rotation"] = parsed_data["hand_" + opposite_hand + "_rotation"]
 		new_parsed_data["hand_" + hand_name + "_origin"] = parsed_data["hand_" + opposite_hand + "_origin"]
@@ -457,10 +458,10 @@ static func _mirror_parsed_data(parsed_data : Dictionary) -> Dictionary:
 
 	# Now, swap the values.
 	for hand_name in [ "left", "right" ]:
-		
+
 		var hand_rotation_str = "hand_" + hand_name + "_rotation"
 		var hand_origin_str = "hand_" + hand_name + "_origin"
-		var hand_landmark_str = "hand_landmarks_" + hand_name 
+		var hand_landmark_str = "hand_landmarks_" + hand_name
 
 		# Mirror origins.
 		new_parsed_data[hand_origin_str][0] *= -1
@@ -570,7 +571,7 @@ func _process_new_packets(delta):
 
 	while true:
 		var packet = udp_server.get_packet()
-		
+
 		# FIXME: Disallow packets from remote systems, unless allowed
 		# explicitly.
 
@@ -618,7 +619,7 @@ func _process(delta):
 
 	if not _init_complete:
 		return
-		
+
 	if not udp_server:
 		return
 
@@ -662,7 +663,7 @@ func _process(delta):
 
 		var tracker_left = $Hand_Left
 		var tracker_right = $Hand_Right
-		
+
 		# FIXME: MIRROR MESS (CLEAN THIS UP)
 		hand_origin_multiplier = Vector3(-1.0, 1.0, 1.0)
 		head_origin_multiplier = Vector3(-1.0, 1.0, 1.0)
@@ -701,7 +702,7 @@ func _process(delta):
 
 		# -----------------------------------------------------------------------------------------
 		# Head packets
-		
+
 		# FIXME: Hardcoded transform
 		var head_origin_array = parsed_data["head_origin"]
 		if parsed_data["head_missing_time"] <= frames_missing_before_spine_reset:
@@ -810,7 +811,7 @@ func _process(delta):
 func _reset_hand_landmarks():
 
 	for tracker : Node3D in [ $Hand_Left, $Hand_Right ]:
-		
+
 		# Make sure we have all the children.
 		while tracker.get_child_count() < 21:
 			var new_finger_tracker : MeshInstance3D = MeshInstance3D.new()
@@ -865,11 +866,11 @@ func _update_hand(hand, parsed_data, skel : Skeleton3D):
 			marker_original_local[0] *= -1
 			marker_original_local[1] *= -1
 			marker_original_local[2] *= -1
-	
+
 		var marker_new_local = hand_landmark_rotation_to_use * \
 			marker_original_local
 		var marker_new_worldspace = marker.get_parent().transform * marker_new_local
-		
+
 #						marker.transform.origin = \
 #							hand_landmark_rotation_to_use * \
 #							(Vector3(mark[0], mark[1], mark[2]) * hand_landmark_position_multiplier)
@@ -877,7 +878,7 @@ func _update_hand(hand, parsed_data, skel : Skeleton3D):
 			marker_old_worldspace, \
 			marker_new_worldspace, \
 			0.25) # FIXME: Hardcoded smoothing
-		
+
 		mark_counter += 1
 
 	# FIXME: I have no idea what these columns mean anymore.
@@ -1015,11 +1016,11 @@ func _update_hand_tracker(
 	var hand_score_str = "hand_" + hand_str_lower + "_score"
 	var hand_origin_str = "hand_" + hand_str_lower + "_origin"
 	var hand_rotation_str = "hand_" + hand_str_lower + "_rotation"
-	
+
 	var hand_origin_array = parsed_data[hand_origin_str]
 	var hand_score = parsed_data[hand_score_str]
 
-	# Apply thresholds to the confidence score.			
+	# Apply thresholds to the confidence score.
 	if hand_score < score_threshold or not hand_tracking_enabed: # FIXME: Wrong place for the enabled check?
 		hand_score = 0.0
 
@@ -1035,12 +1036,12 @@ func _update_hand_tracker(
 	hand_time_since_last_missing[hand_data["index"]] = time_since_last_missing
 
 	if time_since_last_update > arm_reset_time:
-		
+
 		var reference_ob = hand_data["rest_reference_object"]
 		# Move hand to rest position.
 		tracker_ob.global_transform.origin = tracker_ob.global_transform.origin.lerp(
 			reference_ob.global_transform.origin, arm_reset_speed) # FIXME: Hardcoded value.
-		
+
 		var rot_quat1 = tracker_ob.global_transform.basis.get_rotation_quaternion()
 		var rot_quat2 = reference_ob.global_transform.basis.get_rotation_quaternion()
 		tracker_ob.global_transform.basis = Basis(rot_quat1.slerp(rot_quat2, arm_reset_speed)) # FIXME: Hardcoded value
@@ -1051,13 +1052,13 @@ func _update_hand_tracker(
 		# Stretch the last bit of the score out with an exponent.
 		hand_score = pow(hand_score, score_exponent)
 		parsed_data[hand_score_str] = hand_score
-	
+
 		# TODO: Replace the tracker object with just a Transform3D.
 		var target_origin = model_origin_offset + (Vector3(
 			hand_origin_array[0],
 			hand_origin_array[1],
 			hand_origin_array[2]) * hand_origin_multiplier)
-		
+
 		# Attempt to move hand in front of model. Reaching behind is
 		# *usually* the results of bad data.
 		#
@@ -1068,7 +1069,7 @@ func _update_hand_tracker(
 		# FIXME: Hardcoded values all over this part.
 		#
 		var chest_transform_global_pose = skel.get_bone_global_pose(skel.find_bone("Chest"))
-		var min_z = (skel.global_transform * chest_transform_global_pose).origin
+		var min_z = (skel.transform * chest_transform_global_pose).origin
 		if target_origin.z < min_z.z + 0.2:
 			target_origin.z = min_z.z + 0.2
 
@@ -1121,11 +1122,11 @@ func _update_hand_tracker(
 
 		# Why do we have to go through the global transform? I guess we need like a "baked"
 		# version of the transform that handles all of our weird axis flipping.
-		
+
 		var old_world_transform = tracker_ob.get_global_transform()
 
 		#tracker_ob.transform.basis = new_rotation # Basis(new_rotation.orthonormalized().get_rotation_quaternion())
-		
+
 		# FIXME: Can't work due to variability in chest bone location?
 		#   (problem with new model rigging that wasn't a problem with the old)
 #				# Snap tracker to rest position if we're below a certain
@@ -1137,25 +1138,26 @@ func _update_hand_tracker(
 #					target_origin = reference_ob.global_transform.origin
 #					#tracker_ob.transform.basis = reference_ob.transform.basis
 #					new_rotation = reference_ob.transform.basis
-			
+
 		var lerp_scale = 1.0 / hand_position_smoothing
 		tracker_ob.transform.origin = tracker_ob.transform.origin.lerp(
 			target_origin,
 			hand_score * delta_scale * lerp_scale)
-		
+
 		# FIXME: Hardcoded SLERP speed. Make configurable.
 		tracker_ob.transform.basis = Basis(
 			tracker_ob.transform.basis.orthonormalized().get_rotation_quaternion().slerp(
 			new_rotation, 1.0 / hand_rotation_smoothing)) # Basis(new_rotation.orthonormalized().get_rotation_quaternion())
-		
+
 		var new_world_transform = tracker_ob.get_global_transform()
-		
+
 		# FIXME: Hardcoded smoothing value.
 		var interped_transform = old_world_transform.interpolate_with(new_world_transform, 0.75)
 		tracker_ob.global_transform.basis = interped_transform.basis
 
 		#tracker_ob.transform.basis = new_rotation
 		if tracker_ob.mesh:
-			tracker_ob.mesh.material.albedo_color.a = 0.25 + hand_score * 0.75
+			if tracker_ob.mesh.material:
+				tracker_ob.mesh.material.albedo_color.a = 0.25 + hand_score * 0.75
 
 #endregion
