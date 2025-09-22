@@ -275,14 +275,14 @@ func scene_shutdown():
 	udp_server.close()
 	udp_server = null
 
-	var root = get_skeleton().get_parent()
-	var left_rest = root.get_node("LeftHandRestReference")
-	var right_rest = root.get_node("RightHandRestReference")
-
-	root.remove_child(left_rest)
-	root.remove_child(right_rest)
-	add_child(left_rest)
-	add_child(right_rest)
+	#var root = get_skeleton().get_parent()
+	#var left_rest = root.get_node("LeftHandRestReference")
+	#var right_rest = root.get_node("RightHandRestReference")
+#
+	#root.remove_child(left_rest)
+	#root.remove_child(right_rest)
+	#add_child(left_rest)
+	#add_child(right_rest)
 
 	# Reset pose and blendshapes.
 	get_app().get_controller().reset_skeleton_to_rest_pose()
