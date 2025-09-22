@@ -95,7 +95,6 @@ func _physics_process(delta: float) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		var app = get_app()
 		var boom: Node3D = app.find_child("CameraBoom")
-		#boom.set_process(true)
 
 
 func _on_window_window_input(event: InputEvent) -> void:
@@ -105,7 +104,6 @@ func _on_window_window_input(event: InputEvent) -> void:
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 				var app = get_app()
 				var boom: Node3D = app.find_child("CameraBoom")
-				#boom.set_process(false)
 				main_camera_holder.global_transform = boom.global_transform
 	else:
 		if event is InputEventMouseMotion:
