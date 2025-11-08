@@ -1,0 +1,73 @@
+[gd_scene load_steps=9 format=3 uid="uid://busp7ls45kyvd"]
+
+[ext_resource type="Script" uid="uid://cskg0k7brqj0g" path="res://Mods/Wardrobe/Wardrobe.gd" id="1_vs2ym"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_vs2ym"]
+viewport_path = NodePath("Window/UX/TextureRect/SubViewport")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vs2ym"]
+
+[sub_resource type="Sky" id="Sky_v8ei1"]
+sky_material = SubResource("ProceduralSkyMaterial_vs2ym")
+
+[sub_resource type="Environment" id="Environment_vs2ym"]
+background_mode = 2
+sky = SubResource("Sky_v8ei1")
+
+[sub_resource type="World3D" id="World3D_vs2ym"]
+environment = SubResource("Environment_vs2ym")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vs2ym"]
+albedo_color = Color(0.913103, 0.000122637, 0.744885, 1)
+emission_enabled = true
+emission = Color(0.913103, 0.000122637, 0.744885, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_vs2ym"]
+radius = 0.01
+height = 0.02
+
+[node name="Wardrobe" type="Node3D"]
+script = ExtResource("1_vs2ym")
+
+[node name="Window" type="Window" parent="."]
+disable_3d = true
+title = "Wardrobe"
+initial_position = 2
+size = Vector2i(1280, 720)
+
+[node name="UX" type="Control" parent="Window"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Window/UX"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_vs2ym")
+
+[node name="SubViewport" type="SubViewport" parent="Window/UX/TextureRect"]
+own_world_3d = true
+world_3d = SubResource("World3D_vs2ym")
+size = Vector2i(1280, 720)
+
+[node name="WardrobeWorld" type="Node3D" parent="Window/UX/TextureRect/SubViewport"]
+
+[node name="CamH" type="Node3D" parent="Window/UX/TextureRect/SubViewport/WardrobeWorld"]
+
+[node name="CamV" type="Node3D" parent="Window/UX/TextureRect/SubViewport/WardrobeWorld/CamH"]
+
+[node name="Camera3D" type="Camera3D" parent="Window/UX/TextureRect/SubViewport/WardrobeWorld/CamH/CamV"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+
+[node name="Cursor" type="MeshInstance3D" parent="Window/UX/TextureRect/SubViewport/WardrobeWorld"]
+material_override = SubResource("StandardMaterial3D_vs2ym")
+mesh = SubResource("SphereMesh_vs2ym")
+
+[connection signal="gui_input" from="Window/UX" to="." method="_on_ux_gui_input"]
