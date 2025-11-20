@@ -214,15 +214,16 @@ func _update_local_trackers() -> void:
 	var tracker_dict : Dictionary = get_global_mod_data("trackers")
 	
 	var model = get_model()
+	print(model.position.length())
 	var model_up: Vector3 = model.global_basis.y
 	
 	# This takes the tracker_dict data and transforms the ik targets
 	# to be relative to the model node's global transform.
-	var new_head_basis: Basis = tracker_dict["head"].transform.basis * model.global_basis
+	var new_head_basis: Basis = model.global_basis * tracker_dict["head"].transform.basis
 	var new_head_pos: Vector3 = (model.global_basis * tracker_dict["head"].transform.origin) + model.global_position
-	var new_hand_l_basis: Basis = tracker_dict["hand_left"].transform.basis * model.global_basis
+	var new_hand_l_basis: Basis = model.global_basis * tracker_dict["hand_left"].transform.basis
 	var new_hand_l_pos: Vector3 = (model.global_basis * tracker_dict["hand_left"].transform.origin) + model.global_position
-	var new_hand_r_basis: Basis = tracker_dict["hand_right"].transform.basis * model.global_basis
+	var new_hand_r_basis: Basis = model.global_basis * tracker_dict["hand_right"].transform.basis
 	var new_hand_r_pos: Vector3 = (model.global_basis * tracker_dict["hand_right"].transform.origin) + model.global_position
 
 	$Head.global_transform = Transform3D(new_head_basis, new_head_pos)
@@ -307,10 +308,13 @@ func _process(delta : float) -> void:
 
 	# FIXME: Hack.
 	# This just moves the body based on the head position.
-	var head_pos = $Head.transform.origin - model_root.position + (model_root.global_basis * Vector3(
-																						0.0,
-																						head_vertical_offset,
-																						0.0))
+	var head_tracker_local: Vector3 = model_controller.to_local($Head.transform.origin)
+	var head_offset_global: Vector3 = model_root.global_basis * Vector3(
+																	0.0,
+																	head_vertical_offset,
+																	0.0
+																	)
+	var head_pos = head_tracker_local - model_root.position + head_offset_global
 	
 	if true: # FIXME: ???????
 		model_root.position = model_root.position.lerp(head_pos, delta * hip_adjustment_speed)

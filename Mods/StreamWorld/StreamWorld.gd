@@ -81,7 +81,7 @@ func _physics_process(delta: float) -> void:
 
 	char.move_and_slide()
 
-	var model := get_model()
+	var model := get_model_controller()
 	if model:
 		model.global_position = char.global_position
 
