@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://dl8gk83mipj5w"]
+
+[ext_resource type="Script" uid="uid://mi6afv06vg6f" path="res://Mods/StreamWorld/helper/CaptureScene.gd" id="1_a202f"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_4xowi"]
+size = Vector2(3.84, 2.16)
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_a202f")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_4xowi")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+
+[node name="X11DisplayCapture" type="X11DisplayCapture" parent="."]

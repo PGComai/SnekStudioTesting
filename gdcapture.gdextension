@@ -1,0 +1,6 @@
+[configuration]
+entry_symbol = "example_library_init"
+compatibility_minimum = "4.4"
+
+[libraries]
+linux.debug.x86_64 = "bin/libgd-capture-external.so"
