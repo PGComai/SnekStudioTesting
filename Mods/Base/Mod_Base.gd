@@ -54,6 +54,15 @@ func handle_channel_point_redeem(_redeemer_username, _redeemer_display_name, _re
 func handle_channel_raid(_raider_username, _raider_display_name, _raid_user_count):
 	pass
 
+# Virtual function called any time someone sends a chat.
+func handle_channel_chat_message_v2(
+	chatter_username : String,
+	chatter_display_name : String,
+	message : String,
+	fragment_list : Array,
+	bits_count : int):
+	pass
+
 func get_redeem_names():
 	
 	# By default, just return and string properties that we've flagged as

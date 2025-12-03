@@ -214,7 +214,6 @@ func _update_local_trackers() -> void:
 	var tracker_dict : Dictionary = get_global_mod_data("trackers")
 	
 	var model = get_model()
-	print(model.position.length())
 	var model_up: Vector3 = model.global_basis.y
 	
 	# This takes the tracker_dict data and transforms the ik targets

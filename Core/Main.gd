@@ -137,6 +137,23 @@ func _on_handle_channel_raid(raider_username, raider_display_name, raid_user_cou
 		if child is Mod_Base:
 			child.handle_channel_raid(raider_username, raider_display_name, raid_user_count)
 
+func _on_handle_channel_chat_message_v2(
+	chatter_username : String,
+	chatter_display_name : String,
+	message : String,
+	fragment_list : Array,
+	bits_count : int):
+	
+	# Relay message to all mods.
+	for child in $Mods.get_children():
+		if child is Mod_Base:
+			child.handle_channel_chat_message_v2(
+				chatter_username,
+				chatter_display_name,
+				message,
+				fragment_list,
+				bits_count)
+
 func _input(event):
 	
 	# Handle "esc" for UI toggling.

@@ -1,6 +1,20 @@
-[gd_scene load_steps=9 format=3 uid="uid://dtkm6diaw504t"]
+[gd_scene load_steps=13 format=3 uid="uid://dtkm6diaw504t"]
 
 [ext_resource type="Script" uid="uid://bv33gioiigmr2" path="res://Mods/StreamWorld/StreamWorld.gd" id="1_wv6bo"]
+[ext_resource type="PackedScene" uid="uid://dl8gk83mipj5w" path="res://Mods/StreamWorld/helper/CaptureScene.tscn" id="2_eh1rf"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_shy1m"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_eh1rf"]
+sky_material = SubResource("ProceduralSkyMaterial_shy1m")
+
+[sub_resource type="Environment" id="Environment_tpcd6"]
+background_mode = 2
+sky = SubResource("Sky_eh1rf")
+tonemap_mode = 2
+glow_enabled = true
 
 [sub_resource type="Gradient" id="Gradient_wv6bo"]
 offsets = PackedFloat32Array(0.964912, 1)
@@ -30,10 +44,17 @@ radius = 0.1
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_wv6bo")
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tpcd6")
+
 [node name="Window" type="Window" parent="."]
 handle_input_locally = false
 initial_position = 2
-size = Vector2i(1152, 648)
+size = Vector2i(864, 486)
 
 [node name="WorldRoot" type="Node3D" parent="Window"]
 
@@ -78,13 +99,13 @@ shape = SubResource("SphereShape3D_ofdl7")
 [node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="Window/WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder"]
 node_a = NodePath("..")
 node_b = NodePath("../../../../RigidMainCameraHolder")
-linear_limit_x/softness = 0.02
+linear_limit_x/softness = 0.04
 linear_limit_x/restitution = 0.1
 linear_limit_x/damping = 2.0
-linear_limit_y/softness = 0.02
+linear_limit_y/softness = 0.04
 linear_limit_y/restitution = 0.1
 linear_limit_y/damping = 2.0
-linear_limit_z/softness = 0.02
+linear_limit_z/softness = 0.04
 linear_limit_z/restitution = 0.1
 linear_limit_z/damping = 2.0
 angular_limit_x/softness = 0.02
@@ -101,8 +122,20 @@ can_sleep = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/RigidMainCameraHolder"]
 shape = SubResource("SphereShape3D_afllp")
 
+[node name="Capture" parent="Window/WorldRoot" instance=ExtResource("2_eh1rf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.02901, -2.38955)
+
 [node name="Camera3D" type="Camera3D" parent="Window"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.77026, 2.94625)
 current = true
+
+[node name="Window2" type="Window" parent="."]
+title = "StreamWindow"
+initial_position = 2
+size = Vector2i(1920, 1080)
+
+[node name="Camera3D" type="Camera3D" parent="Window2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.421512, 1.83628, 0.241467)
+fov = 54.5
 
 [connection signal="window_input" from="Window" to="." method="_on_window_window_input"]

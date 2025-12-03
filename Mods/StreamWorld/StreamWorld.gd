@@ -37,6 +37,15 @@ func _ready() -> void:
 		InputMap.action_add_event(ac, default_key_actions[ac])
 
 
+func handle_channel_chat_message_v2(
+	chatter_username : String,
+	chatter_display_name : String,
+	message : String,
+	fragment_list : Array,
+	bits_count : int):
+	pass
+
+
 func create_input_event_key(phys_keycode: Key) -> InputEventKey:
 	var iek := InputEventKey.new()
 	iek.physical_keycode = phys_keycode

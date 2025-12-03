@@ -11,6 +11,8 @@ func scene_init():
 		app._on_handle_channel_points_redeem)
 	$TwitchService.handle_channel_raid.connect(
 		app._on_handle_channel_raid)
+	$TwitchService.handle_channel_chat_message_v2.connect(
+		app._on_handle_channel_chat_message_v2)
 
 func scene_shutdown():
 
@@ -23,6 +25,8 @@ func scene_shutdown():
 		app._on_handle_channel_points_redeem)
 	$TwitchService.handle_channel_raid.disconnect(
 		app._on_handle_channel_raid)
+	$TwitchService.handle_channel_chat_message_v2.disconnect(
+		app._on_handle_channel_chat_message_v2)
 
 func _ready() -> void:
 	var twitch : TwitchService = TwitchService.new()
