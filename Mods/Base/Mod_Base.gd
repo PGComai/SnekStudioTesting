@@ -59,6 +59,8 @@ func handle_channel_chat_message_v2(
 	chatter_username : String,
 	chatter_display_name : String,
 	message : String,
+	chatter_color : String,
+	badges: Array,
 	fragment_list : Array,
 	bits_count : int):
 	pass
