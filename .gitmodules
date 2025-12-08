@@ -1,0 +1,4 @@
+[submodule "addons/TwitchGD4"]
+	path = addons/TwitchGD4
+	url = https://github.com/PGComai/TwitchGD4.git
+	branch = emote_format

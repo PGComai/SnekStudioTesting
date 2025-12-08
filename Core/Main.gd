@@ -141,6 +141,8 @@ func _on_handle_channel_chat_message_v2(
 	chatter_username : String,
 	chatter_display_name : String,
 	message : String,
+	chatter_color : String,
+	badges: Array,
 	fragment_list : Array,
 	bits_count : int):
 	
@@ -151,6 +153,8 @@ func _on_handle_channel_chat_message_v2(
 				chatter_username,
 				chatter_display_name,
 				message,
+				chatter_color,
+				badges,
 				fragment_list,
 				bits_count)
 

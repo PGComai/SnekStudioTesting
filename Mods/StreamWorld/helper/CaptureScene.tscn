@@ -1,9 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://dl8gk83mipj5w"]
+[gd_scene load_steps=7 format=3 uid="uid://dl8gk83mipj5w"]
 
 [ext_resource type="Script" uid="uid://mi6afv06vg6f" path="res://Mods/StreamWorld/helper/CaptureScene.gd" id="1_a202f"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_4xowi"]
 size = Vector2(3.84, 2.16)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_jcte5"]
+radius = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jcte5"]
+albedo_color = Color(0.962172, 0.487074, 0.253447, 1)
+emission_enabled = true
+emission = Color(0.962172, 0.487074, 0.253447, 1)
+emission_energy_multiplier = 0.8
+
+[sub_resource type="PrismMesh" id="PrismMesh_jcte5"]
+size = Vector3(0.1, 0.1, 0.035)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_3414e"]
+radius = 0.05
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_a202f")
@@ -11,7 +26,36 @@ script = ExtResource("1_a202f")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_4xowi")
 
+[node name="Mouse" type="AnimatableBody3D" parent="MeshInstance3D"]
+collision_layer = 8
+collision_mask = 8
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/Mouse"]
+shape = SubResource("SphereShape3D_jcte5")
+
+[node name="HingeJoint3D" type="Generic6DOFJoint3D" parent="MeshInstance3D/Mouse"]
+node_a = NodePath("..")
+node_b = NodePath("../../../Cursor")
+angular_limit_z/enabled = false
+angular_spring_z/enabled = true
+angular_spring_z/stiffness = 1.48
+angular_spring_z/damping = 0.045
+
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 
 [node name="X11DisplayCapture" type="X11DisplayCapture" parent="."]
+
+[node name="Cursor" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0251495, -0.0427868, 0)
+collision_layer = 8
+collision_mask = 8
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Cursor"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 0, 0, 0.0195256)
+material_override = SubResource("StandardMaterial3D_jcte5")
+mesh = SubResource("PrismMesh_jcte5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Cursor"]
+shape = SubResource("SphereShape3D_3414e")
