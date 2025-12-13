@@ -48,29 +48,44 @@ radius = 0.1
 script = ExtResource("1_wv6bo")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+transform = Transform3D(0.798049, -0.521861, 0.301295, 1.47562e-08, 0.499998, 0.866027, -0.602592, -0.691132, 0.399024, 0, 0, 0)
 shadow_enabled = true
+shadow_bias = 0.015
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 10.3
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tpcd6")
 
-[node name="Window" type="Window" parent="."]
+[node name="WindowPlayer" type="Window" parent="."]
 handle_input_locally = false
-initial_position = 3
-size = Vector2i(864, 486)
-current_screen = 1
+anisotropic_filtering_level = 0
+size = Vector2i(432, 243)
 
-[node name="WorldRoot" type="Node3D" parent="Window"]
+[node name="Camera3DPlayer" type="Camera3D" parent="WindowPlayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.77026, 2.94625)
+current = true
 
-[node name="Chat" type="AnimatableBody3D" parent="Window/WorldRoot"]
+[node name="WindowStream" type="Window" parent="."]
+title = "StreamWindow"
+initial_position = 2
+size = Vector2i(1920, 1080)
+
+[node name="Camera3DStream" type="Camera3D" parent="WindowStream"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.421512, 1.83628, 0.241467)
+fov = 54.5
+
+[node name="WorldRoot" type="Node3D" parent="."]
+
+[node name="Chat" type="AnimatableBody3D" parent="WorldRoot"]
 transform = Transform3D(0.975661, 0, 0.219284, 0, 1, 0, -0.219284, 0, 0.975661, -2.41323, 3.1, -2.45024)
 collision_layer = 128
 collision_mask = 128
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/Chat"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldRoot/Chat"]
 shape = SubResource("BoxShape3D_eh1rf")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Window/WorldRoot"]
+[node name="CSGBox3D" type="CSGBox3D" parent="WorldRoot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 use_collision = true
 collision_layer = 128
@@ -78,37 +93,37 @@ collision_mask = 128
 size = Vector3(20, 1, 20)
 material = SubResource("StandardMaterial3D_wv6bo")
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="Window/WorldRoot"]
+[node name="CharacterBody3D" type="CharacterBody3D" parent="WorldRoot"]
 collision_layer = 128
 collision_mask = 128
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/CharacterBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldRoot/CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_wv6bo")
 
-[node name="CamH" type="Node3D" parent="Window/WorldRoot/CharacterBody3D"]
+[node name="CamH" type="Node3D" parent="WorldRoot/CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.886022, 0)
 
-[node name="CamV" type="Node3D" parent="Window/WorldRoot/CharacterBody3D/CamH"]
+[node name="CamV" type="Node3D" parent="WorldRoot/CharacterBody3D/CamH"]
 
-[node name="SpringArm3D" type="SpringArm3D" parent="Window/WorldRoot/CharacterBody3D/CamH/CamV"]
+[node name="SpringArm3D" type="SpringArm3D" parent="WorldRoot/CharacterBody3D/CamH/CamV"]
 collision_mask = 0
 shape = SubResource("SphereShape3D_wv6bo")
 spring_length = 2.5
 
-[node name="CamHolder" type="Node3D" parent="Window/WorldRoot/CharacterBody3D/CamH/CamV/SpringArm3D"]
+[node name="CamHolder" type="Node3D" parent="WorldRoot/CharacterBody3D/CamH/CamV/SpringArm3D"]
 
-[node name="MainCamH" type="Node3D" parent="Window/WorldRoot/CharacterBody3D"]
+[node name="MainCamH" type="Node3D" parent="WorldRoot/CharacterBody3D"]
 
-[node name="MainCameraHolder" type="AnimatableBody3D" parent="Window/WorldRoot/CharacterBody3D/MainCamH"]
+[node name="MainCameraHolder" type="AnimatableBody3D" parent="WorldRoot/CharacterBody3D/MainCamH"]
 collision_layer = 4096
 collision_mask = 4096
 sync_to_physics = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder"]
 shape = SubResource("SphereShape3D_ofdl7")
 
-[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="Window/WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder"]
+[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder"]
 node_a = NodePath("..")
 node_b = NodePath("../../../../RigidMainCameraHolder")
 linear_limit_x/softness = 0.04
@@ -124,30 +139,17 @@ angular_limit_x/softness = 0.02
 angular_limit_y/softness = 0.02
 angular_limit_z/softness = 0.02
 
-[node name="RigidMainCameraHolder" type="RigidBody3D" parent="Window/WorldRoot"]
+[node name="RigidMainCameraHolder" type="RigidBody3D" parent="WorldRoot"]
 collision_layer = 4096
 collision_mask = 4096
 mass = 100.0
 gravity_scale = 0.0
 can_sleep = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/RigidMainCameraHolder"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldRoot/RigidMainCameraHolder"]
 shape = SubResource("SphereShape3D_afllp")
 
-[node name="Capture" parent="Window/WorldRoot" instance=ExtResource("2_eh1rf")]
+[node name="Capture" parent="WorldRoot" instance=ExtResource("2_eh1rf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.02901, -2.38955)
 
-[node name="Camera3D" type="Camera3D" parent="Window"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.77026, 2.94625)
-current = true
-
-[node name="Window2" type="Window" parent="."]
-title = "StreamWindow"
-initial_position = 2
-size = Vector2i(1920, 1080)
-
-[node name="Camera3D" type="Camera3D" parent="Window2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.421512, 1.83628, 0.241467)
-fov = 54.5
-
-[connection signal="window_input" from="Window" to="." method="_on_window_window_input"]
+[connection signal="window_input" from="WindowPlayer" to="." method="_on_window_window_input"]

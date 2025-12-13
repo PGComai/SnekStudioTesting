@@ -2,7 +2,7 @@ extends Area3D
 class_name ChatBubble
 
 
-const RADIUS: float = 0.05
+const RADIUS: float = 0.1
 
 
 var color: Color

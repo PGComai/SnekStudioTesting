@@ -24,17 +24,21 @@ var player_position: Vector3 = Vector3.ZERO
 var player_rotation: float = 0.0
 
 
-@onready var char: CharacterBody3D = $Window/WorldRoot/CharacterBody3D
-@onready var cam_h: Node3D = $Window/WorldRoot/CharacterBody3D/CamH
-@onready var cam_v: Node3D = $Window/WorldRoot/CharacterBody3D/CamH/CamV
-@onready var spring_arm_3d: SpringArm3D = $Window/WorldRoot/CharacterBody3D/CamH/CamV/SpringArm3D
-@onready var cam_holder: Node3D = $Window/WorldRoot/CharacterBody3D/CamH/CamV/SpringArm3D/CamHolder
-@onready var camera_3d: Camera3D = $Window/Camera3D
-@onready var main_cam_h: Node3D = $Window/WorldRoot/CharacterBody3D/MainCamH
-@onready var main_camera_holder: StaticBody3D = $Window/WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder
-@onready var rigid_main_camera_holder: RigidBody3D = $Window/WorldRoot/RigidMainCameraHolder
-@onready var chat: AnimatableBody3D = $Window/WorldRoot/Chat
-@onready var capture: CaptureScene = $Window/WorldRoot/Capture
+@onready var world_root: Node3D = $WorldRoot
+@onready var chat: AnimatableBody3D = $WorldRoot/Chat
+@onready var character_body_3d: CharacterBody3D = $WorldRoot/CharacterBody3D
+@onready var cam_h: Node3D = $WorldRoot/CharacterBody3D/CamH
+@onready var cam_v: Node3D = $WorldRoot/CharacterBody3D/CamH/CamV
+@onready var spring_arm_3d: SpringArm3D = $WorldRoot/CharacterBody3D/CamH/CamV/SpringArm3D
+@onready var cam_holder: Node3D = $WorldRoot/CharacterBody3D/CamH/CamV/SpringArm3D/CamHolder
+@onready var main_cam_h: Node3D = $WorldRoot/CharacterBody3D/MainCamH
+@onready var main_camera_holder: AnimatableBody3D = $WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder
+@onready var rigid_main_camera_holder: RigidBody3D = $WorldRoot/RigidMainCameraHolder
+@onready var capture: CaptureScene = $WorldRoot/Capture
+@onready var window_player: Window = $WindowPlayer
+@onready var camera_3d_player: Camera3D = $WindowPlayer/Camera3DPlayer
+@onready var window_stream: Window = $WindowStream
+@onready var camera_3d_stream: Camera3D = $WindowStream/Camera3DStream
 
 
 func _ready() -> void:
@@ -53,7 +57,7 @@ func _ready() -> void:
 
 
 func load_after(_settings_old : Dictionary, _settings_new : Dictionary) -> void:
-	char.global_position = player_position
+	character_body_3d.global_position = player_position
 
 
 func handle_channel_chat_message_v2(
@@ -90,7 +94,7 @@ func _process(delta: float) -> void:
 	cam_h.rotation.y = rot_h
 	cam_v.rotation.x = rot_v
 
-	camera_3d.global_transform = cam_holder.global_transform
+	camera_3d_player.global_transform = cam_holder.global_transform
 
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var app = get_app()
@@ -99,34 +103,34 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not char.is_on_floor():
-		char.velocity += char.get_gravity() * delta
+	if not character_body_3d.is_on_floor():
+		character_body_3d.velocity += character_body_3d.get_gravity() * delta
 	else:
 		if Input.is_action_just_pressed("jump") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			char.velocity.y = JUMP
+			character_body_3d.velocity.y = JUMP
 
 	var input := Input.get_vector("left", "right", "fwd", "back")
 	var dir := cam_h.global_basis * Vector3(input.x, 0.0, input.y)
 
 	var accel: float
 
-	if char.is_on_floor():
+	if character_body_3d.is_on_floor():
 		accel = ACCEL
 	else:
 		accel = ACCEL_AIR
 
 	if dir and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		char.velocity.x = lerpf(char.velocity.x, dir.x * SPEED, accel)
-		char.velocity.z = lerpf(char.velocity.z, dir.z * SPEED, accel)
+		character_body_3d.velocity.x = lerpf(character_body_3d.velocity.x, dir.x * SPEED, accel)
+		character_body_3d.velocity.z = lerpf(character_body_3d.velocity.z, dir.z * SPEED, accel)
 	else:
-		char.velocity.x = lerpf(char.velocity.x, 0.0, accel)
-		char.velocity.z = lerpf(char.velocity.z, 0.0, accel)
+		character_body_3d.velocity.x = lerpf(character_body_3d.velocity.x, 0.0, accel)
+		character_body_3d.velocity.z = lerpf(character_body_3d.velocity.z, 0.0, accel)
 
-	char.move_and_slide()
+	character_body_3d.move_and_slide()
 
 	var model := get_model_controller()
 	if model:
-		model.global_position = char.global_position
+		model.global_position = character_body_3d.global_position
 
 		var dir_2d := Vector2(dir.x, dir.z)
 		if dir_2d and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -139,7 +143,7 @@ func _physics_process(delta: float) -> void:
 		var app = get_app()
 		var boom: Node3D = app.find_child("CameraBoom")
 	
-	player_position = char.global_position
+	player_position = character_body_3d.global_position
 	model.global_rotation.y = player_rotation
 
 

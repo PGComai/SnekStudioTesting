@@ -6,6 +6,7 @@ const LAUNCHER_ANGLE: float = PI/3.0
 const CAST_DIST: float = 5.0
 const TOP: float = 1.08
 const BUBBLE_Z: float = 0.1
+const BUBBLE_SPEED: float = 0.1
 
 
 @export_flags_3d_physics var shape_mask
@@ -13,6 +14,9 @@ const BUBBLE_Z: float = 0.1
 
 var angle: float = 0.0
 var angling := true
+var can_fire := true
+var bubble_positions: Array[Vector3] = []
+var current_bubble: ChatBubble
 
 
 @onready var bubble_launcher: Node3D = $BubbleLauncher
@@ -26,10 +30,18 @@ func _physics_process(delta: float) -> void:
 	if angling:
 		angle += delta
 		bubble_launcher.rotation.z = sin(angle) * LAUNCHER_ANGLE
+	if current_bubble:
+		current_bubble.position = current_bubble.position.move_toward(bubble_positions[0], BUBBLE_SPEED)
+		if current_bubble.position.is_equal_approx(bubble_positions[0]):
+			current_bubble.position = bubble_positions[0]
+			bubble_positions.remove_at(0)
+			if bubble_positions.size() == 0:
+				current_bubble = null
+				can_fire = true
+				bubble_positions = []
 
 
 func fire_bubble() -> void:
-	angling = false
 	var new_bubble := ChatBubble.new()
 	new_bubble.color = Color.BLUE
 	
@@ -40,6 +52,7 @@ func fire_bubble() -> void:
 								bubble_launcher.global_position + (bubble_launcher.global_basis.y * CAST_DIST))
 	var bubble_pos: Vector3 = cast_result.safe_position
 	var local_bubble_pos: Vector3 = to_local(bubble_pos)
+	bubble_positions.append(local_bubble_pos)
 	var collider: Object = instance_from_id(cast_result.collider_id)
 	var pos2d: Vector2 = Vector2(local_bubble_pos.x, local_bubble_pos.y)
 	var bubble_row: int = get_hex_grid_row(pos2d)
@@ -58,6 +71,7 @@ func fire_bubble() -> void:
 		collider = instance_from_id(cast_result.collider_id)
 		bubble_pos = cast_result.safe_position
 		local_bubble_pos = to_local(bubble_pos)
+		bubble_positions.append(local_bubble_pos)
 		cast_dir = cast_result.cast_direction
 		
 		#shape_cast_3d.look_at_from_position(next_safe_pos, next_safe_pos + Vector3.FORWARD, next_norm)
@@ -76,8 +90,9 @@ func fire_bubble() -> void:
 	var bubble_y: float = TOP - (ChatBubble.RADIUS + (sin(PI/3.0) * ChatBubble.RADIUS * 2.0 * float(bubble_row)))
 	
 	add_child(new_bubble)
-	new_bubble.position = Vector3(bubble_x, bubble_y, BUBBLE_Z)
-	angling = true
+	current_bubble = new_bubble
+	current_bubble.position = bubble_launcher.position
+	can_fire = false
 
 
 func shapecast(from: Vector3, to: Vector3) -> Dictionary:

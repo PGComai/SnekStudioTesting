@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="180"
+   height="180"
+   viewBox="0 0 180 180"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="ad_break.png"
+   inkscape:export-xdpi="93.882462"
+   inkscape:export-ydpi="93.882462"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   sodipodi:docname="ad_break.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#000000"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:export-bgcolor="#ffffff00"
+     inkscape:zoom="5.0972222"
+     inkscape:cx="87.989101"
+     inkscape:cy="92.893733"
+     inkscape:window-width="3840"
+     inkscape:window-height="2069"
+     inkscape:window-x="1080"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-dasharray:none;stroke-dashoffset:7.6;stroke-opacity:1;paint-order:normal"
+       id="rect3"
+       width="259.55313"
+       height="224.43597"
+       x="-29.820164"
+       y="-18.833788" />
+    <text
+       xml:space="preserve"
+       style="font-size:56px;font-family:'DejaVu Math TeX Gyre';-inkscape-font-specification:'DejaVu Math TeX Gyre';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#ffffff;stroke-width:8;stroke-linecap:round;stroke-linejoin:round"
+       x="56.427963"
+       y="86.898994"
+       id="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         x="56.427963"
+         y="86.898994"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:56px;font-family:Caladea;-inkscape-font-specification:Caladea;fill:#ffffff;fill-opacity:1;stroke:none">AD</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:56px;font-family:Caladea;-inkscape-font-specification:Caladea;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round"
+       x="6.6999359"
+       y="130.45299"
+       id="text2"><tspan
+         sodipodi:role="line"
+         id="tspan2"
+         x="6.6999359"
+         y="130.45299"
+         style="font-size:56px">BREAK</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:0.909117;stroke-linecap:butt;stroke-linejoin:bevel;stroke-dasharray:none;stroke-dashoffset:7.6;stroke-opacity:1;paint-order:normal"
+       id="rect2"
+       width="174.30342"
+       height="91.12085"
+       x="2.8482895"
+       y="44.488617" />
+  </g>
+</svg>
