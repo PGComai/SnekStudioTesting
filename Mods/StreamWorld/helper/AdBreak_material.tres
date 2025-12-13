@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://l5hro6wnccsn"]
+
+[ext_resource type="Shader" uid="uid://b55tamtwotpm1" path="res://Mods/StreamWorld/helper/AdBreak_shader.tres" id="1_nx71k"]
+[ext_resource type="Texture2D" uid="uid://dpt0644oasnm3" path="res://Mods/StreamWorld/helper/ad_break.png" id="2_ntrl2"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_nx71k")
+shader_parameter/ColorBG = Color(0, 0, 0, 1)
+shader_parameter/UVScale = Vector2(10, 10)
+shader_parameter/UVPan = Vector2(-3.325, -1.89)
+shader_parameter/AdBreakTex = ExtResource("2_ntrl2")

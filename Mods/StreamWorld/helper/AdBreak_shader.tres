@@ -1,0 +1,107 @@
+[gd_resource type="VisualShader" load_steps=10 format=3 uid="uid://b55tamtwotpm1"]
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_7r1wv"]
+parameter_name = "AdBreakTex"
+color_default = 1
+texture_filter = 1
+texture_repeat = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_lkicw"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(0, 0, 0, 0)]
+op_type = 2
+
+[sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_m6y1q"]
+parameter_name = "UVPan"
+default_value_enabled = true
+default_value = Vector2(1, 1)
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_lkicw"]
+expanded_output_ports = [0]
+source = 5
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_7r1wv"]
+parameter_name = "ColorBG"
+default_value_enabled = true
+default_value = Color(0, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeColorOp" id="VisualShaderNodeColorOp_lkicw"]
+
+[sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_7r1wv"]
+parameter_name = "UVScale"
+default_value_enabled = true
+default_value = Vector2(1, 1)
+
+[sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_7r1wv"]
+function = 1
+
+[sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_lkicw"]
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform vec4 ColorBG : source_color = vec4(0.000000, 0.000000, 0.000000, 1.000000);
+uniform vec2 UVScale = vec2(1.000000, 1.000000);
+uniform vec2 UVPan = vec2(1.000000, 1.000000);
+uniform sampler2D AdBreakTex : hint_default_black, filter_nearest, repeat_disable;
+
+
+
+void fragment() {
+// ColorParameter:4
+	vec4 n_out4p0 = ColorBG;
+
+
+// Vector2Parameter:7
+	vec2 n_out7p0 = UVScale;
+
+
+// UVFunc:8
+	vec2 n_in8p2 = vec2(0.00000, 0.00000);
+	vec2 n_out8p0 = (UV - n_in8p2) * n_out7p0 + n_in8p2;
+
+
+// Vector2Parameter:12
+	vec2 n_out12p0 = UVPan;
+
+
+// UVFunc:9
+	vec2 n_in9p1 = vec2(1.00000, 1.00000);
+	vec2 n_out9p0 = n_out12p0 * n_in9p1 + n_out8p0;
+
+
+	vec4 n_out3p0;
+// Texture2D:3
+	n_out3p0 = texture(AdBreakTex, n_out9p0);
+
+
+// ColorOp:5
+	vec3 n_out5p0 = vec3(1.0) - (vec3(1.0) - vec3(n_out4p0.xyz)) * (vec3(1.0) - vec3(n_out3p0.xyz));
+
+
+// Output:0
+	ALBEDO = n_out5p0;
+
+
+}
+"
+nodes/fragment/0/position = Vector2(280, 20)
+nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_lkicw")
+nodes/fragment/3/position = Vector2(-1940, 620)
+nodes/fragment/4/node = SubResource("VisualShaderNodeColorParameter_7r1wv")
+nodes/fragment/4/position = Vector2(-2100, -320)
+nodes/fragment/5/node = SubResource("VisualShaderNodeColorOp_lkicw")
+nodes/fragment/5/position = Vector2(-1000, -160)
+nodes/fragment/7/node = SubResource("VisualShaderNodeVec2Parameter_7r1wv")
+nodes/fragment/7/position = Vector2(-4500, -40)
+nodes/fragment/8/node = SubResource("VisualShaderNodeUVFunc_7r1wv")
+nodes/fragment/8/position = Vector2(-3760, 320)
+nodes/fragment/9/node = SubResource("VisualShaderNodeUVFunc_lkicw")
+nodes/fragment/9/position = Vector2(-2940, 620)
+nodes/fragment/10/node = SubResource("VisualShaderNodeTexture2DParameter_7r1wv")
+nodes/fragment/10/position = Vector2(-3140, 1080)
+nodes/fragment/11/node = SubResource("VisualShaderNodeVectorOp_lkicw")
+nodes/fragment/11/position = Vector2(-960, 420)
+nodes/fragment/12/node = SubResource("VisualShaderNodeVec2Parameter_m6y1q")
+nodes/fragment/12/position = Vector2(-4300, 1020)
+nodes/fragment/connections = PackedInt32Array(3, 0, 5, 1, 4, 0, 5, 0, 7, 0, 8, 1, 8, 0, 9, 0, 10, 0, 3, 2, 9, 0, 3, 0, 4, 0, 11, 0, 3, 0, 11, 1, 12, 0, 9, 2, 5, 0, 0, 0)

@@ -18,6 +18,10 @@ var rot_h: float = 0.0
 var rot_v: float = -PI/6.0:
 	set(value):
 		rot_v = clampf(value, -PI/2.1, PI/8.0)
+var top_rigid_chat: RigidChat
+
+var player_position: Vector3 = Vector3.ZERO
+var player_rotation: float = 0.0
 
 
 @onready var char: CharacterBody3D = $Window/WorldRoot/CharacterBody3D
@@ -29,12 +33,27 @@ var rot_v: float = -PI/6.0:
 @onready var main_cam_h: Node3D = $Window/WorldRoot/CharacterBody3D/MainCamH
 @onready var main_camera_holder: StaticBody3D = $Window/WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder
 @onready var rigid_main_camera_holder: RigidBody3D = $Window/WorldRoot/RigidMainCameraHolder
+@onready var chat: AnimatableBody3D = $Window/WorldRoot/Chat
+@onready var capture: CaptureScene = $Window/WorldRoot/Capture
 
 
 func _ready() -> void:
 	for ac in default_key_actions:
 		InputMap.add_action(ac)
 		InputMap.action_add_event(ac, default_key_actions[ac])
+	
+	add_tracked_setting(
+		"player_position",
+		"Player Position"
+	)
+	add_tracked_setting(
+		"player_rotation",
+		"Player Rotation"
+	)
+
+
+func load_after(_settings_old : Dictionary, _settings_new : Dictionary) -> void:
+	char.global_position = player_position
 
 
 func handle_channel_chat_message_v2(
@@ -45,7 +64,20 @@ func handle_channel_chat_message_v2(
 	badges: Array,
 	fragment_list : Array,
 	bits_count : int):
-	pass
+	
+	if message.countn("b") >= 3:
+		capture.launch_bubble()
+	
+	#var new_rigid_chat := RigidChat.new()
+	#new_rigid_chat.text = message
+	#new_rigid_chat.hang_from = chat
+	#chat.add_child(new_rigid_chat)
+	#
+	#if not top_rigid_chat:
+		#top_rigid_chat = new_rigid_chat
+	#else:
+		#top_rigid_chat.rejoin(new_rigid_chat)
+		#top_rigid_chat = new_rigid_chat
 
 
 func create_input_event_key(phys_keycode: Key) -> InputEventKey:
@@ -98,7 +130,7 @@ func _physics_process(delta: float) -> void:
 
 		var dir_2d := Vector2(dir.x, dir.z)
 		if dir_2d and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			model.global_rotation.y = lerp_angle(model.global_rotation.y, -dir_2d.angle() + (PI/2.0), 0.1)
+			player_rotation = lerp_angle(player_rotation, -dir_2d.angle() + (PI/2.0), 0.1)
 
 		main_cam_h.global_rotation.y = lerp_angle(main_cam_h.global_rotation.y, model.global_rotation.y, 0.4)
 
@@ -106,6 +138,9 @@ func _physics_process(delta: float) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		var app = get_app()
 		var boom: Node3D = app.find_child("CameraBoom")
+	
+	player_position = char.global_position
+	model.global_rotation.y = player_rotation
 
 
 func _on_window_window_input(event: InputEvent) -> void:

@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://drhg1cvv8u2hm"]
+
+[ext_resource type="Script" uid="uid://kcjluhv301ey" path="res://Mods/StreamWorld/ChatBubbleGame/chat_bubble_game.gd" id="1_8r5qo"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_23vje"]
+size = Vector2(3.84, 2.19)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_23vje"]
+albedo_color = Color(0.932297, 0.392504, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_23vje"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.3
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_23vje"]
+size = Vector3(3.84, 0.5, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8r5qo"]
+size = Vector3(0.5, 2.66, 1)
+
+[node name="ChatBubbleGame" type="Node3D"]
+script = ExtResource("1_8r5qo")
+shape_mask = 16
+
+[node name="Ref" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("QuadMesh_23vje")
+
+[node name="BubbleLauncher" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4, 0.1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BubbleLauncher"]
+material_override = SubResource("StandardMaterial3D_23vje")
+mesh = SubResource("CylinderMesh_23vje")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 16
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.33, 0)
+shape = SubResource("BoxShape3D_23vje")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.17, 0.25, 0)
+shape = SubResource("BoxShape3D_8r5qo")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.17, 0.25, 0)
+shape = SubResource("BoxShape3D_8r5qo")

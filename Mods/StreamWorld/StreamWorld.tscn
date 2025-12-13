@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dtkm6diaw504t"]
+[gd_scene load_steps=14 format=3 uid="uid://dtkm6diaw504t"]
 
 [ext_resource type="Script" uid="uid://bv33gioiigmr2" path="res://Mods/StreamWorld/StreamWorld.gd" id="1_wv6bo"]
 [ext_resource type="PackedScene" uid="uid://dl8gk83mipj5w" path="res://Mods/StreamWorld/helper/CaptureScene.tscn" id="2_eh1rf"]
@@ -15,6 +15,9 @@ background_mode = 2
 sky = SubResource("Sky_eh1rf")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eh1rf"]
+size = Vector3(0.7, 0.1, 0.1)
 
 [sub_resource type="Gradient" id="Gradient_wv6bo"]
 offsets = PackedFloat32Array(0.964912, 1)
@@ -53,10 +56,19 @@ environment = SubResource("Environment_tpcd6")
 
 [node name="Window" type="Window" parent="."]
 handle_input_locally = false
-initial_position = 2
+initial_position = 3
 size = Vector2i(864, 486)
+current_screen = 1
 
 [node name="WorldRoot" type="Node3D" parent="Window"]
+
+[node name="Chat" type="AnimatableBody3D" parent="Window/WorldRoot"]
+transform = Transform3D(0.975661, 0, 0.219284, 0, 1, 0, -0.219284, 0, 0.975661, -2.41323, 3.1, -2.45024)
+collision_layer = 128
+collision_mask = 128
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/WorldRoot/Chat"]
+shape = SubResource("BoxShape3D_eh1rf")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Window/WorldRoot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)

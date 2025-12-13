@@ -1,13 +1,19 @@
 extends Node3D
+class_name CaptureScene
 
 
-@onready var x_11_display_capture: X11DisplayCapture = $X11DisplayCapture
-@onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
-@onready var mouse: AnimatableBody3D = $MeshInstance3D/Mouse
-@onready var cursor: RigidBody3D = $Cursor
+@export var screen_materials: Dictionary[StringName, Material]
 
 
 var capture := true
+var capture_material: StandardMaterial3D
+
+
+@onready var x_11_display_capture: X11DisplayCapture = $X11DisplayCapture
+@onready var mesh_instance_3d: MeshInstance3D = $WholeMonitor/MeshInstance3D
+@onready var mouse: AnimatableBody3D = $WholeMonitor/MeshInstance3D/Mouse
+@onready var cursor: RigidBody3D = $Cursor
+@onready var chat_bubble_game: ChatBubbleGame = $WholeMonitor/ChatBubbleGame
 
 
 func _ready() -> void:
@@ -19,7 +25,8 @@ func _texture_changed(texture: Texture2D) -> void:
 	var mat = StandardMaterial3D.new()
 	mat.albedo_texture = texture
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mesh_instance_3d.material_override = mat
+	mesh_instance_3d.material_overlay = mat
+	capture_material = mat
 
 
 func _process(delta: float) -> void:
@@ -38,3 +45,7 @@ func _process(delta: float) -> void:
 							mouse_pos_scaled.x - (3.84 / 2.0),
 							-(mouse_pos_scaled.y - (2.16 / 2.0)),
 							0.0)
+
+
+func launch_bubble() -> void:
+	chat_bubble_game.fire_bubble()
