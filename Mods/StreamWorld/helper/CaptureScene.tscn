@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dl8gk83mipj5w"]
+[gd_scene load_steps=17 format=3 uid="uid://dl8gk83mipj5w"]
 
 [ext_resource type="Script" uid="uid://mi6afv06vg6f" path="res://Mods/StreamWorld/helper/CaptureScene.gd" id="1_a202f"]
 [ext_resource type="ArrayMesh" uid="uid://d1yjkdoqorvn7" path="res://Mods/StreamWorld/monitor.obj" id="2_3414e"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://d2o2x3bq5opf1" path="res://addons/GreenHeatGD/GreenHeat.gd" id="4_lha3j"]
 [ext_resource type="Script" uid="uid://bb1w7di87n4xg" path="res://Mods/StreamWorld/helper/WindowPaint.gd" id="5_37l3g"]
 [ext_resource type="Script" uid="uid://bk827oe5hg8f0" path="res://Mods/StreamWorld/helper/window_eraser.gd" id="6_ycwmq"]
+[ext_resource type="PackedScene" uid="uid://c73man0k50eti" path="res://Mods/StreamWorld/eraser.glb" id="7_73vr2"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_4xowi"]
 size = Vector2(3.84, 2.16)
@@ -89,6 +90,12 @@ transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -0.0773568)
 mesh = SubResource("TextMesh_3414e")
 
+[node name="EraserCursor" type="Node3D" parent="WholeMonitor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.07)
+
+[node name="eraser" parent="WholeMonitor/EraserCursor" instance=ExtResource("7_73vr2")]
+transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, 0, 0, 0.0693885)
+
 [node name="X11DisplayCapture" type="X11DisplayCapture" parent="."]
 
 [node name="Cursor" type="RigidBody3D" parent="."]
@@ -128,6 +135,10 @@ script = ExtResource("5_37l3g")
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="TimerThread" type="Timer" parent="WindowPaint"]
+wait_time = 0.1
+autostart = true
+
 [node name="WindowEraser" type="Window" parent="."]
 transparent_bg = true
 size = Vector2i(200, 100)
@@ -149,4 +160,7 @@ texture = SubResource("PlaceholderTexture2D_37l3g")
 [connection signal="drag_received" from="GreenHeat" to="." method="_on_green_heat_drag_received"]
 [connection signal="hover_received" from="GreenHeat" to="." method="_on_green_heat_hover_received"]
 [connection signal="release_received" from="GreenHeat" to="." method="_on_green_heat_release_received"]
+[connection signal="timeout" from="WindowPaint/TimerThread" to="WindowPaint" method="_on_timer_thread_timeout"]
+[connection signal="erasing" from="WindowEraser" to="." method="_on_window_eraser_erasing"]
 [connection signal="erasing" from="WindowEraser" to="WindowPaint" method="_on_window_eraser_erasing"]
+[connection signal="erasing_done" from="WindowEraser" to="." method="_on_window_eraser_erasing_done"]

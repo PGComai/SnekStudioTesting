@@ -1,0 +1,39 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://cy2wlsbkd3n5x"
+path.s3tc="res://.godot/imported/eraser_eraser_UV.png-993ceb904e8e980ce0992e9220b51c33.s3tc.ctex"
+path.etc2="res://.godot/imported/eraser_eraser_UV.png-993ceb904e8e980ce0992e9220b51c33.etc2.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "4d07293e976817cfc81053d653b254af"
+}
+
+[deps]
+
+source_file="res://Mods/StreamWorld/eraser_eraser_UV.png"
+dest_files=["res://.godot/imported/eraser_eraser_UV.png-993ceb904e8e980ce0992e9220b51c33.s3tc.ctex", "res://.godot/imported/eraser_eraser_UV.png-993ceb904e8e980ce0992e9220b51c33.etc2.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0

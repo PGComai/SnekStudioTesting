@@ -36,6 +36,7 @@ var viewer_windows: Dictionary[String, ViewerWindow]
 var colors: Dictionary[String, Color] = {}
 
 
+@onready var eraser_cursor: Node3D = $WholeMonitor/EraserCursor
 @onready var x_11_display_capture: X11DisplayCapture = $X11DisplayCapture
 @onready var mesh_instance_3d: MeshInstance3D = $WholeMonitor/MeshInstance3D
 @onready var mouse: AnimatableBody3D = $WholeMonitor/MeshInstance3D/Mouse
@@ -144,6 +145,7 @@ func handle_gh_packet(packet: Dictionary) -> void:
 			viewer_cursors[id].last_input = tick
 			
 			viewer_windows[id].pos = pos_virtual_screen
+			viewer_windows[id].hover = packet.type == "hover"
 			viewer_windows[id].update()
 		elif viewer_windows.size() < MAX_VIEWER_WINDOWS:
 			var new_viewer_cursor := ViewerCursor.new()
@@ -198,3 +200,14 @@ func cast(mousepos: Vector2):
 	if exclude_nodes:
 		query.exclude = exclude_nodes
 	return space_state.intersect_ray(query)
+
+
+func _on_window_eraser_erasing(absolute_pos: Vector2i) -> void:
+	eraser_cursor.position = mouse_to_world(absolute_pos + Vector2i(100.0, 50.0))
+	eraser_cursor.visible = true
+	cursor.visible = false
+
+
+func _on_window_eraser_erasing_done() -> void:
+	eraser_cursor.visible = false
+	cursor.visible = true

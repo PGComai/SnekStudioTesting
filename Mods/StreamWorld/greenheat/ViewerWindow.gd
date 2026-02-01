@@ -25,6 +25,7 @@ var internal_pos: Vector2
 var timer: Timer
 var tex_rect: TextureRect
 var clr: Color
+var hover := true
 
 
 func _ready() -> void:
@@ -37,7 +38,7 @@ func _ready() -> void:
 	mouse_passthrough_polygon = POLY
 	var new_tex_rect := TextureRect.new()
 	new_tex_rect.texture = VIEWERMARKER
-	new_tex_rect.scale = Vector2(2.0, 2.0)
+	#new_tex_rect.scale = Vector2(2.0, 2.0)
 	new_tex_rect.modulate = clr
 	new_tex_rect.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	add_child(new_tex_rect)
@@ -53,7 +54,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	internal_pos = internal_pos.lerp(pos, 0.2)
+	var l: float = 0.6
+	if hover:
+		l = 0.1
+	internal_pos = internal_pos.lerp(pos, l)
 	position = internal_pos - Vector2(size)
 	
 	var a: float = clampf(remap(timer.time_left, 0.0, timer.wait_time - FADE_START, 0.0, 1.0), 0.0, 1.0)

@@ -1,7 +1,7 @@
 extends Window
 
 
-const BRUSH_SIZE: float = 10.0
+const BRUSH_SIZE: float = 5.0
 const ERASER_SIZE: Vector2 = Vector2(200.0, 100.0)
 
 
@@ -9,6 +9,15 @@ var img: Image
 var img_tex: ImageTexture
 var drags: Dictionary[String, PackedVector2Array] = {}
 var erasings: PackedVector2Array = []
+var drags_thread: Dictionary[String, PackedVector2Array] = {}
+var erasings_thread: PackedVector2Array = []
+
+var mutex: Mutex
+var semaphore: Semaphore
+var thread: Thread
+var exit_thread := false
+var queue_thread := false
+var thread_needed := false
 
 
 @onready var texture_rect: TextureRect = $TextureRect
@@ -16,38 +25,109 @@ var erasings: PackedVector2Array = []
 
 
 func _ready() -> void:
+	mutex = Mutex.new()
+	semaphore = Semaphore.new()
+	exit_thread = true
+	
+	thread = Thread.new()
+	thread.start(_thread_function, Thread.PRIORITY_LOW)
+	
 	img = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_RGBA8)
 	img.fill(Color(0.0, 0.0, 0.0, 0.0))
 	img_tex = ImageTexture.create_from_image(img)
 	texture_rect.texture = img_tex
 
 
-func _process(delta: float) -> void:
-	var img_changed := false
-	if drags.size():
-		var new_drags: Dictionary[String, PackedVector2Array] = {}
-		for id: String in drags.keys():
-			var drag: PackedVector2Array = drags[id]
-			if drag.size() > 1:
+func _on_tree_exiting():
+	if not Engine.is_editor_hint() and mutex:
+		mutex.lock()
+		exit_thread = true # Protect with Mutex.
+		mutex.unlock()
+
+		# Unblock by posting.
+		semaphore.post()
+
+		# Wait until it exits.
+		thread.wait_to_finish()
+
+
+func _thread_function() -> void:
+	while true:
+		semaphore.wait()
+		
+		mutex.lock()
+		var should_exit = exit_thread
+		mutex.unlock()
+		
+		if should_exit:
+			break
+		
+		
+		mutex.lock()
+		
+		erasings_thread = erasings.duplicate()
+		drags_thread = drags.duplicate()
+		
+		var img_changed := false
+		if drags_thread.size():
+			var new_drags: Dictionary[String, PackedVector2Array] = {}
+			for id: String in drags_thread.keys():
+				var drag: PackedVector2Array = drags_thread[id]
+				if drag.size() > 1:
+					img_changed = true
+					var clr: Color = capture_scene.colors[id]
+					var new_drag := PackedVector2Array([])
+					for i: int in drag.size():
+						if i < drag.size() - 1:
+							for pixel: Vector2i in Geometry2D.bresenham_line(
+									Vector2i(drag[i]),
+									Vector2i(drag[i+1])
+								):
+								_brush_at(pixel, clr)
+						else:
+							new_drag.append(drag[i])
+						new_drags[id] = new_drag
+				else:
+					new_drags[id] = drag
+			drags_thread = new_drags
+		if erasings_thread.size():
+			#for erase_px: Vector2 in erasings_thread:
+				#_erase_at(erase_px - (ERASER_SIZE / 2.0))
+			
+			
+			var new_erasings := PackedVector2Array([])
+			if erasings_thread.size() > 1:
 				img_changed = true
-				var clr: Color = capture_scene.colors[id]
-				for i: int in drag.size():
-					if i < drag.size() - 1:
-						for pixel: Vector2i in Geometry2D.bresenham_line(
-								Vector2i(drag[i]),
-								Vector2i(drag[i+1])
+				for i: int in erasings_thread.size():
+					if i < erasings_thread.size() - 1:
+						for erase_px: Vector2i in Geometry2D.bresenham_line(
+								Vector2i(erasings_thread[i]),
+								Vector2i(erasings_thread[i+1])
 							):
-							_brush_at(pixel, clr)
-			else:
-				new_drags[id] = drag
-		drags = new_drags
-	if erasings.size():
-		img_changed = true
-		for erase_px: Vector2 in erasings:
-			_erase_at(erase_px - (ERASER_SIZE / 2.0))
-		erasings = []
-	if img_changed:
-		img_tex.update(img)
+							_erase_at(Vector2(erase_px) - (ERASER_SIZE / 2.0))
+					else:
+						new_erasings.append(erasings_thread[i])
+				erasings_thread = new_erasings
+		if img_changed:
+			img_tex.update.call_deferred(img)
+		
+		
+		mutex.unlock()
+		
+		drags = drags_thread.duplicate()
+		erasings = erasings_thread.duplicate()
+		
+		mutex.lock()
+		exit_thread = true
+		mutex.unlock()
+
+
+func _process(delta: float) -> void:
+	if queue_thread:
+		if exit_thread:
+			exit_thread = false
+			semaphore.post()
+			queue_thread = false
 
 
 func _brush_at(_position: Vector2, clr: Color) -> void:
@@ -89,6 +169,7 @@ func _on_node_3d_screen_interacted(packet: Dictionary, virtual_screen_pos: Vecto
 			drags[packet.id] = drag
 		else:
 			drags[packet.id] = PackedVector2Array([virtual_screen_pos])
+		thread_needed = true
 	elif packet.type == "release":
 		if drags.has(packet.id):
 			drags.erase(packet.id)
@@ -96,5 +177,15 @@ func _on_node_3d_screen_interacted(packet: Dictionary, virtual_screen_pos: Vecto
 
 func _on_window_eraser_erasing(absolute_pos: Vector2i) -> void:
 	if absolute_pos.x > 1080 - 100:
-		erasings.append(Vector2(absolute_pos) - Vector2(1080.0, 0.0))
-		#print(Vector2(absolute_pos) + (ERASER_SIZE / 2.0) - Vector2(1080.0, 0.0))
+		erasings.append(Vector2(absolute_pos) - Vector2(1080.0, 0.0) + (ERASER_SIZE / 2.0))
+		thread_needed = true
+
+
+func _on_timer_thread_timeout() -> void:
+	if thread_needed:
+		if exit_thread:
+			exit_thread = false
+			semaphore.post()
+		else:
+			queue_thread = true
+		thread_needed = false
