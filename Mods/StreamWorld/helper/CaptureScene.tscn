@@ -155,6 +155,10 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("PlaceholderTexture2D_37l3g")
 
+[node name="TimerThickerLines" type="Timer" parent="."]
+wait_time = 60.0
+one_shot = true
+
 [connection signal="screen_interacted" from="." to="WindowPaint" method="_on_node_3d_screen_interacted"]
 [connection signal="click_received" from="GreenHeat" to="." method="_on_green_heat_click_received"]
 [connection signal="drag_received" from="GreenHeat" to="." method="_on_green_heat_drag_received"]
@@ -164,3 +168,5 @@ texture = SubResource("PlaceholderTexture2D_37l3g")
 [connection signal="erasing" from="WindowEraser" to="." method="_on_window_eraser_erasing"]
 [connection signal="erasing" from="WindowEraser" to="WindowPaint" method="_on_window_eraser_erasing"]
 [connection signal="erasing_done" from="WindowEraser" to="." method="_on_window_eraser_erasing_done"]
+[connection signal="erasing_done" from="WindowEraser" to="WindowPaint" method="_on_window_eraser_erasing_done"]
+[connection signal="timeout" from="TimerThickerLines" to="." method="_on_timer_thicker_lines_timeout"]

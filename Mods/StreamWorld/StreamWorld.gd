@@ -1,6 +1,11 @@
 extends Mod_Base
 
 
+# lurk makes eyeballs
+
+signal thicker_lines
+
+
 const SENS: float = 0.003
 const SPEED: float = 2.0
 const JUMP: float = 1.0
@@ -84,6 +89,17 @@ func handle_channel_chat_message_v2(
 	#else:
 		#top_rigid_chat.rejoin(new_rigid_chat)
 		#top_rigid_chat = new_rigid_chat
+
+
+func handle_channel_point_redeem(
+	_redeemer_username,
+	_redeemer_display_name,
+	_redeem_title,
+	_user_input):
+	
+	print(_redeem_title)
+	if _redeem_title == "Thicker Lines":
+		thicker_lines.emit()
 
 
 func create_input_event_key(phys_keycode: Key) -> InputEventKey:

@@ -44,6 +44,8 @@ var colors: Dictionary[String, Color] = {}
 @onready var chat_bubble_game: ChatBubbleGame = $WholeMonitor/ChatBubbleGame
 @onready var whole_monitor: Node3D = $WholeMonitor
 @onready var text: MeshInstance3D = $WholeMonitor/Text
+@onready var timer_thicker_lines: Timer = $TimerThickerLines
+@onready var window_paint: WindowPaint = $WindowPaint
 
 
 func _ready() -> void:
@@ -211,3 +213,12 @@ func _on_window_eraser_erasing(absolute_pos: Vector2i) -> void:
 func _on_window_eraser_erasing_done() -> void:
 	eraser_cursor.visible = false
 	cursor.visible = true
+
+
+func _on_game_world_thicker_lines() -> void:
+	timer_thicker_lines.start()
+	window_paint.brush_thickness = window_paint.BRUSH_SIZE_THICK
+
+
+func _on_timer_thicker_lines_timeout() -> void:
+	window_paint.brush_thickness = window_paint.BRUSH_SIZE

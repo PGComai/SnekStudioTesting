@@ -1,7 +1,9 @@
 extends Window
+class_name WindowPaint
 
 
 const BRUSH_SIZE: float = 5.0
+const BRUSH_SIZE_THICK: float = 25.0
 const ERASER_SIZE: Vector2 = Vector2(200.0, 100.0)
 
 
@@ -11,6 +13,7 @@ var drags: Dictionary[String, PackedVector2Array] = {}
 var erasings: PackedVector2Array = []
 var drags_thread: Dictionary[String, PackedVector2Array] = {}
 var erasings_thread: PackedVector2Array = []
+var brush_thickness: float = BRUSH_SIZE
 
 var mutex: Mutex
 var semaphore: Semaphore
@@ -18,6 +21,7 @@ var thread: Thread
 var exit_thread := false
 var queue_thread := false
 var thread_needed := false
+var done_erasing := true
 
 
 @onready var texture_rect: TextureRect = $TextureRect
@@ -90,11 +94,8 @@ func _thread_function() -> void:
 				else:
 					new_drags[id] = drag
 			drags_thread = new_drags
+		
 		if erasings_thread.size():
-			#for erase_px: Vector2 in erasings_thread:
-				#_erase_at(erase_px - (ERASER_SIZE / 2.0))
-			
-			
 			var new_erasings := PackedVector2Array([])
 			if erasings_thread.size() > 1:
 				img_changed = true
@@ -131,7 +132,7 @@ func _process(delta: float) -> void:
 
 
 func _brush_at(_position: Vector2, clr: Color) -> void:
-	img.fill_rect(Rect2(_position, Vector2.ONE).grow(BRUSH_SIZE), clr)
+	img.fill_rect(Rect2(_position, Vector2.ONE).grow(brush_thickness), clr)
 
 func _erase_at(_position: Vector2) -> void:
 	img.fill_rect(Rect2(_position, ERASER_SIZE), Color.TRANSPARENT)
@@ -177,8 +178,15 @@ func _on_node_3d_screen_interacted(packet: Dictionary, virtual_screen_pos: Vecto
 
 func _on_window_eraser_erasing(absolute_pos: Vector2i) -> void:
 	if absolute_pos.x > 1080 - 100:
+		if done_erasing:
+			erasings = []
 		erasings.append(Vector2(absolute_pos) - Vector2(1080.0, 0.0) + (ERASER_SIZE / 2.0))
 		thread_needed = true
+		done_erasing = false
+
+
+func _on_window_eraser_erasing_done() -> void:
+	done_erasing = true
 
 
 func _on_timer_thread_timeout() -> void:

@@ -189,6 +189,7 @@ shape = SubResource("SphereShape3D_afllp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.02901, -2.38955)
 cast_camera = NodePath("../../WindowStream/Camera3DStream")
 
+[connection signal="thicker_lines" from="." to="WorldRoot/Capture" method="_on_game_world_thicker_lines"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WindowTools" method="_on_check_button_brb_toggled"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WorldRoot/Capture" method="_on_check_button_brb_toggled"]
 [connection signal="text_changed" from="WindowTools/VBoxContainer/LineEditText3D" to="WorldRoot/Capture" method="_on_line_edit_text_3d_text_changed"]
