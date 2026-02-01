@@ -2,10 +2,10 @@ extends Mod_Base
 
 
 const SENS: float = 0.003
-const SPEED: float = 5.0
-const JUMP: float = 5.0
+const SPEED: float = 2.0
+const JUMP: float = 1.0
 const ACCEL: float = 0.1
-const ACCEL_AIR: float = 0.04
+const ACCEL_AIR: float = 0.05
 
 
 var default_key_actions: Dictionary[StringName, InputEventKey] = {
@@ -13,7 +13,8 @@ var default_key_actions: Dictionary[StringName, InputEventKey] = {
 				"right": create_input_event_key(KEY_D),
 				"fwd": create_input_event_key(KEY_W),
 				"back": create_input_event_key(KEY_S),
-				"jump": create_input_event_key(KEY_SPACE)}
+				"jump": create_input_event_key(KEY_SPACE),
+				"face_cam": create_input_event_key(KEY_C)}
 var rot_h: float = 0.0
 var rot_v: float = -PI/6.0:
 	set(value):
@@ -69,8 +70,9 @@ func handle_channel_chat_message_v2(
 	fragment_list : Array,
 	bits_count : int):
 	
-	if message.countn("b") >= 3:
-		capture.launch_bubble()
+	pass
+	#if message.countn("b") >= 3:
+		#capture.launch_bubble()
 	
 	#var new_rigid_chat := RigidChat.new()
 	#new_rigid_chat.text = message
@@ -131,10 +133,17 @@ func _physics_process(delta: float) -> void:
 	var model := get_model_controller()
 	if model:
 		model.global_position = character_body_3d.global_position
-
 		var dir_2d := Vector2(dir.x, dir.z)
-		if dir_2d and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			player_rotation = lerp_angle(player_rotation, -dir_2d.angle() + (PI/2.0), 0.1)
+		var look_angle: float
+		if Input.is_action_pressed("face_cam"):
+			var dir_to_cam: Vector3 = model.global_position.direction_to(camera_3d_stream.global_position)
+			var dir_to_cam_2d := Vector2(dir_to_cam.x, dir_to_cam.z)
+			look_angle = -dir_to_cam_2d.angle() + (PI/2.0)
+		else:
+			look_angle = -dir_2d.angle() + (PI/2.0)
+
+		if (dir_2d or Input.is_action_pressed("face_cam")) and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			player_rotation = lerp_angle(player_rotation, look_angle, 0.02)
 
 		main_cam_h.global_rotation.y = lerp_angle(main_cam_h.global_rotation.y, model.global_rotation.y, 0.4)
 

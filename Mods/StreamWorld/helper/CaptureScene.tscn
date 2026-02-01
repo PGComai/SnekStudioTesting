@@ -1,8 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://dl8gk83mipj5w"]
+[gd_scene load_steps=16 format=3 uid="uid://dl8gk83mipj5w"]
 
 [ext_resource type="Script" uid="uid://mi6afv06vg6f" path="res://Mods/StreamWorld/helper/CaptureScene.gd" id="1_a202f"]
 [ext_resource type="ArrayMesh" uid="uid://d1yjkdoqorvn7" path="res://Mods/StreamWorld/monitor.obj" id="2_3414e"]
 [ext_resource type="PackedScene" uid="uid://drhg1cvv8u2hm" path="res://Mods/StreamWorld/ChatBubbleGame/chat_bubble_game.tscn" id="3_kb54l"]
+[ext_resource type="Script" uid="uid://d2o2x3bq5opf1" path="res://addons/GreenHeatGD/GreenHeat.gd" id="4_lha3j"]
+[ext_resource type="Script" uid="uid://bb1w7di87n4xg" path="res://Mods/StreamWorld/helper/WindowPaint.gd" id="5_37l3g"]
+[ext_resource type="Script" uid="uid://bk827oe5hg8f0" path="res://Mods/StreamWorld/helper/window_eraser.gd" id="6_ycwmq"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_4xowi"]
 size = Vector2(3.84, 2.16)
@@ -18,8 +21,10 @@ roughness = 0.39
 size = Vector3(3.94, 2.26, 0.195)
 
 [sub_resource type="TextMesh" id="TextMesh_3414e"]
-text = "BRB"
+text = "STARTING SOON"
 font_size = 72
+autowrap_mode = 3
+width = 400.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jcte5"]
 albedo_color = Color(0.962172, 0.487074, 0.253447, 1)
@@ -33,8 +38,11 @@ size = Vector3(0.1, 0.1, 0.035)
 [sub_resource type="SphereShape3D" id="SphereShape3D_3414e"]
 radius = 0.05
 
-[node name="Node3D" type="Node3D"]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_37l3g"]
+
+[node name="CaptureScene" type="Node3D"]
 script = ExtResource("1_a202f")
+cast_layer = 32768
 
 [node name="WholeMonitor" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.07)
@@ -65,23 +73,21 @@ material_override = SubResource("StandardMaterial3D_3414e")
 mesh = ExtResource("2_3414e")
 skeleton = NodePath("../../..")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="WholeMonitor/MeshInstance3D/Monitor"]
+[node name="MonitorBody" type="AnimatableBody3D" parent="WholeMonitor/MeshInstance3D/Monitor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0757508)
-collision_layer = 128
+collision_layer = 32896
 collision_mask = 128
+sync_to_physics = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MeshInstance3D/Monitor/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MeshInstance3D/Monitor/MonitorBody"]
 shape = SubResource("BoxShape3D_3414e")
 
-[node name="BRB" type="MeshInstance3D" parent="WholeMonitor"]
+[node name="ChatBubbleGame" parent="WholeMonitor" instance=ExtResource("3_kb54l")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -0.1)
+
+[node name="Text" type="MeshInstance3D" parent="WholeMonitor"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -0.0773568)
 mesh = SubResource("TextMesh_3414e")
-
-[node name="ChatBubbleGame" parent="WholeMonitor" instance=ExtResource("3_kb54l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 
 [node name="X11DisplayCapture" type="X11DisplayCapture" parent="."]
 
@@ -97,3 +103,50 @@ mesh = SubResource("PrismMesh_jcte5")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Cursor"]
 shape = SubResource("SphereShape3D_3414e")
+
+[node name="GreenHeat" type="Node" parent="."]
+script = ExtResource("4_lha3j")
+simulating_input = true
+channel_name = "pgcomai"
+metadata/_custom_type_script = "uid://d2o2x3bq5opf1"
+
+[node name="WindowPaint" type="Window" parent="."]
+transparent_bg = true
+mode = 2
+title = "Paint"
+initial_position = 1
+size = Vector2i(3840, 2160)
+mouse_passthrough_polygon = PackedVector2Array(0, 0, 1.505, 1.845, 3.06, 1.745)
+unresizable = true
+borderless = true
+always_on_top = true
+transparent = true
+unfocusable = true
+script = ExtResource("5_37l3g")
+
+[node name="TextureRect" type="TextureRect" parent="WindowPaint"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="WindowEraser" type="Window" parent="."]
+transparent_bg = true
+size = Vector2i(200, 100)
+borderless = true
+always_on_top = true
+transparent = true
+script = ExtResource("6_ycwmq")
+
+[node name="TextureRect" type="TextureRect" parent="WindowEraser"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_37l3g")
+
+[connection signal="screen_interacted" from="." to="WindowPaint" method="_on_node_3d_screen_interacted"]
+[connection signal="click_received" from="GreenHeat" to="." method="_on_green_heat_click_received"]
+[connection signal="drag_received" from="GreenHeat" to="." method="_on_green_heat_drag_received"]
+[connection signal="hover_received" from="GreenHeat" to="." method="_on_green_heat_hover_received"]
+[connection signal="release_received" from="GreenHeat" to="." method="_on_green_heat_release_received"]
+[connection signal="erasing" from="WindowEraser" to="WindowPaint" method="_on_window_eraser_erasing"]

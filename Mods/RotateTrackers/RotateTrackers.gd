@@ -18,15 +18,16 @@ func _process(delta: float) -> void:
 		if trackers["head"]["active"]:
 			trackers["head"]["transform"] = rotation_transform * trackers["head"]["transform"]
 			$Head.global_transform = trackers["head"]["transform"]
-
-	if "hand_left" in trackers:
-		if trackers["hand_left"]["active"]:
-			trackers["hand_left"]["transform"] = rotation_transform * trackers["hand_left"]["transform"]
-			$Hand_Left.global_transform = trackers["hand_left"]["transform"]
-	if "hand_right" in trackers:
-		if trackers["hand_right"]["active"]:
-			trackers["hand_right"]["transform"] = rotation_transform * trackers["hand_right"]["transform"]
-			$Hand_Right.global_transform = trackers["hand_right"]["transform"]
+	
+	# add setting to disable hand rotation
+	#if "hand_left" in trackers:
+		#if trackers["hand_left"]["active"]:
+			#trackers["hand_left"]["transform"] = rotation_transform * trackers["hand_left"]["transform"]
+			#$Hand_Left.global_transform = trackers["hand_left"]["transform"]
+	#if "hand_right" in trackers:
+		#if trackers["hand_right"]["active"]:
+			#trackers["hand_right"]["transform"] = rotation_transform * trackers["hand_right"]["transform"]
+			#$Hand_Right.global_transform = trackers["hand_right"]["transform"]
 
 	#if "finger_positions" in trackers:
 	#	for k in trackers["finger_positions"].keys():

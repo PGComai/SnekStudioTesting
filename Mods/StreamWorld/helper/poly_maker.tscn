@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cl84srad3l18p"]
+
+[ext_resource type="Texture2D" uid="uid://bkiauk1cfitvv" path="res://Mods/StreamWorld/greenheat/viewermarker.png" id="1_2ie4t"]
+[ext_resource type="Script" uid="uid://cu6or2wyxwwd2" path="res://Mods/StreamWorld/helper/poly_maker.gd" id="2_ycd5o"]
+
+[node name="Control" type="TextureRect"]
+offset_right = 256.0
+offset_bottom = 256.0
+texture = ExtResource("1_2ie4t")
+stretch_mode = 2
+script = ExtResource("2_ycd5o")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(3, 73, 174, 216, 186, 216, 209, 234, 217, 231, 234, 253, 253, 255, 258, 244, 247, 218, 250, 211, 231, 179, 232, 167, 86, 2, 62, 3, 1, 49)
+uv = PackedVector2Array(3, 73, 174, 216, 186, 216, 209, 234, 217, 231, 234, 253, 253, 255, 258, 244, 247, 218, 250, 211, 231, 179, 232, 167, 86, 2, 62, 3, 1, 49)

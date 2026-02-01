@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://uuasaaqioo20"]
+
+[ext_resource type="Script" uid="uid://q5ev2xdcfvxl" path="res://addons/GreenHeatGD/example/control.gd" id="1_sk38g"]
+[ext_resource type="Script" uid="uid://d2o2x3bq5opf1" path="res://addons/GreenHeatGD/GreenHeat.gd" id="1_y41g5"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sk38g")
+
+[node name="GreenHeat" type="Node" parent="."]
+script = ExtResource("1_y41g5")
+metadata/_custom_type_script = "uid://d2o2x3bq5opf1"
+
+[node name="OptionButton" type="OptionButton" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -157.0
+offset_bottom = 31.0
+grow_horizontal = 0
+selected = 0
+item_count = 2
+popup/item_0/text = "signals"
+popup/item_0/id = 0
+popup/item_1/text = "input emulation"
+popup/item_1/id = 1
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.76, 0.76, 0.76, 1)
+
+[connection signal="click_received" from="GreenHeat" to="." method="_on_green_heat_click_received"]
+[connection signal="drag_received" from="GreenHeat" to="." method="_on_green_heat_drag_received"]
+[connection signal="hover_received" from="GreenHeat" to="." method="_on_green_heat_hover_received"]
+[connection signal="release_received" from="GreenHeat" to="." method="_on_green_heat_release_received"]
+[connection signal="item_selected" from="OptionButton" to="." method="_on_option_button_item_selected"]
