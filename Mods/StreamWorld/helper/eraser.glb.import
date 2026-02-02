@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://c73man0k50eti"
-path="res://.godot/imported/eraser.glb-d06c62b4ef189cbcf3fc02766adcbd7c.scn"
+path="res://.godot/imported/eraser.glb-75683451e7b8b66b763f717e82218f35.scn"
 
 [deps]
 
-source_file="res://Mods/StreamWorld/eraser.glb"
-dest_files=["res://.godot/imported/eraser.glb-d06c62b4ef189cbcf3fc02766adcbd7c.scn"]
+source_file="res://Mods/StreamWorld/helper/eraser.glb"
+dest_files=["res://.godot/imported/eraser.glb-75683451e7b8b66b763f717e82218f35.scn"]
 
 [params]
 

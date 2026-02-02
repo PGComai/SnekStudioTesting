@@ -287,6 +287,8 @@ func _update_materials(vrm_extension: Dictionary, gstate: GLTFState) -> void:
 		if newmat.get_class() == "StandardMaterial3D":
 			if int(newmat.transparency) > 0:
 				newmat.render_priority = target_render_priority
+				newmat.backlight_enabled = true
+				newmat.backlight = Color.GRAY
 		else:
 			var blend_mode = int(vrm_mat_props["floatProperties"].get("_BlendMode", 0))
 			if blend_mode == int(RenderMode.Transparent) or blend_mode == int(RenderMode.TransparentWithZWrite):

@@ -60,6 +60,14 @@ func _ready() -> void:
 		"player_rotation",
 		"Player Rotation"
 	)
+	
+	var root_window: Window = get_tree().root
+	root_window.anisotropic_filtering_level = Viewport.ANISOTROPY_DISABLED
+	root_window.scaling_3d_scale = 0.25
+	root_window.audio_listener_enable_3d = false
+	root_window.audio_listener_enable_2d = false
+	root_window.positional_shadow_atlas_size = 0
+	root_window.disable_3d = true
 
 
 func load_after(_settings_old : Dictionary, _settings_new : Dictionary) -> void:

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://crfwec7i0sidq"]
+
+[ext_resource type="PackedScene" uid="uid://bd6i37fhkgf5" path="res://Mods/StreamWorld/vtuber.glb" id="1_0yoo1"]
+
+[node name="GlbTesting" type="Node3D"]
+
+[node name="vtuber" parent="." instance=ExtResource("1_0yoo1")]

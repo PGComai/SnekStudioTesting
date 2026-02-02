@@ -1,0 +1,529 @@
+{
+  "background_color": "ff00ffff",
+  "camera": {
+    "distance": 2.5,
+    "fov": 16.0,
+    "pitch": -17.4977436065674,
+    "position": [
+      -4.60395193099976,
+      1.79106140136719,
+      9.03715801239014
+    ],
+    "yaw": -107.213119506836
+  },
+  "colliders": {
+    "samplesnek_mediapipe_16.vrm": [
+      {
+        "bone_name": "Head",
+        "enabled": true,
+        "from_vrm": false,
+        "position": [
+          0.0,
+          0.100000001490116,
+          0.0199999995529652
+        ],
+        "radius": 0.119999997317791
+      }
+    ],
+    "vtuber.vrm": [
+      {
+        "bone_name": "Head",
+        "enabled": true,
+        "from_vrm": false,
+        "position": [
+          0.0,
+          0.100000001490116,
+          0.0199999995529652
+        ],
+        "radius": 0.119999997317791
+      }
+    ]
+  },
+  "hide_window_decorations": false,
+  "last_vrm_path": "/home/pgcomai/Documents/Blender/VTuber/vtuber.vrm",
+  "mods": [
+    {
+      "name": "MediaPipeController",
+      "scene_path": "res://Mods/MediaPipe/MediaPipeController.tscn",
+      "settings": {
+        "arm_rest_angle": 60.0,
+        "blend_to_rest_speed": 4.5,
+        "blendshape_calibration": {
+
+        },
+        "debug_visible_hand_trackers": false,
+        "frames_missing_before_spine_reset": 6.0,
+        "hand_confidence_time_threshold": 1.0,
+        "hand_count_change_time_threshold": 1.0,
+        "hand_position_offset": "(0.0, -0.42, 0.0)",
+        "hand_position_scale": "(7.0, 7.0, 3.5)",
+        "hand_position_smoothing": 4.0,
+        "hand_rotation_smoothing": 2.0,
+        "hand_to_head_scale": 1.91,
+        "hand_tracking_enabed": true,
+        "head_pitch_offset": 0.3,
+        "head_position_smoothing": 2.0,
+        "head_rotation_smoothing": 2.0,
+        "mirror_mode": true,
+        "tracking_pause": false,
+        "video_device": [
+          "USB Camera: USB Camera (CAP_ANY:0.0)"
+        ]
+      }
+    },
+    {
+      "name": "EyeAdjustments",
+      "scene_path": "res://Mods/EyeAdjustments/EyeAdjustments.tscn",
+      "settings": {
+        "eyes_link_blink": true,
+        "eyes_link_horizontal": true,
+        "eyes_link_vertical": true,
+        "eyes_prevent_opposite_directions": true
+      }
+    },
+    {
+      "name": "MediaPipeToVrmBlendShapes",
+      "scene_path": "res://Mods/MediaPipeToVRMBlendShapes/MediaPipeToVRMBlendShapes.tscn",
+      "settings": {
+        "remove_other_shapes": false
+      }
+    },
+    {
+      "name": "BlendShapeScalingAndOffset",
+      "scene_path": "res://Mods/BlendShapeScalingAndOffset/BlendShapeScalingAndOffset.tscn",
+      "settings": {
+        "blendshape_offset__neutral": 0.0,
+        "blendshape_offset_aa": 0.0,
+        "blendshape_offset_angry": 0.0,
+        "blendshape_offset_blinkLeft": 0.0,
+        "blendshape_offset_blinkRight": 0.0,
+        "blendshape_offset_browDownLeft": 0.0,
+        "blendshape_offset_browDownRight": 0.0,
+        "blendshape_offset_browInnerUp": 0.0,
+        "blendshape_offset_browOuterUpLeft": 0.0,
+        "blendshape_offset_browOuterUpRight": 0.0,
+        "blendshape_offset_cheekPuff": 0.0,
+        "blendshape_offset_cheekSquintLeft": 0.0,
+        "blendshape_offset_cheekSquintRight": 0.0,
+        "blendshape_offset_ee": 0.0,
+        "blendshape_offset_eyeBlinkLeft": 0.0,
+        "blendshape_offset_eyeBlinkRight": 0.0,
+        "blendshape_offset_eyeLookDownLeft": 0.0,
+        "blendshape_offset_eyeLookDownRight": 0.0,
+        "blendshape_offset_eyeLookInLeft": 0.0,
+        "blendshape_offset_eyeLookInRight": 0.0,
+        "blendshape_offset_eyeLookOutLeft": 0.0,
+        "blendshape_offset_eyeLookOutRight": 0.0,
+        "blendshape_offset_eyeLookUpLeft": 0.0,
+        "blendshape_offset_eyeLookUpRight": 0.0,
+        "blendshape_offset_eyeSquintLeft": 0.0,
+        "blendshape_offset_eyeSquintRight": 0.0,
+        "blendshape_offset_eyeWideLeft": 0.0,
+        "blendshape_offset_eyeWideRight": 0.0,
+        "blendshape_offset_happy": 0.0,
+        "blendshape_offset_ih": 0.0,
+        "blendshape_offset_jawForward": 0.0,
+        "blendshape_offset_jawLeft": 0.0,
+        "blendshape_offset_jawOpen": 0.0,
+        "blendshape_offset_jawRight": 0.0,
+        "blendshape_offset_lookDown": 0.0,
+        "blendshape_offset_lookLeft": 0.0,
+        "blendshape_offset_lookRight": 0.0,
+        "blendshape_offset_lookUp": 0.0,
+        "blendshape_offset_mouthClose": 0.0,
+        "blendshape_offset_mouthDimpleLeft": 0.0,
+        "blendshape_offset_mouthDimpleRight": 0.0,
+        "blendshape_offset_mouthFrownLeft": 0.0,
+        "blendshape_offset_mouthFrownRight": 0.0,
+        "blendshape_offset_mouthFunnel": 0.0,
+        "blendshape_offset_mouthLeft": 0.0,
+        "blendshape_offset_mouthLowerDownLeft": 0.0,
+        "blendshape_offset_mouthLowerDownRight": 0.0,
+        "blendshape_offset_mouthPressLeft": 0.0,
+        "blendshape_offset_mouthPressRight": 0.0,
+        "blendshape_offset_mouthPucker": 0.0,
+        "blendshape_offset_mouthRight": 0.0,
+        "blendshape_offset_mouthRollLower": 0.0,
+        "blendshape_offset_mouthRollUpper": 0.0,
+        "blendshape_offset_mouthShrugLower": 0.0,
+        "blendshape_offset_mouthShrugUpper": 0.0,
+        "blendshape_offset_mouthSmileLeft": -0.6,
+        "blendshape_offset_mouthSmileRight": -0.6,
+        "blendshape_offset_mouthStretchLeft": 0.0,
+        "blendshape_offset_mouthStretchRight": 0.0,
+        "blendshape_offset_mouthUpperUpLeft": 0.0,
+        "blendshape_offset_mouthUpperUpRight": 0.0,
+        "blendshape_offset_neutral": 0.0,
+        "blendshape_offset_noseSneerLeft": 0.0,
+        "blendshape_offset_noseSneerRight": 0.0,
+        "blendshape_offset_oh": 0.0,
+        "blendshape_offset_ou": 0.0,
+        "blendshape_offset_relaxed": 0.0,
+        "blendshape_offset_sad": 0.0,
+        "blendshape_offset_surprised": 0.0,
+        "blendshape_scale__neutral": 1.0,
+        "blendshape_scale_aa": 1.0,
+        "blendshape_scale_angry": 1.0,
+        "blendshape_scale_blinkLeft": 1.0,
+        "blendshape_scale_blinkRight": 1.0,
+        "blendshape_scale_browDownLeft": 1.0,
+        "blendshape_scale_browDownRight": 1.0,
+        "blendshape_scale_browInnerUp": 1.0,
+        "blendshape_scale_browOuterUpLeft": 1.0,
+        "blendshape_scale_browOuterUpRight": 1.0,
+        "blendshape_scale_cheekPuff": 1.0,
+        "blendshape_scale_cheekSquintLeft": 1.0,
+        "blendshape_scale_cheekSquintRight": 1.0,
+        "blendshape_scale_ee": 1.0,
+        "blendshape_scale_eyeBlinkLeft": 1.0,
+        "blendshape_scale_eyeBlinkRight": 1.0,
+        "blendshape_scale_eyeLookDownLeft": 1.0,
+        "blendshape_scale_eyeLookDownRight": 1.0,
+        "blendshape_scale_eyeLookInLeft": 1.0,
+        "blendshape_scale_eyeLookInRight": 1.0,
+        "blendshape_scale_eyeLookOutLeft": 1.0,
+        "blendshape_scale_eyeLookOutRight": 1.0,
+        "blendshape_scale_eyeLookUpLeft": 1.0,
+        "blendshape_scale_eyeLookUpRight": 1.0,
+        "blendshape_scale_eyeSquintLeft": 1.0,
+        "blendshape_scale_eyeSquintRight": 1.0,
+        "blendshape_scale_eyeWideLeft": 1.0,
+        "blendshape_scale_eyeWideRight": 1.0,
+        "blendshape_scale_happy": 1.0,
+        "blendshape_scale_ih": 1.0,
+        "blendshape_scale_jawForward": 2.0,
+        "blendshape_scale_jawLeft": 2.0,
+        "blendshape_scale_jawOpen": 2.0,
+        "blendshape_scale_jawRight": 2.0,
+        "blendshape_scale_lookDown": 1.0,
+        "blendshape_scale_lookLeft": 1.0,
+        "blendshape_scale_lookRight": 1.0,
+        "blendshape_scale_lookUp": 1.0,
+        "blendshape_scale_mouthClose": 2.0,
+        "blendshape_scale_mouthDimpleLeft": 2.0,
+        "blendshape_scale_mouthDimpleRight": 2.0,
+        "blendshape_scale_mouthFrownLeft": 2.0,
+        "blendshape_scale_mouthFrownRight": 2.0,
+        "blendshape_scale_mouthFunnel": 2.0,
+        "blendshape_scale_mouthLeft": 2.0,
+        "blendshape_scale_mouthLowerDownLeft": 2.0,
+        "blendshape_scale_mouthLowerDownRight": 2.0,
+        "blendshape_scale_mouthPressLeft": 2.0,
+        "blendshape_scale_mouthPressRight": 2.0,
+        "blendshape_scale_mouthPucker": 2.0,
+        "blendshape_scale_mouthRight": 2.0,
+        "blendshape_scale_mouthRollLower": 2.0,
+        "blendshape_scale_mouthRollUpper": 2.0,
+        "blendshape_scale_mouthShrugLower": 2.0,
+        "blendshape_scale_mouthShrugUpper": 2.0,
+        "blendshape_scale_mouthSmileLeft": 2.0,
+        "blendshape_scale_mouthSmileRight": 2.0,
+        "blendshape_scale_mouthStretchLeft": 2.0,
+        "blendshape_scale_mouthStretchRight": 2.0,
+        "blendshape_scale_mouthUpperUpLeft": 2.0,
+        "blendshape_scale_mouthUpperUpRight": 2.0,
+        "blendshape_scale_neutral": 1.0,
+        "blendshape_scale_noseSneerLeft": 1.0,
+        "blendshape_scale_noseSneerRight": 1.0,
+        "blendshape_scale_oh": 1.0,
+        "blendshape_scale_ou": 1.0,
+        "blendshape_scale_relaxed": 1.0,
+        "blendshape_scale_sad": 1.0,
+        "blendshape_scale_surprised": 1.0,
+        "blendshape_smoothing__neutral": 0.0,
+        "blendshape_smoothing_aa": 0.0,
+        "blendshape_smoothing_angry": 0.0,
+        "blendshape_smoothing_blinkLeft": 0.0,
+        "blendshape_smoothing_blinkRight": 0.0,
+        "blendshape_smoothing_browDownLeft": 0.0,
+        "blendshape_smoothing_browDownRight": 0.0,
+        "blendshape_smoothing_browInnerUp": 0.0,
+        "blendshape_smoothing_browOuterUpLeft": 0.0,
+        "blendshape_smoothing_browOuterUpRight": 0.0,
+        "blendshape_smoothing_cheekPuff": 0.0,
+        "blendshape_smoothing_cheekSquintLeft": 0.0,
+        "blendshape_smoothing_cheekSquintRight": 0.0,
+        "blendshape_smoothing_ee": 0.0,
+        "blendshape_smoothing_eyeBlinkLeft": 0.0,
+        "blendshape_smoothing_eyeBlinkRight": 0.0,
+        "blendshape_smoothing_eyeLookDownLeft": 0.5,
+        "blendshape_smoothing_eyeLookDownRight": 0.5,
+        "blendshape_smoothing_eyeLookInLeft": 0.5,
+        "blendshape_smoothing_eyeLookInRight": 0.5,
+        "blendshape_smoothing_eyeLookOutLeft": 0.5,
+        "blendshape_smoothing_eyeLookOutRight": 0.5,
+        "blendshape_smoothing_eyeLookUpLeft": 0.5,
+        "blendshape_smoothing_eyeLookUpRight": 0.5,
+        "blendshape_smoothing_eyeSquintLeft": 0.0,
+        "blendshape_smoothing_eyeSquintRight": 0.0,
+        "blendshape_smoothing_eyeWideLeft": 0.0,
+        "blendshape_smoothing_eyeWideRight": 0.0,
+        "blendshape_smoothing_happy": 0.0,
+        "blendshape_smoothing_ih": 0.0,
+        "blendshape_smoothing_jawForward": 0.0,
+        "blendshape_smoothing_jawLeft": 0.0,
+        "blendshape_smoothing_jawOpen": 0.0,
+        "blendshape_smoothing_jawRight": 0.0,
+        "blendshape_smoothing_lookDown": 0.0,
+        "blendshape_smoothing_lookLeft": 0.0,
+        "blendshape_smoothing_lookRight": 0.0,
+        "blendshape_smoothing_lookUp": 0.0,
+        "blendshape_smoothing_mouthClose": 0.0,
+        "blendshape_smoothing_mouthDimpleLeft": 0.0,
+        "blendshape_smoothing_mouthDimpleRight": 0.0,
+        "blendshape_smoothing_mouthFrownLeft": 0.0,
+        "blendshape_smoothing_mouthFrownRight": 0.0,
+        "blendshape_smoothing_mouthFunnel": 0.0,
+        "blendshape_smoothing_mouthLeft": 0.0,
+        "blendshape_smoothing_mouthLowerDownLeft": 0.0,
+        "blendshape_smoothing_mouthLowerDownRight": 0.0,
+        "blendshape_smoothing_mouthPressLeft": 0.0,
+        "blendshape_smoothing_mouthPressRight": 0.0,
+        "blendshape_smoothing_mouthPucker": 0.0,
+        "blendshape_smoothing_mouthRight": 0.0,
+        "blendshape_smoothing_mouthRollLower": 0.0,
+        "blendshape_smoothing_mouthRollUpper": 0.0,
+        "blendshape_smoothing_mouthShrugLower": 0.0,
+        "blendshape_smoothing_mouthShrugUpper": 0.0,
+        "blendshape_smoothing_mouthSmileLeft": 5.0,
+        "blendshape_smoothing_mouthSmileRight": 5.0,
+        "blendshape_smoothing_mouthStretchLeft": 0.0,
+        "blendshape_smoothing_mouthStretchRight": 0.0,
+        "blendshape_smoothing_mouthUpperUpLeft": 0.0,
+        "blendshape_smoothing_mouthUpperUpRight": 0.0,
+        "blendshape_smoothing_neutral": 0.0,
+        "blendshape_smoothing_noseSneerLeft": 0.0,
+        "blendshape_smoothing_noseSneerRight": 0.0,
+        "blendshape_smoothing_oh": 0.0,
+        "blendshape_smoothing_ou": 0.0,
+        "blendshape_smoothing_relaxed": 0.0,
+        "blendshape_smoothing_sad": 0.0,
+        "blendshape_smoothing_surprised": 0.0
+      }
+    },
+    {
+      "name": "AnimationApplier",
+      "scene_path": "res://Mods/AnimationApplier/AnimationApplier.tscn",
+      "settings": {
+
+      }
+    },
+    {
+      "name": "RotateTrackers",
+      "scene_path": "res://Mods/RotateTrackers/RotateTrackers.tscn",
+      "settings": {
+        "pitch_offset": 10.1,
+        "yaw_offset": 0.0
+      }
+    },
+    {
+      "name": "PoseIk",
+      "scene_path": "res://Mods/PoseIK/PoseIK.tscn",
+      "settings": {
+        "chest_yaw_scale": 0.3,
+        "debug_visible_hand_trackers": false,
+        "hack_reset_hips_every_frame": true,
+        "hack_reset_shoulders_every_frame": true,
+        "head_vertical_offset": -0.2,
+        "hip_adjustment_speed": 0.4,
+        "hips_vertical_blend_speed": 2.6,
+        "lean_scale": 4.0
+      }
+    },
+    {
+      "name": "GameWorld",
+      "scene_path": "res://Mods/StreamWorld/StreamWorld.tscn",
+      "settings": {
+        "player_position": "(-0.362221, 0.001, -0.274812)",
+        "player_rotation": 5.9
+      }
+    },
+    {
+      "name": "TwitchIntegration",
+      "scene_path": "res://Mods/Twitch/TwitchIntegration.tscn",
+      "settings": {
+
+      }
+    },
+    {
+      "name": "ObjectThrower",
+      "scene_path": "res://Mods/ThrownObjects/ObjectThrower.tscn",
+      "settings": {
+        "bit_redeem": false,
+        "count_multiplier": 10.0,
+        "redeem_name": "Shork Barrage",
+        "selected_throwables": [
+          "res://Mods/ThrownObjects/Objects/ThrownObject_Shork.tscn"
+        ],
+        "throws_per_bit": 1.0
+      }
+    },
+    {
+      "name": "ModelMotor",
+      "scene_path": "res://Mods/ModelMotor/ModelMotor.tscn",
+      "settings": {
+        "axis": [
+          "X"
+        ],
+        "model_name": "FanLeft",
+        "speed": -10.0
+      }
+    }
+  ],
+  "sound_device_input": "Default",
+  "sound_device_output": "Default",
+  "subwindows": {
+    "ChannelEvents": {
+      "embed_window_pos": [
+        545.0,
+        103.0
+      ],
+      "embed_window_size": [
+        424.0,
+        156.0
+      ],
+      "popout_window_pos": [
+        0,
+        0
+      ],
+      "popout_window_size": [
+        0,
+        0
+      ],
+      "popped_out": false
+    },
+    "ModsWindow": {
+      "embed_window_pos": [
+        60.0,
+        134.0
+      ],
+      "embed_window_size": [
+        935.0,
+        452.0
+      ],
+      "popout_window_pos": [
+        0,
+        0
+      ],
+      "popout_window_size": [
+        0,
+        0
+      ],
+      "popped_out": false,
+      "settings": {
+        "embed_mod_list_offset": -123,
+        "embed_mod_status_offset": 0,
+        "popout_mod_list_offset": -123,
+        "popout_mod_status_offset": 0
+      }
+    },
+    "SettingsWindow_Colliders": {
+      "embed_window_pos": [
+        308.0,
+        160.0
+      ],
+      "embed_window_size": [
+        550.0,
+        331.0
+      ],
+      "popout_window_pos": [
+        0,
+        0
+      ],
+      "popout_window_size": [
+        0,
+        0
+      ],
+      "popped_out": false
+    },
+    "SettingsWindow_General": {
+      "embed_window_pos": [
+        281.0,
+        171.0
+      ],
+      "embed_window_size": [
+        675.0,
+        313.0
+      ],
+      "popout_window_pos": [
+        0,
+        0
+      ],
+      "popout_window_size": [
+        0,
+        0
+      ],
+      "popped_out": false
+    },
+    "SettingsWindow_Scene": {
+      "embed_window_pos": [
+        241.0,
+        206.0
+      ],
+      "embed_window_size": [
+        618.0,
+        291.0
+      ],
+      "popout_window_pos": [
+        0,
+        0
+      ],
+      "popout_window_size": [
+        0,
+        0
+      ],
+      "popped_out": false
+    },
+    "SettingsWindow_Sound": {
+      "embed_window_pos": [
+        466.0,
+        225.0
+      ],
+      "embed_window_size": [
+        278.0,
+        156.0
+      ],
+      "popout_window_pos": [
+        0,
+        0
+      ],
+      "popout_window_size": [
+        0,
+        0
+      ],
+      "popped_out": false
+    },
+    "SettingsWindow_Window": {
+      "embed_window_pos": [
+        390.0,
+        214.0
+      ],
+      "embed_window_size": [
+        373.0,
+        156.0
+      ],
+      "popout_window_pos": [
+        0,
+        0
+      ],
+      "popout_window_size": [
+        0,
+        0
+      ],
+      "popped_out": false
+    }
+  },
+  "transparent_window": false,
+  "ui_visible": true,
+  "volume_output": 0.0,
+  "vsync_mode": 0,
+  "window_maximized": false,
+  "window_position": [
+    1332,
+    781
+  ],
+  "window_size": [
+    1038,
+    699
+  ]
+}

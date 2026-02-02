@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bv33gioiigmr2" path="res://Mods/StreamWorld/StreamWorld.gd" id="1_wv6bo"]
 [ext_resource type="PackedScene" uid="uid://dl8gk83mipj5w" path="res://Mods/StreamWorld/helper/CaptureScene.tscn" id="2_eh1rf"]
-[ext_resource type="Script" uid="uid://b7aevdpql8uyu" path="res://Mods/StreamWorld/window_tools.gd" id="2_tpcd6"]
+[ext_resource type="Script" uid="uid://b7aevdpql8uyu" path="res://Mods/StreamWorld/helper/window_tools.gd" id="2_tpcd6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_shy1m"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -65,6 +65,7 @@ directional_shadow_max_distance = 10.3
 environment = SubResource("Environment_tpcd6")
 
 [node name="WindowTools" type="Window" parent="."]
+disable_3d = true
 title = "Tools"
 position = Vector2i(0, 316)
 size = Vector2i(432, 243)
@@ -89,13 +90,16 @@ placeholder_text = "Text3D"
 
 [node name="WindowPlayer" type="Window" parent="."]
 handle_input_locally = false
+scaling_3d_scale = 0.5
 anisotropic_filtering_level = 0
+positional_shadow_atlas_size = 0
 position = Vector2i(0, 36)
 size = Vector2i(432, 243)
 
 [node name="Camera3DPlayer" type="Camera3D" parent="WindowPlayer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.77026, 2.94625)
 current = true
+far = 50.0
 
 [node name="WindowStream" type="Window" parent="."]
 title = "StreamWindow"
@@ -105,6 +109,7 @@ size = Vector2i(1920, 1080)
 [node name="Camera3DStream" type="Camera3D" parent="WindowStream"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.421512, 1.83628, 0.241467)
 fov = 54.5
+far = 50.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WindowStream/Camera3DStream"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://brf2lsh1qiyl3"]
+
+[ext_resource type="Script" uid="uid://c4w1023xo223g" path="res://Mods/ModelMotor/ModelMotor.gd" id="1_cxl41"]
+
+[node name="ModelMotor" type="Node3D"]
+script = ExtResource("1_cxl41")

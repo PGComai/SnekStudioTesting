@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://d2o2x3bq5opf1" path="res://addons/GreenHeatGD/GreenHeat.gd" id="4_lha3j"]
 [ext_resource type="Script" uid="uid://bb1w7di87n4xg" path="res://Mods/StreamWorld/helper/WindowPaint.gd" id="5_37l3g"]
 [ext_resource type="Script" uid="uid://bk827oe5hg8f0" path="res://Mods/StreamWorld/helper/window_eraser.gd" id="6_ycwmq"]
-[ext_resource type="PackedScene" uid="uid://c73man0k50eti" path="res://Mods/StreamWorld/eraser.glb" id="7_73vr2"]
+[ext_resource type="PackedScene" uid="uid://c73man0k50eti" path="res://Mods/StreamWorld/helper/eraser.glb" id="7_73vr2"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_4xowi"]
 size = Vector2(3.84, 2.16)
