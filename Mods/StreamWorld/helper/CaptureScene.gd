@@ -30,10 +30,11 @@ var text_3d: String = "BRB":
 			text_3d = value
 			if text:
 				text.mesh.text = text_3d
-var cursor_pos_rolling: Array[Vector2] = []
+var cursor_speed_rolling: Array[float] = []
 var viewer_cursors: Dictionary[String, ViewerCursor]
 var viewer_windows: Dictionary[String, ViewerWindow]
 var colors: Dictionary[String, Color] = {}
+var last_mouse_pos := Vector2i.ZERO
 
 
 @onready var eraser_cursor: Node3D = $WholeMonitor/EraserCursor
@@ -222,3 +223,51 @@ func _on_game_world_thicker_lines() -> void:
 
 func _on_timer_thicker_lines_timeout() -> void:
 	window_paint.brush_thickness = window_paint.BRUSH_SIZE
+
+
+func _on_timer_check_pointer_timeout() -> void:
+	pass
+	#var output_name: Array[String] = []
+	#var output_temp: Array[String] = []
+	#
+	#var output_dict: Dictionary[String, float] = {}
+	#
+	#var exit_code_name = OS.execute("/usr/bin", [], output_name)
+	##var exit_code_temp = OS.execute("bash", ["-c", "cat /sys/class/hwmon/hwmon*/temp1_input"], output_temp)
+	#print(output_name)
+
+
+func get_system_temps() -> Dictionary[String, float]:
+	var output_name: Array[String] = []
+	var output_temp: Array[String] = []
+	
+	var output_dict: Dictionary[String, float] = {}
+	
+	var exit_code_name = OS.execute("bash", ["-c", "cat /sys/class/hwmon/hwmon*/name"], output_name)
+	var exit_code_temp = OS.execute("bash", ["-c", "cat /sys/class/hwmon/hwmon*/temp1_input"], output_temp)
+	
+	var output_name0 := output_name[0].split("\n")
+	var output_temp0 := output_temp[0].split("\n")
+	
+	for i in output_name0.size():
+		var temp: float = output_temp0[i].to_float() / 1000.0
+		var o_name: String = output_name0[i]
+		while output_dict.has(o_name):
+			o_name += "0"
+		output_dict[o_name] = temp
+	
+	return output_dict
+
+
+func _on_timer_mouse_check_timeout() -> void:
+	pass
+	#var current_mouse_pos: Vector2i = DisplayServer.mouse_get_position()
+	#cursor_speed_rolling.append(Vector2(current_mouse_pos - last_mouse_pos).length_squared())
+	#if cursor_speed_rolling.size() > 10:
+		#cursor_speed_rolling.remove_at(0)
+	#var avg: float = 0.0
+	#for speed: float in cursor_speed_rolling:
+		#avg += speed
+	#avg /= float(cursor_speed_rolling.size())
+	#print(avg)
+	#last_mouse_pos = current_mouse_pos

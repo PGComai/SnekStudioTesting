@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhcvs2y5lv3q"]
+
+[ext_resource type="Script" uid="uid://qw6umse5xvht" path="res://Mods/HeadTrackingAudio/HeadTrackingAudio.gd" id="1_o233m"]
+
+[node name="HeadTrackingAudio" type="Node3D"]
+script = ExtResource("1_o233m")
+
+[node name="AudioStreamPlayerTracking" type="AudioStreamPlayer" parent="."]
+max_polyphony = 3
+
+[node name="AudioStreamPlayerLostTracking" type="AudioStreamPlayer" parent="."]
+max_polyphony = 3
+
+[node name="TimerBetweenSounds" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="TimerBetweenSounds" to="." method="_on_timer_between_sounds_timeout"]

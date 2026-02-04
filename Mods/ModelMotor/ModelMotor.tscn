@@ -4,3 +4,6 @@
 
 [node name="ModelMotor" type="Node3D"]
 script = ExtResource("1_cxl41")
+
+[node name="TimerSpinChange" type="Timer" parent="."]
+one_shot = true

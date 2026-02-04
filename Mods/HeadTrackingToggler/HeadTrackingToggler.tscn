@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnss7c4opxlsv"]
+
+[ext_resource type="Script" uid="uid://cgosjrg5mqa3u" path="res://Mods/HeadTrackingToggler/HeadTrackingToggler.gd" id="1_e0mha"]
+
+[node name="HeadTrackingToggler" type="Node3D"]
+script = ExtResource("1_e0mha")

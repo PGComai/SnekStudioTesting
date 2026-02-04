@@ -79,6 +79,12 @@ var last_packet_received = null
 # What we should show in the new error/warning reporting.
 var _current_error_to_show : String = ""
 
+var head_tracked := false:
+	set(value):
+		if head_tracked != value:
+			head_tracked = value
+			send_global_mod_message("head_tracking_changed", {"is_tracking": head_tracked})
+
 #region Standard Interface Implementation
 
 func _ready():
@@ -728,6 +734,7 @@ func _process(delta):
 		# FIXME: Hardcoded transform
 		var head_origin_array = parsed_data["head_origin"]
 		if parsed_data["head_missing_time"] <= frames_missing_before_spine_reset:
+			head_tracked = true
 			$Head.transform.origin = $Head.transform.origin.lerp(
 				model_origin_offset +
 				(Vector3(
@@ -751,6 +758,7 @@ func _process(delta):
 
 			# Haven't had face tracker data in a while? Just blend us back to a
 			# rest position.
+			head_tracked = false
 			var head_index : int = skel.find_bone("Head")
 			var rest_global : Transform3D = skel.get_bone_rest(head_index)
 			$Head.global_transform.basis = Basis(
