@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dy1fat8m86ete"
+path="res://.godot/imported/dry erase drag.wav-99bfa14af16ca04e59a95810321600ca.sample"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/audio/dry erase drag.wav"
+dest_files=["res://.godot/imported/dry erase drag.wav-99bfa14af16ca04e59a95810321600ca.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

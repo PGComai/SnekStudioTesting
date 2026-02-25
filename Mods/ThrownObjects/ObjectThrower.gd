@@ -175,7 +175,7 @@ func _physics_process(delta):
 				(randf() - 0.5) * 2).normalized() * randf() * 0.2
 
 			# Set initial position and velocity.
-			bit_scene.global_transform.origin = random_start_position + head_position
+			bit_scene.global_transform.origin = random_start_position + head_position + Vector3(0.0, -0.15, 0.0)
 			bit_scene.linear_velocity = -random_start_position * 3.5 + velocity_randomness
 			
 			# Now let's do the math to give the projectile an arc. We're trying to find

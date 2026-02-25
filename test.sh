@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+cat /var/log/Xorg.0.log

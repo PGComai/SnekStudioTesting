@@ -1,8 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://dtkm6diaw504t"]
+[gd_scene load_steps=18 format=3 uid="uid://dtkm6diaw504t"]
 
 [ext_resource type="Script" uid="uid://bv33gioiigmr2" path="res://Mods/StreamWorld/StreamWorld.gd" id="1_wv6bo"]
 [ext_resource type="PackedScene" uid="uid://dl8gk83mipj5w" path="res://Mods/StreamWorld/helper/CaptureScene.tscn" id="2_eh1rf"]
 [ext_resource type="Script" uid="uid://b7aevdpql8uyu" path="res://Mods/StreamWorld/helper/window_tools.gd" id="2_tpcd6"]
+[ext_resource type="LabelSettings" uid="uid://bqrpchqvvlv7f" path="res://Mods/StreamWorld/helper/marker_display_name_labelsettings.tres" id="3_dd1gk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_shy1m"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -68,7 +69,7 @@ environment = SubResource("Environment_tpcd6")
 disable_3d = true
 title = "Tools"
 position = Vector2i(0, 316)
-size = Vector2i(432, 243)
+size = Vector2i(432, 400)
 script = ExtResource("2_tpcd6")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="WindowTools"]
@@ -88,6 +89,55 @@ layout_mode = 2
 text = "BRB"
 placeholder_text = "Text3D"
 
+[node name="HSeparator3" type="HSeparator" parent="WindowTools/VBoxContainer"]
+layout_mode = 2
+
+[node name="ClearMarkers" type="Button" parent="WindowTools/VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Clear Markers"
+
+[node name="Label" type="Label" parent="WindowTools/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Testing"
+label_settings = ExtResource("3_dd1gk")
+
+[node name="HSeparator2" type="HSeparator" parent="WindowTools/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="WindowTools/VBoxContainer"]
+layout_mode = 2
+
+[node name="LabelMarkerVolume" type="Label" parent="WindowTools/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Marker volume: 0.0 db"
+
+[node name="HSliderMarkerAudio" type="HSlider" parent="WindowTools/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+min_value = -80.0
+max_value = 16.0
+step = 4.0
+scrollable = false
+
+[node name="HSeparator" type="HSeparator" parent="WindowTools/VBoxContainer"]
+layout_mode = 2
+
+[node name="LabelMarkerPermissions" type="Label" parent="WindowTools/VBoxContainer"]
+layout_mode = 2
+text = "Marker permissions"
+
+[node name="ScrollContainerMarkerPermissions" type="ScrollContainer" parent="WindowTools/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainerMarkerPermissions" type="VBoxContainer" parent="WindowTools/VBoxContainer/ScrollContainerMarkerPermissions"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="WindowPlayer" type="Window" parent="."]
 handle_input_locally = false
 scaling_3d_scale = 0.5
@@ -105,6 +155,7 @@ far = 50.0
 title = "StreamWindow"
 initial_position = 2
 size = Vector2i(1920, 1080)
+visible = false
 
 [node name="Camera3DStream" type="Camera3D" parent="WindowStream"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.421512, 1.83628, 0.241467)
@@ -167,18 +218,6 @@ shape = SubResource("SphereShape3D_ofdl7")
 [node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="WorldRoot/CharacterBody3D/MainCamH/MainCameraHolder"]
 node_a = NodePath("..")
 node_b = NodePath("../../../../RigidMainCameraHolder")
-linear_limit_x/softness = 0.04
-linear_limit_x/restitution = 0.1
-linear_limit_x/damping = 2.0
-linear_limit_y/softness = 0.04
-linear_limit_y/restitution = 0.1
-linear_limit_y/damping = 2.0
-linear_limit_z/softness = 0.04
-linear_limit_z/restitution = 0.1
-linear_limit_z/damping = 2.0
-angular_limit_x/softness = 0.02
-angular_limit_y/softness = 0.02
-angular_limit_z/softness = 0.02
 
 [node name="RigidMainCameraHolder" type="RigidBody3D" parent="WorldRoot"]
 collision_layer = 4096
@@ -194,8 +233,36 @@ shape = SubResource("SphereShape3D_afllp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.02901, -2.38955)
 cast_camera = NodePath("../../WindowStream/Camera3DStream")
 
+[node name="Timer5s" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[node name="TimerSavePosition" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="TimerSaveDrawing" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[connection signal="erase_marker_permissions_requested" from="." to="WorldRoot/Capture" method="_on_game_world_erase_marker_permissions_requested"]
+[connection signal="marker_permissions_requested" from="." to="WindowTools" method="_on_game_world_marker_permissions_requested"]
+[connection signal="marker_permissions_requested" from="." to="WorldRoot/Capture" method="_on_game_world_marker_permissions_requested"]
+[connection signal="mod_cleared_screen" from="." to="WorldRoot/Capture" method="_on_game_world_mod_cleared_screen"]
+[connection signal="only_mods_draw" from="." to="WorldRoot/Capture" method="_on_game_world_only_mods_draw"]
+[connection signal="revoked_permissions_requested" from="." to="WindowTools" method="_on_game_world_revoked_permissions_requested"]
+[connection signal="save_drawing" from="." to="WorldRoot/Capture" method="_on_game_world_save_drawing"]
 [connection signal="thicker_lines" from="." to="WorldRoot/Capture" method="_on_game_world_thicker_lines"]
+[connection signal="marker_permissions_restored" from="WindowTools" to="." method="_on_window_tools_marker_permissions_restored"]
+[connection signal="marker_permissions_revoked" from="WindowTools" to="." method="_on_window_tools_marker_permissions_revoked"]
+[connection signal="marker_permissions_revoked" from="WindowTools" to="WorldRoot/Capture" method="_on_window_tools_marker_permissions_revoked"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WindowTools" method="_on_check_button_brb_toggled"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WorldRoot/Capture" method="_on_check_button_brb_toggled"]
 [connection signal="text_changed" from="WindowTools/VBoxContainer/LineEditText3D" to="WorldRoot/Capture" method="_on_line_edit_text_3d_text_changed"]
+[connection signal="pressed" from="WindowTools/VBoxContainer/ClearMarkers" to="WorldRoot/Capture" method="_on_clear_markers_pressed"]
+[connection signal="value_changed" from="WindowTools/VBoxContainer/HBoxContainer/HSliderMarkerAudio" to="WindowTools" method="_on_h_slider_marker_audio_value_changed"]
 [connection signal="window_input" from="WindowPlayer" to="." method="_on_window_window_input"]
+[connection signal="timeout" from="Timer5s" to="." method="_on_timer_5s_timeout"]
+[connection signal="timeout" from="TimerSavePosition" to="." method="_on_timer_save_position_timeout"]
+[connection signal="timeout" from="TimerSaveDrawing" to="." method="_on_timer_save_drawing_timeout"]

@@ -5,6 +5,7 @@ class_name ViewerWindow
 signal leaving(my_id: String)
 
 
+const MARKER_DISPLAY_NAME_LABELSETTINGS = preload("res://Mods/StreamWorld/helper/marker_display_name_labelsettings.tres")
 const LIFETIME: float = 60.0
 const FADE_START: float = 45.0
 const ICON = preload("res://icon.svg")
@@ -18,7 +19,7 @@ const POLY: PackedVector2Array = [
 								]
 
 
-
+var display_name: String
 var id: String
 var pos: Vector2
 var internal_pos: Vector2
@@ -43,6 +44,15 @@ func _ready() -> void:
 	new_tex_rect.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	add_child(new_tex_rect)
 	tex_rect = new_tex_rect
+	
+	var new_label := Label.new()
+	new_label.text = display_name
+	new_label.label_settings = MARKER_DISPLAY_NAME_LABELSETTINGS
+	new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	new_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	add_child(new_label)
+	new_label.rotation = PI/4.0
+	new_label.position = (size / 4.0) + Vector2(24.0, -16.0)
 	
 	var new_timer := Timer.new()
 	new_timer.wait_time = LIFETIME

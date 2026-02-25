@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://rge68olntntb"]
+
+[ext_resource type="Script" uid="uid://csy542kds33sg" path="res://Mods/StreamWorld/helper/marker_permission_listing.gd" id="1_op4aj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_op4aj"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.528128, 0.138689, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="MarkerPermissionListing" type="HBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+script = ExtResource("1_op4aj")
+
+[node name="LabelDisplayName" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Displayname"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonRevoke" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_op4aj")
+text = "Revoke"
+
+[node name="ButtonRestore" type="Button" parent="."]
+layout_mode = 2
+text = "Restore"
+
+[connection signal="pressed" from="ButtonRevoke" to="." method="_on_button_revoke_pressed"]
+[connection signal="pressed" from="ButtonRestore" to="." method="_on_button_restore_pressed"]

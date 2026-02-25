@@ -3,13 +3,13 @@
   "camera": {
     "distance": 2.5,
     "fov": 16.0,
-    "pitch": -17.4977436065674,
+    "pitch": 38.4235916137695,
     "position": [
-      -4.60395193099976,
-      1.79106140136719,
-      9.03715801239014
+      0.652563214302063,
+      0.000873618526384234,
+      1.8104076385498
     ],
-    "yaw": -107.213119506836
+    "yaw": -18.9227561950684
   },
   "colliders": {
     "samplesnek_mediapipe_16.vrm": [
@@ -32,10 +32,43 @@
         "from_vrm": false,
         "position": [
           0.0,
-          0.100000001490116,
+          0.0500000007450581,
           0.0199999995529652
         ],
-        "radius": 0.119999997317791
+        "radius": 0.100000001490116
+      },
+      {
+        "bone_name": "Chest",
+        "enabled": true,
+        "from_vrm": false,
+        "position": [
+          0.0700000002980232,
+          0.259999990463257,
+          0.0199999995529652
+        ],
+        "radius": 0.0799999982118607
+      },
+      {
+        "bone_name": "Chest",
+        "enabled": true,
+        "from_vrm": false,
+        "position": [
+          -0.0700000002980232,
+          0.259999990463257,
+          0.0199999995529652
+        ],
+        "radius": 0.0799999982118607
+      },
+      {
+        "bone_name": "Chest",
+        "enabled": true,
+        "from_vrm": false,
+        "position": [
+          0.0,
+          0.170000001788139,
+          0.0199999995529652
+        ],
+        "radius": 0.109999999403954
       }
     ]
   },
@@ -47,7 +80,7 @@
       "scene_path": "res://Mods/MediaPipe/MediaPipeController.tscn",
       "settings": {
         "arm_rest_angle": 60.0,
-        "blend_to_rest_speed": 4.5,
+        "blend_to_rest_speed": 2.7,
         "blendshape_calibration": {
 
         },
@@ -334,8 +367,8 @@
       "name": "GameWorld",
       "scene_path": "res://Mods/StreamWorld/StreamWorld.tscn",
       "settings": {
-        "player_position": "(-0.362221, 0.001, -0.274812)",
-        "player_rotation": 5.9
+        "player_position": "(0.225319, 0.001, -0.738911)",
+        "player_rotation": -0.362132296429201
       }
     },
     {
@@ -359,14 +392,56 @@
       }
     },
     {
+      "name": "BitThrower",
+      "scene_path": "res://Mods/ThrownObjects/ObjectThrower.tscn",
+      "settings": {
+        "bit_redeem": true,
+        "count_multiplier": 1.0,
+        "redeem_name": "",
+        "selected_throwables": [
+          "res://Mods/ThrownObjects/Objects/ThrownObject_Bit.tscn"
+        ],
+        "throws_per_bit": 1.0
+      }
+    },
+    {
       "name": "ModelMotor",
       "scene_path": "res://Mods/ModelMotor/ModelMotor.tscn",
       "settings": {
+        "affected_by_head_tracking": true,
         "axis": [
           "X"
         ],
         "model_name": "FanLeft",
-        "speed": -10.0
+        "speed": -8.3,
+        "spin_if_head_tracking": true
+      }
+    },
+    {
+      "name": "HeadTrackingToggler",
+      "scene_path": "res://Mods/HeadTrackingToggler/HeadTrackingToggler.tscn",
+      "settings": {
+        "model_name": "EyeLeft",
+        "show_if_tracking": true
+      }
+    },
+    {
+      "name": "HeadTrackingToggler2",
+      "scene_path": "res://Mods/HeadTrackingToggler/HeadTrackingToggler.tscn",
+      "settings": {
+        "model_name": "EyeRight",
+        "show_if_tracking": true
+      }
+    },
+    {
+      "name": "HeadTrackingAudio",
+      "scene_path": "res://Mods/HeadTrackingAudio/HeadTrackingAudio.tscn",
+      "settings": {
+        "audio_path_lost_tracking": "/home/pgcomai/Music/Windows XP Sounds/Windows XP Logoff Sound.wav",
+        "audio_path_tracking": "/home/pgcomai/Music/Windows XP Sounds/Windows XP Logon Sound.wav",
+        "min_time_between_sounds": 2.0,
+        "volume_lost_tracking": -6.0,
+        "volume_tracking": -6.0
       }
     }
   ],
@@ -375,8 +450,8 @@
   "subwindows": {
     "ChannelEvents": {
       "embed_window_pos": [
-        545.0,
-        103.0
+        287.0,
+        200.0
       ],
       "embed_window_size": [
         424.0,
@@ -419,7 +494,7 @@
     },
     "SettingsWindow_Colliders": {
       "embed_window_pos": [
-        308.0,
+        126.0,
         160.0
       ],
       "embed_window_size": [
@@ -519,8 +594,8 @@
   "vsync_mode": 0,
   "window_maximized": false,
   "window_position": [
-    1332,
-    781
+    2136,
+    737
   ],
   "window_size": [
     1038,

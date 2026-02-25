@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dygrk02lhhoga"
+path="res://.godot/imported/dry erase drag squeak.wav-44b2d09d4f6b008972001ecbf7edb48c.sample"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/audio/dry erase drag squeak.wav"
+dest_files=["res://.godot/imported/dry erase drag squeak.wav-44b2d09d4f6b008972001ecbf7edb48c.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

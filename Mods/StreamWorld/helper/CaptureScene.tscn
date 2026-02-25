@@ -1,12 +1,32 @@
-[gd_scene load_steps=17 format=3 uid="uid://dl8gk83mipj5w"]
+[gd_scene load_steps=40 format=3 uid="uid://dl8gk83mipj5w"]
 
 [ext_resource type="Script" uid="uid://mi6afv06vg6f" path="res://Mods/StreamWorld/helper/CaptureScene.gd" id="1_a202f"]
 [ext_resource type="ArrayMesh" uid="uid://d1yjkdoqorvn7" path="res://Mods/StreamWorld/monitor.obj" id="2_3414e"]
 [ext_resource type="PackedScene" uid="uid://drhg1cvv8u2hm" path="res://Mods/StreamWorld/ChatBubbleGame/chat_bubble_game.tscn" id="3_kb54l"]
 [ext_resource type="Script" uid="uid://d2o2x3bq5opf1" path="res://addons/GreenHeatGD/GreenHeat.gd" id="4_lha3j"]
 [ext_resource type="Script" uid="uid://bb1w7di87n4xg" path="res://Mods/StreamWorld/helper/WindowPaint.gd" id="5_37l3g"]
+[ext_resource type="Shader" uid="uid://bhgfjcdo3hili" path="res://Mods/StreamWorld/helper/color_palette_shader.tres" id="5_su72v"]
+[ext_resource type="Gradient" uid="uid://bf1ydvlcq6wj3" path="res://Mods/StreamWorld/helper/marker_palette_gradient.tres" id="6_xtl51"]
 [ext_resource type="Script" uid="uid://bk827oe5hg8f0" path="res://Mods/StreamWorld/helper/window_eraser.gd" id="6_ycwmq"]
+[ext_resource type="Gradient" uid="uid://bmrdymi6qytcn" path="res://Mods/StreamWorld/helper/marker_palette_gradient_gray.tres" id="7_3wliy"]
 [ext_resource type="PackedScene" uid="uid://c73man0k50eti" path="res://Mods/StreamWorld/helper/eraser.glb" id="7_73vr2"]
+[ext_resource type="Shader" uid="uid://b7ign01iy5to4" path="res://Mods/StreamWorld/helper/paint_shadow_shader.tres" id="7_dqwju"]
+[ext_resource type="Script" uid="uid://bxtht5gu5652j" path="res://Mods/StreamWorld/helper/clickview.gd" id="11_qjh7t"]
+[ext_resource type="Script" uid="uid://bm2u4mlvjh6v3" path="res://Mods/StreamWorld/helper/marker_sounds.gd" id="12_llkab"]
+[ext_resource type="AudioStream" uid="uid://dygrk02lhhoga" path="res://Mods/StreamWorld/audio/dry erase drag squeak.wav" id="12_wl5gr"]
+[ext_resource type="AudioStream" uid="uid://dy1fat8m86ete" path="res://Mods/StreamWorld/audio/dry erase drag.wav" id="13_llkab"]
+[ext_resource type="AudioStream" uid="uid://t7m4soiqp0qc" path="res://Mods/StreamWorld/audio/dry erase hard squeak.wav" id="14_qjh7t"]
+[ext_resource type="AudioStream" uid="uid://tmsfmeafdv1q" path="res://Mods/StreamWorld/audio/dry erase short squeak.wav" id="15_ilncf"]
+[ext_resource type="AudioStream" uid="uid://byrmui3bsfqki" path="res://Mods/StreamWorld/audio/dry erase slide 2.wav" id="16_nx20o"]
+[ext_resource type="AudioStream" uid="uid://dem37qmofm83q" path="res://Mods/StreamWorld/audio/dry erase slide drag.wav" id="17_s0ud2"]
+[ext_resource type="AudioStream" uid="uid://bm1ob8bsf8e71" path="res://Mods/StreamWorld/audio/dry erase slide.wav" id="18_vt1bh"]
+[ext_resource type="AudioStream" uid="uid://dpvsqficpxlaw" path="res://Mods/StreamWorld/audio/dry erase soft drag.wav" id="19_ybi78"]
+[ext_resource type="AudioStream" uid="uid://dcd2fiya8gxyx" path="res://Mods/StreamWorld/audio/dry erase soft squeak.wav" id="20_p00cp"]
+[ext_resource type="AudioStream" uid="uid://3hgghx8nb5dp" path="res://Mods/StreamWorld/audio/dry erase squeak drag.wav" id="21_wb8ux"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3wliy"]
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.25
 
 [sub_resource type="QuadMesh" id="QuadMesh_4xowi"]
 size = Vector2(3.84, 2.16)
@@ -27,6 +47,26 @@ font_size = 72
 autowrap_mode = 3
 width = 400.0
 
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3wliy"]
+gradient = ExtResource("6_xtl51")
+width = 512
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xtl51"]
+gradient = ExtResource("7_3wliy")
+width = 128
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mmyg4"]
+render_priority = 0
+shader = ExtResource("5_su72v")
+shader_parameter/tex_frg_9 = SubResource("GradientTexture1D_xtl51")
+shader_parameter/tex_frg_2 = SubResource("GradientTexture1D_3wliy")
+
+[sub_resource type="BoxMesh" id="BoxMesh_dqwju"]
+size = Vector3(2, 0.3, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_su72v"]
+size = Vector3(2, 0.3, 0.1)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jcte5"]
 albedo_color = Color(0.962172, 0.487074, 0.253447, 1)
 emission_enabled = true
@@ -34,15 +74,22 @@ emission = Color(0.962172, 0.487074, 0.253447, 1)
 emission_energy_multiplier = 0.8
 
 [sub_resource type="PrismMesh" id="PrismMesh_jcte5"]
-size = Vector3(0.1, 0.1, 0.035)
+size = Vector3(0.05, 0.05, 0.035)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_3414e"]
 radius = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_su72v"]
+shader = ExtResource("7_dqwju")
+shader_parameter/ShadowColor = Color(0, 0, 0, 0.858824)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_37l3g"]
 
 [node name="CaptureScene" type="Node3D"]
 script = ExtResource("1_a202f")
+marker_palette_color_gradient = ExtResource("6_xtl51")
+marker_palette_gray_gradient = ExtResource("7_3wliy")
+donut_material = SubResource("StandardMaterial3D_3wliy")
 cast_layer = 32768
 
 [node name="WholeMonitor" type="Node3D" parent="."]
@@ -92,9 +139,23 @@ mesh = SubResource("TextMesh_3414e")
 
 [node name="EraserCursor" type="Node3D" parent="WholeMonitor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.07)
+visible = false
 
 [node name="eraser" parent="WholeMonitor/EraserCursor" instance=ExtResource("7_73vr2")]
 transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, 0, 0, 0.0693885)
+
+[node name="MarkerColors" type="MeshInstance3D" parent="WholeMonitor"]
+transform = Transform3D(1, 0, 0, 0, 0.585934, 0.810359, 0, -0.810359, 0.585934, -0.918979, -1.26637, 0.152909)
+material_override = SubResource("ShaderMaterial_mmyg4")
+mesh = SubResource("BoxMesh_dqwju")
+
+[node name="MarkerColorArea" type="Area3D" parent="WholeMonitor/MarkerColors"]
+collision_layer = 32768
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MarkerColors/MarkerColorArea"]
+shape = SubResource("BoxShape3D_su72v")
 
 [node name="X11DisplayCapture" type="X11DisplayCapture" parent="."]
 
@@ -104,7 +165,7 @@ collision_layer = 8
 collision_mask = 8
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Cursor"]
-transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 0, 0, 0.0195256)
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, -0.00963157, 0.016997, 0.0195256)
 material_override = SubResource("StandardMaterial3D_jcte5")
 mesh = SubResource("PrismMesh_jcte5")
 
@@ -135,9 +196,21 @@ script = ExtResource("5_37l3g")
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="TextureRectShadow" type="TextureRect" parent="WindowPaint"]
+z_index = -1
+material = SubResource("ShaderMaterial_su72v")
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 44.0
+offset_bottom = 44.0
+
 [node name="TimerThread" type="Timer" parent="WindowPaint"]
 wait_time = 0.1
 autostart = true
+
+[node name="Clickview" type="Node2D" parent="WindowPaint"]
+visible = false
+script = ExtResource("11_qjh7t")
 
 [node name="WindowEraser" type="Window" parent="."]
 transparent_bg = true
@@ -167,11 +240,66 @@ autostart = true
 wait_time = 0.2
 autostart = true
 
+[node name="MarkerSounds" type="Node3D" parent="."]
+script = ExtResource("12_llkab")
+
+[node name="DryEraseDragSqueak" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("12_wl5gr")
+bus = &"Marker"
+
+[node name="DryEraseDrag" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("13_llkab")
+bus = &"Marker"
+
+[node name="DryEraseHardSqueak" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("14_qjh7t")
+bus = &"Marker"
+
+[node name="DryEraseShortSqueak" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("15_ilncf")
+bus = &"Marker"
+
+[node name="DryEraseSlide2" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("16_nx20o")
+bus = &"Marker"
+
+[node name="DryEraseSlideDrag" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("17_s0ud2")
+bus = &"Marker"
+
+[node name="DryEraseSlide" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("18_vt1bh")
+bus = &"Marker"
+
+[node name="DryEraseSoftDrag" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("19_ybi78")
+bus = &"Marker"
+
+[node name="DryEraseSoftSqueak" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("20_p00cp")
+bus = &"Marker"
+
+[node name="DryEraseSqueakDrag" type="AudioStreamPlayer" parent="MarkerSounds"]
+stream = ExtResource("21_wb8ux")
+bus = &"Marker"
+
+[node name="TimerModsOnlyDraw" type="Timer" parent="."]
+wait_time = 300.0
+one_shot = true
+
+[connection signal="save_drawing" from="." to="WindowPaint" method="_on_capture_scene_save_drawing"]
 [connection signal="screen_interacted" from="." to="WindowPaint" method="_on_node_3d_screen_interacted"]
+[connection signal="screen_interacted" from="." to="MarkerSounds" method="_on_capture_scene_screen_interacted"]
+[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]
+[connection signal="user_released" from="." to="WindowPaint" method="_on_capture_scene_user_released"]
+[connection signal="user_released" from="." to="MarkerSounds" method="_on_capture_scene_user_released"]
 [connection signal="click_received" from="GreenHeat" to="." method="_on_green_heat_click_received"]
 [connection signal="drag_received" from="GreenHeat" to="." method="_on_green_heat_drag_received"]
 [connection signal="hover_received" from="GreenHeat" to="." method="_on_green_heat_hover_received"]
 [connection signal="release_received" from="GreenHeat" to="." method="_on_green_heat_release_received"]
+[connection signal="debug_clear" from="WindowPaint" to="WindowPaint/Clickview" method="_on_window_paint_debug_clear"]
+[connection signal="debug_click" from="WindowPaint" to="WindowPaint/Clickview" method="_on_window_paint_debug_click"]
+[connection signal="debug_thread_click" from="WindowPaint" to="WindowPaint/Clickview" method="_on_window_paint_debug_thread_click"]
 [connection signal="timeout" from="WindowPaint/TimerThread" to="WindowPaint" method="_on_timer_thread_timeout"]
 [connection signal="erasing" from="WindowEraser" to="." method="_on_window_eraser_erasing"]
 [connection signal="erasing" from="WindowEraser" to="WindowPaint" method="_on_window_eraser_erasing"]
@@ -180,3 +308,4 @@ autostart = true
 [connection signal="timeout" from="TimerThickerLines" to="." method="_on_timer_thicker_lines_timeout"]
 [connection signal="timeout" from="TimerCheckPointer" to="." method="_on_timer_check_pointer_timeout"]
 [connection signal="timeout" from="TimerMouseCheck" to="." method="_on_timer_mouse_check_timeout"]
+[connection signal="timeout" from="TimerModsOnlyDraw" to="." method="_on_timer_mods_only_draw_timeout"]

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dcd2fiya8gxyx"
+path="res://.godot/imported/dry erase soft squeak.wav-f000b95969527903675d1255bd8681ec.sample"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/audio/dry erase soft squeak.wav"
+dest_files=["res://.godot/imported/dry erase soft squeak.wav-f000b95969527903675d1255bd8681ec.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

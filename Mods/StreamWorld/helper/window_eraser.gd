@@ -14,6 +14,11 @@ var held := false
 @onready var texture_rect: TextureRect = $TextureRect
 
 
+#TODO: everybody can erase
+#TODO: thicker lines optional
+#TODO: age buffer per pixel, old stuff dissapears -> refresh brush
+#TODO: save drawing on quit, reuse if run soon after
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == 1:

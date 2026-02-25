@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bm1ob8bsf8e71"
+path="res://.godot/imported/dry erase slide.wav-1702d238c0d4e9145fa36d9c664ed9c1.sample"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/audio/dry erase slide.wav"
+dest_files=["res://.godot/imported/dry erase slide.wav-1702d238c0d4e9145fa36d9c664ed9c1.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
