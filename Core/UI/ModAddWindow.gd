@@ -18,10 +18,20 @@ func _ready() -> void:
 				break
 
 	for mod_file : String in mod_scene_files:
-		var mod_entry = {}
+		var mod_entry: Dictionary = {}
 		mod_entry["name"] = mod_file.get_file().get_basename()
 		mod_entry["path"] = mod_file
 		mod_entry["description"] = "A SnekStudio module."
+		var tmp_mod_instance: Mod_Base = load(mod_file).instantiate()
+		mod_entry["icon"] = tmp_mod_instance.icon
+
+		# Special cases for internal-only mods.
+		if tmp_mod_instance is DisabledMod:
+			# Only created by disabling another mod.
+			tmp_mod_instance.queue_free()
+			continue
+
+		tmp_mod_instance.queue_free()
 
 		# Search for a description file and overwrite the default
 		# description if it's found.
@@ -34,12 +44,17 @@ func _ready() -> void:
 			if FileAccess.file_exists(possible_description_file_full):
 				var desc_file : FileAccess = \
 					FileAccess.open(possible_description_file_full, FileAccess.READ)
-				mod_entry["description"] = desc_file.get_as_text(true)
+				mod_entry["description"] = desc_file.get_as_text()
 				desc_file.close()
 				break
 
 		_mods_list.append(mod_entry)
+
+	_mods_list.sort_custom(func(a, b): return a["name"].to_lower() < b["name"].to_lower() )
+
+	for mod_entry: Dictionary in _mods_list:
 		%Mods_List.add_item(mod_entry["name"])
+		%Mods_List.set_item_icon(%Mods_List.item_count - 1, mod_entry["icon"])
 
 func _get_mods_node():
 	return _get_app_root().get_node("%Mods")

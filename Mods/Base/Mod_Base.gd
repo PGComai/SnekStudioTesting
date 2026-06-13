@@ -14,6 +14,8 @@ var _mod_log : Array = []
 
 const defaults_text_get_rid_of_me = "\u27F2"
 
+@export var icon: Texture2D = null
+
 # -----------------------------------------------------------------------------
 # Virtual functions
 
@@ -824,7 +826,7 @@ func settings_window_add_selector(
 						selection_widget.select(idx, single)
 
 		selection_widget.multi_selected.connect(
-			(func(_index, widget): callback.call(widget)).bind(selection_widget))
+			(func(_index, selected, widget): callback.call(widget)).bind(selection_widget))
 
 	reset_default.pressed.connect(
 		reset_default_action.bind(default_value)

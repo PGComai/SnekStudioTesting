@@ -267,13 +267,14 @@ func _update_local_trackers() -> void:
 		else:
 			tracker = $Hand_Right
 
-		for landmark_index : int in range(0, len(mediapipe_hand_landmark_names)):
-			if tracker.get_child_count() > landmark_index:
-				var finger_tracker : Node3D = tracker.get_child(landmark_index)
-				var landmark_name : String = side + "_" + mediapipe_hand_landmark_names[landmark_index]
-				#print(landmark_name, " = ", tracker_dict["finger_positions"][landmark_name])
-				if landmark_name in tracker_dict["finger_positions"]:
-					finger_tracker.global_transform.origin = tracker_dict["finger_positions"][landmark_name]
+		if tracker_dict.has("finger_positions"):
+			for landmark_index : int in range(0, len(mediapipe_hand_landmark_names)):
+				if tracker.get_child_count() > landmark_index:
+					var finger_tracker : Node3D = tracker.get_child(landmark_index)
+					var landmark_name : String = side + "_" + mediapipe_hand_landmark_names[landmark_index]
+					#print(landmark_name, " = ", tracker_dict["finger_positions"][landmark_name])
+					if landmark_name in tracker_dict["finger_positions"]:
+						finger_tracker.global_transform.origin = tracker_dict["finger_positions"][landmark_name]
 
 func _process(delta : float) -> void:
 
@@ -284,6 +285,9 @@ func _process(delta : float) -> void:
 	var skel : Skeleton3D = get_skeleton()
 	var model_root : Node3D = get_model()
 	var model_controller : ModelController = get_model_controller()
+
+	if not tracker_dict.has("head"):
+		return
 
 	# ---------------------------------------------------------------------------------------------
 	# Update this mod's tracker instances
@@ -669,10 +673,12 @@ func _update_finger_chain(finger_bone_array : Array, hand_landmarks : Array, whi
 		# Convert that to a rotation offset from the rest rotation.
 		var global_rotation_from_rest = skel.get_bone_global_rest(bone_to_modify_index).basis * rotation_axis_local
 
-		if not tracker_dict["hand_" + which_hand.to_lower()]["active"]:
-			skel.set_bone_pose_rotation(bone_to_modify_index, Basis())
-		else:
-			rotate_bone_in_global_space(skel, bone_to_modify_index, global_rotation_from_rest, -angle_between)
+		var hand_index = "hand_" + which_hand.to_lower()
+		if tracker_dict.has(hand_index):
+			if not tracker_dict[hand_index]:
+				skel.set_bone_pose_rotation(bone_to_modify_index, Basis())
+			else:
+				rotate_bone_in_global_space(skel, bone_to_modify_index, global_rotation_from_rest, -angle_between)
 
 		is_first_bone = false
 

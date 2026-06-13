@@ -27,7 +27,7 @@ using a copy of the Godot editor.
    If you didn't do the `--recursive` parameter, then you'll have to do
    `git submodule init` and `git submodule update` inside the repo.
 
-2. Open the project up in Godot 4.4.
+2. Open the project up in Godot 4.6.
 
 3. Download the latest Python Standalone Build.
 
@@ -108,3 +108,9 @@ using a copy of the Godot editor.
 ## Known Issues
 
 So many. Please please please use the bug reporting tools on Github.
+
+## AI Policy
+
+We do not accept AI-genreted pull requests, and issues that are suspected to be written by AI are likely to be closed without comment.
+
+All code used in SnekStudio must be written by a person.
