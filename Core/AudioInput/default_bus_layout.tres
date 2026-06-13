@@ -1,7 +1,54 @@
-[gd_resource type="AudioBusLayout" load_steps=3 format=3 uid="uid://o8d811r80yx5"]
+[gd_resource type="AudioBusLayout" load_steps=10 format=3 uid="uid://o8d811r80yx5"]
 
 [sub_resource type="AudioEffectCapture" id="AudioEffectCapture_hy4p5"]
 resource_name = "Capture"
+
+[sub_resource type="AudioEffectPitchShift" id="AudioEffectPitchShift_chbtg"]
+resource_name = "PitchShift"
+oversampling = 16
+
+[sub_resource type="AudioEffectCompressor" id="AudioEffectCompressor_chbtg"]
+resource_name = "Compressor"
+
+[sub_resource type="AudioEffectChorus" id="AudioEffectChorus_chbtg"]
+resource_name = "Chorus"
+voice_count = 4
+voice/3/delay_ms = 12.0
+voice/3/rate_hz = 1.0
+voice/3/depth_ms = 0.0
+voice/3/level_db = 0.0
+voice/3/cutoff_hz = 16000.0
+voice/3/pan = 0.0
+voice/4/delay_ms = 12.0
+voice/4/rate_hz = 1.0
+voice/4/depth_ms = 0.0
+voice/4/level_db = 0.0
+voice/4/cutoff_hz = 16000.0
+voice/4/pan = 0.0
+
+[sub_resource type="AudioEffectDelay" id="AudioEffectDelay_chbtg"]
+resource_name = "Delay"
+tap1_level_db = -10.0
+tap1_pan = 0.0
+tap2_level_db = -20.0
+tap2_pan = 0.0
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_chbtg"]
+resource_name = "Distortion"
+pre_gain = -15.0
+keep_hf_hz = 4649.0
+drive = 0.44
+post_gain = -15.11
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_chbtg"]
+resource_name = "Reverb"
+wet = 0.23
+
+[sub_resource type="AudioEffectHardLimiter" id="AudioEffectHardLimiter_chbtg"]
+resource_name = "HardLimiter"
+pre_gain_db = -3.21
+ceiling_db = -24.0
+release = 0.01
 
 [sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_chbtg"]
 resource_name = "LowPassFilter"
@@ -10,12 +57,26 @@ cutoff_hz = 1300.0
 [resource]
 bus/1/name = &"Record"
 bus/1/solo = false
-bus/1/mute = true
+bus/1/mute = false
 bus/1/bypass_fx = false
 bus/1/volume_db = 0.0
 bus/1/send = &"Master"
 bus/1/effect/0/effect = SubResource("AudioEffectCapture_hy4p5")
-bus/1/effect/0/enabled = true
+bus/1/effect/0/enabled = false
+bus/1/effect/1/effect = SubResource("AudioEffectPitchShift_chbtg")
+bus/1/effect/1/enabled = false
+bus/1/effect/2/effect = SubResource("AudioEffectCompressor_chbtg")
+bus/1/effect/2/enabled = false
+bus/1/effect/3/effect = SubResource("AudioEffectChorus_chbtg")
+bus/1/effect/3/enabled = false
+bus/1/effect/4/effect = SubResource("AudioEffectDelay_chbtg")
+bus/1/effect/4/enabled = false
+bus/1/effect/5/effect = SubResource("AudioEffectDistortion_chbtg")
+bus/1/effect/5/enabled = false
+bus/1/effect/6/effect = SubResource("AudioEffectReverb_chbtg")
+bus/1/effect/6/enabled = false
+bus/1/effect/7/effect = SubResource("AudioEffectHardLimiter_chbtg")
+bus/1/effect/7/enabled = false
 bus/2/name = &"Marker"
 bus/2/solo = false
 bus/2/mute = false

@@ -7,14 +7,15 @@ signal thicker_lines
 signal marker_permissions_requested(user_id: String, display_name: String)
 signal erase_marker_permissions_requested(user_id: String, display_name: String)
 signal revoked_permissions_requested(user_id: String, display_name: String)
+signal drawing_enabled(user_id: String, display_name: String)
 signal mod_cleared_screen
 signal only_mods_draw
 signal save_drawing
 
 
 const SENS: float = 0.003
-const SPEED: float = 2.0
-const JUMP: float = 1.0
+const SPEED: float = 6.0
+const JUMP: float = 3.0
 const ACCEL: float = 0.1
 const ACCEL_AIR: float = 0.05
 const MOD_USERNAMES: Array[String] = [
@@ -24,6 +25,11 @@ const MOD_USERNAMES: Array[String] = [
 const MARKER_PERMISSION_PATH: String = "user://marker_permissions.dat"
 const REVOKED_PERMISSION_PATH: String = "user://revoked_permissions.dat"
 const DAY_IN_SECONDS: float = 86400.0
+
+
+@export var pos_override := false
+@export var pos_override_value := Vector3.ZERO
+@export var island_material: ShaderMaterial
 
 
 var default_key_actions: Dictionary[StringName, InputEventKey] = {
@@ -62,9 +68,19 @@ var revoked_marker_ids: Dictionary[String, String] = {}
 @onready var camera_3d_stream: Camera3D = $WindowStream/Camera3DStream
 @onready var timer_save_position: Timer = $TimerSavePosition
 @onready var timer_save_drawing: Timer = $TimerSaveDrawing
+@onready var voice_box: AudioStreamPlayer3D = $VoiceBox
 
 
 func _ready() -> void:
+	var model = get_model()
+	var anim_player_2 := AnimationPlayer.new()
+	model.add_child(anim_player_2)
+	anim_player_2.name = "AnimationPlayer2"
+	#var anim_player : AnimationPlayer = model.find_child("AnimationPlayer", false, false)
+	anim_player_2.add_animation_library("", AnimationLibrary.new())
+	anim_player_2.get_animation_library("").add_animation("Walk", preload("res://Mods/StreamWorld/animation/walk.res"))
+	anim_player_2.play("Walk")
+	
 	window_stream.visible = true
 	for ac in default_key_actions:
 		InputMap.add_action(ac)
@@ -132,6 +148,9 @@ func _ready() -> void:
 
 
 func load_after(_settings_old : Dictionary, _settings_new : Dictionary) -> void:
+	if pos_override:
+		character_body_3d.global_position = pos_override_value
+		return
 	character_body_3d.global_position = player_position
 
 
@@ -150,6 +169,10 @@ func handle_channel_chat_message_v2(
 			mod_cleared_screen.emit()
 		elif message == "!modsonly":
 			only_mods_draw.emit()
+	#if message.containsn("!draw"):
+	var chatter_data: Dictionary = await get_twitch_id(chatter_username)
+	var chatter_id: String = chatter_data.id
+	drawing_enabled.emit(chatter_id, chatter_display_name)
 	#if message == "!save":
 		#if timer_save_drawing.is_stopped():
 			#save_drawing.emit()
@@ -242,6 +265,12 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var skel = get_skeleton()
+	var head: Node3D = skel.get_node_or_null("HeadOutside")
+	if head:
+		voice_box.global_transform = head.global_transform
+		voice_box.global_basis = voice_box.global_basis.rotated(voice_box.global_basis.y, PI)
+	
 	if not character_body_3d.is_on_floor():
 		character_body_3d.velocity += character_body_3d.get_gravity() * delta
 	else:
@@ -283,7 +312,7 @@ func _physics_process(delta: float) -> void:
 			look_angle = -dir_2d.angle() + (PI/2.0)
 
 		if (dir_2d or Input.is_action_pressed("face_cam")) and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			player_rotation = lerp_angle(player_rotation, look_angle, 0.02)
+			player_rotation = lerp_angle(player_rotation, look_angle, 0.1)
 
 		main_cam_h.global_rotation.y = lerp_angle(main_cam_h.global_rotation.y, model.global_rotation.y, 0.4)
 
@@ -346,3 +375,22 @@ func _on_timer_save_position_timeout() -> void:
 
 func _on_timer_save_drawing_timeout() -> void:
 	pass # Replace with function body.
+
+
+func _on_check_button_asmr_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		voice_box.attenuation_model = AudioStreamPlayer3D.ATTENUATION_LOGARITHMIC
+		voice_box.panning_strength = 1.0
+		voice_box.emission_angle_enabled = true
+	else:
+		voice_box.attenuation_model = AudioStreamPlayer3D.ATTENUATION_DISABLED
+		voice_box.panning_strength = 0.0
+		voice_box.emission_angle_enabled = false
+
+
+func _on_window_player_mouse_entered() -> void:
+	window_player.scaling_3d_scale = 1.0
+
+
+func _on_window_player_mouse_exited() -> void:
+	window_player.scaling_3d_scale = 0.5

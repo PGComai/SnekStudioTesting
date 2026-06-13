@@ -212,6 +212,9 @@ autostart = true
 visible = false
 script = ExtResource("11_qjh7t")
 
+[node name="TimerFade" type="Timer" parent="WindowPaint"]
+autostart = true
+
 [node name="WindowEraser" type="Window" parent="."]
 transparent_bg = true
 size = Vector2i(200, 100)
@@ -231,10 +234,6 @@ texture = SubResource("PlaceholderTexture2D_37l3g")
 [node name="TimerThickerLines" type="Timer" parent="."]
 wait_time = 60.0
 one_shot = true
-
-[node name="TimerCheckPointer" type="Timer" parent="."]
-wait_time = 0.5
-autostart = true
 
 [node name="TimerMouseCheck" type="Timer" parent="."]
 wait_time = 0.2
@@ -301,11 +300,11 @@ one_shot = true
 [connection signal="debug_click" from="WindowPaint" to="WindowPaint/Clickview" method="_on_window_paint_debug_click"]
 [connection signal="debug_thread_click" from="WindowPaint" to="WindowPaint/Clickview" method="_on_window_paint_debug_thread_click"]
 [connection signal="timeout" from="WindowPaint/TimerThread" to="WindowPaint" method="_on_timer_thread_timeout"]
+[connection signal="timeout" from="WindowPaint/TimerFade" to="WindowPaint" method="_on_timer_fade_timeout"]
 [connection signal="erasing" from="WindowEraser" to="." method="_on_window_eraser_erasing"]
 [connection signal="erasing" from="WindowEraser" to="WindowPaint" method="_on_window_eraser_erasing"]
 [connection signal="erasing_done" from="WindowEraser" to="." method="_on_window_eraser_erasing_done"]
 [connection signal="erasing_done" from="WindowEraser" to="WindowPaint" method="_on_window_eraser_erasing_done"]
 [connection signal="timeout" from="TimerThickerLines" to="." method="_on_timer_thicker_lines_timeout"]
-[connection signal="timeout" from="TimerCheckPointer" to="." method="_on_timer_check_pointer_timeout"]
 [connection signal="timeout" from="TimerMouseCheck" to="." method="_on_timer_mouse_check_timeout"]
 [connection signal="timeout" from="TimerModsOnlyDraw" to="." method="_on_timer_mods_only_draw_timeout"]

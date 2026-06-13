@@ -1,0 +1,40 @@
+[gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://b4b2uerwc5m6r"]
+
+[ext_resource type="Shader" uid="uid://bg3n2ub5jn0uy" path="res://Mods/StreamWorld/island/island_proto.tres" id="1_oiftp"]
+
+[sub_resource type="Gradient" id="Gradient_oiftp"]
+colors = PackedColorArray(0.427493, 0.427493, 0.427493, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3p6nc"]
+noise_type = 4
+frequency = 0.079
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ebc35"]
+in_3d_space = true
+seamless = true
+color_ramp = SubResource("Gradient_oiftp")
+noise = SubResource("FastNoiseLite_3p6nc")
+
+[sub_resource type="Curve" id="Curve_3p6nc"]
+_data = [Vector2(0, 0.550047), 0.0, 0.0, 0, 0, Vector2(0.501845, 0.979732), 0.0, 0.0, 0, 0, Vector2(1, 0.278453), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ebc35"]
+curve = SubResource("Curve_3p6nc")
+
+[sub_resource type="Gradient" id="Gradient_3p6nc"]
+offsets = PackedFloat32Array(0.544922, 0.722656, 0.859375, 0.917969, 0.964844)
+colors = PackedColorArray(0.173314, 0.169473, 0.155891, 1, 0.455152, 0.372783, 0.288902, 1, 0.41579, 0.250405, 0.0747422, 1, 0.198164, 0.19692, 0.0661078, 1, 0.196095, 0.230127, 0.0155315, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ebc35"]
+gradient = SubResource("Gradient_3p6nc")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_oiftp")
+shader_parameter/tex_vtx_4 = SubResource("GradientTexture1D_ebc35")
+shader_parameter/curve_vtx_6 = SubResource("CurveTexture_ebc35")
+shader_parameter/TextureParameterTriplanar = SubResource("NoiseTexture2D_ebc35")
+shader_parameter/triplanar_scale = Vector3(0.1, 0.1, 0.1)
+shader_parameter/triplanar_offset = Vector3(0, 0, 0)
+shader_parameter/triplanar_sharpness = 0.5

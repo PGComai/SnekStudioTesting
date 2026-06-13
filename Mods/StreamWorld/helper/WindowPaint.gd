@@ -17,8 +17,9 @@ const SAVED_DRAWINGS_DIR: String = "user://drawings"
 
 var img: Image
 var img_tex: ImageTexture
-var img_shadow: Image
-var img_tex_shadow: ImageTexture
+var img_fade: Image
+var img_fade_mask: Image
+var img_fade_mask_fade: Image
 var drags: Dictionary[String, PackedVector2Array] = {}
 var mod_erasings: Dictionary[String, PackedVector2Array] = {}
 var erasings: PackedVector2Array = []
@@ -61,6 +62,13 @@ func _ready() -> void:
 	img_tex = ImageTexture.create_from_image(img)
 	texture_rect.texture = img_tex
 	texture_rect_shadow.texture = img_tex
+	
+	img_fade = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_RGBA8)
+	img_fade.fill(Color(0.0, 0.0, 0.0, 0.0))
+	img_fade_mask = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_LA8)
+	img_fade_mask.fill(Color(0.0, 0.0, 0.0, 0.0))
+	img_fade_mask_fade = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_LA8)
+	img_fade_mask_fade.fill(Color(0.0, 0.0, 0.0, 1.0))
 
 
 func _on_tree_exiting():
@@ -105,8 +113,7 @@ func _thread_function() -> void:
 			var mod_erasing: PackedVector2Array = mod_erasings_thread[id]
 			mod_erasings[id] = PackedVector2Array([mod_erasing[-1]])
 		
-		var colors_thread = capture_scene.colors.duplicate()
-		var brushes_thread = capture_scene.brushes.duplicate(true)
+		var brushes_thread: Dictionary[String, Brush] = capture_scene.brushes.duplicate(true)
 		
 		if clear_queued:
 			img.fill(Color(0.0, 0.0, 0.0, 0.0))
@@ -120,11 +127,8 @@ func _thread_function() -> void:
 			if drags_thread.size():
 				for id: String in drags_thread.keys():
 					var drag: PackedVector2Array = drags_thread[id]
-					#for pt: Vector2 in drag:
-						#call_deferred("emit_signal", "debug_thread_click", pt)
 					if drag.size() > 1:
 						img_changed = true
-						var clr: Color = colors_thread[id]
 						var drag_brush: Brush = brushes_thread[id]
 						var new_drag := PackedVector2Array([])
 						for i: int in drag.size():
@@ -133,7 +137,11 @@ func _thread_function() -> void:
 										Vector2i(drag[i]),
 										Vector2i(drag[i+1])
 									):
-									_brush_at(pixel, clr, drag_brush.brush_image, drag_brush.brush_mask)
+									#img_fade_mask.blit_rect(
+												#drag_brush.brush_mask,
+												#Rect2i(Vector2i.ZERO, drag_brush.brush_mask.get_size()),
+												#Vector2i(pixel) - (drag_brush.brush_mask.get_size() / 2))
+									_brush_at(pixel, drag_brush.brush_image, drag_brush.brush_mask)
 							else:
 								new_drag.append(drag[i])
 			
@@ -142,7 +150,6 @@ func _thread_function() -> void:
 					var drag: PackedVector2Array = mod_erasings_thread[id]
 					if drag.size() > 1:
 						img_changed = true
-						var clr: Color = capture_scene.colors[id]
 						var new_drag := PackedVector2Array([])
 						for i: int in drag.size():
 							if i < drag.size() - 1:
@@ -164,6 +171,25 @@ func _thread_function() -> void:
 									Vector2i(erasings_thread[i+1])
 								):
 								_erase_at(Vector2(erase_px) - (ERASER_SIZE / 2.0))
+			
+			#img_fade_mask.blend_rect(
+							#img_fade_mask_fade,
+							#Rect2i(Vector2i(0, 0), Vector2i(3840, 2160)),
+							#Vector2i(0, 0)
+							#)
+			#img.blend_rect_mask(
+							#img_fade,
+							#img_fade_mask,
+							#Rect2i(Vector2i(0, 0), Vector2i(3840, 2160)),
+							#Vector2i(0, 0)
+							#)
+			#img.blit_rect_mask(
+							#img_fade,
+							#img_fade_mask,
+							#Rect2i(Vector2i(0, 0), Vector2i(3840, 2160)),
+							#Vector2i(0, 0)
+							#)
+			
 			if img_changed:
 				img_tex.update.call_deferred(img)
 		
@@ -195,7 +221,7 @@ func _process(delta: float) -> void:
 			queue_thread = false
 
 
-func _brush_at(_position: Vector2, clr: Color, brush: Image, brush_mask: Image) -> void:
+func _brush_at(_position: Vector2, brush: Image, brush_mask: Image) -> void:
 	var brush_size: Vector2i = brush.get_size()
 	img.blend_rect_mask(brush, brush_mask, Rect2i(Vector2i.ZERO, brush_size), Vector2i(_position) - (brush_size / 2))
 	#img.fill_rect(Rect2(_position, Vector2.ONE).grow(brush_thickness), clr)
@@ -207,30 +233,6 @@ func _erase_at(_position: Vector2) -> void:
 
 func _mod_erase_at(_position: Vector2) -> void:
 	img.fill_rect(Rect2(_position, ERASER_SIZE_MOD), Color.TRANSPARENT)
-
-
-#func _on_green_heat_click_received(packet: Dictionary) -> void:
-	#handle_common(packet)
-#
-#
-##{ "mobile": false, "id": "AWP-r4WBz6ultU20RPT9z", "x": 0.61295180722892,
-##"y": 0.50670241286863, "button": "left", "shift": false, "ctrl": false,
-##"alt": false, "time": 1769906585726.0, "latency": 3.537, "type": "drag" }
-#func _on_green_heat_drag_received(packet: Dictionary) -> void:
-	#handle_common(packet)
-	#if drags.has(packet.id):
-		#var drag: PackedVector2Array = drags[packet.id]
-		##drag.append()
-	#else:
-		#pass
-#
-#
-#func _on_green_heat_hover_received(packet: Dictionary) -> void:
-	#handle_common(packet)
-#
-#
-#func _on_green_heat_release_received(packet: Dictionary) -> void:
-	#handle_common(packet)
 
 
 func clear() -> void:
@@ -297,6 +299,17 @@ func _on_timer_thread_timeout() -> void:
 		else:
 			queue_thread = true
 		thread_needed = false
+
+
+func _on_timer_fade_timeout() -> void:
+	pass
+	#if thread_needed:
+		#if exit_thread:
+			#exit_thread = false
+			#semaphore.post()
+		#else:
+			#queue_thread = true
+		#thread_needed = false
 
 
 func _on_capture_scene_save_drawing() -> void:

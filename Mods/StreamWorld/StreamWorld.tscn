@@ -1,13 +1,15 @@
-[gd_scene load_steps=18 format=3 uid="uid://dtkm6diaw504t"]
+[gd_scene load_steps=21 format=3 uid="uid://dtkm6diaw504t"]
 
 [ext_resource type="Script" uid="uid://bv33gioiigmr2" path="res://Mods/StreamWorld/StreamWorld.gd" id="1_wv6bo"]
 [ext_resource type="PackedScene" uid="uid://dl8gk83mipj5w" path="res://Mods/StreamWorld/helper/CaptureScene.tscn" id="2_eh1rf"]
+[ext_resource type="Material" uid="uid://b4b2uerwc5m6r" path="res://Mods/StreamWorld/island/island_proto_material.tres" id="2_f4sgu"]
 [ext_resource type="Script" uid="uid://b7aevdpql8uyu" path="res://Mods/StreamWorld/helper/window_tools.gd" id="2_tpcd6"]
 [ext_resource type="LabelSettings" uid="uid://bqrpchqvvlv7f" path="res://Mods/StreamWorld/helper/marker_display_name_labelsettings.tres" id="3_dd1gk"]
+[ext_resource type="PackedScene" uid="uid://dfsxj60t0lqms" path="res://Mods/StreamWorld/island/island.tscn" id="5_48irk"]
+
+[sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_dd1gk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_shy1m"]
-sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
 
 [sub_resource type="Sky" id="Sky_eh1rf"]
 sky_material = SubResource("ProceduralSkyMaterial_shy1m")
@@ -54,6 +56,18 @@ radius = 0.1
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_wv6bo")
+pos_override_value = Vector3(-632.634, -12.4233, 194.303)
+island_material = ExtResource("2_f4sgu")
+
+[node name="VoiceBox" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -632.634, -12.4233, 194.303)
+stream = SubResource("AudioStreamMicrophone_dd1gk")
+attenuation_model = 3
+unit_size = 1.0
+autoplay = true
+panning_strength = 0.0
+bus = &"Record"
+doppler_tracking = 2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.798049, -0.521861, 0.301295, 1.47562e-08, 0.499998, 0.866027, -0.602592, -0.691132, 0.399024, 0, 0, 0)
@@ -78,6 +92,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="CheckButtonASMR" type="CheckButton" parent="WindowTools/VBoxContainer"]
+layout_mode = 2
+text = "ASMR"
 
 [node name="CheckButtonBRB" type="CheckButton" parent="WindowTools/VBoxContainer"]
 layout_mode = 2
@@ -144,21 +162,22 @@ scaling_3d_scale = 0.5
 anisotropic_filtering_level = 0
 positional_shadow_atlas_size = 0
 position = Vector2i(0, 36)
-size = Vector2i(432, 243)
+size = Vector2i(864, 486)
 
 [node name="Camera3DPlayer" type="Camera3D" parent="WindowPlayer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.77026, 2.94625)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -632.583, -10.9259, 199.295)
 current = true
 far = 50.0
 
 [node name="WindowStream" type="Window" parent="."]
+audio_listener_enable_3d = true
 title = "StreamWindow"
 initial_position = 2
 size = Vector2i(1920, 1080)
 visible = false
 
 [node name="Camera3DStream" type="Camera3D" parent="WindowStream"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.421512, 1.83628, 0.241467)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -633.004, -10.8599, 196.591)
 fov = 54.5
 far = 50.0
 
@@ -167,7 +186,11 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 
 material_override = SubResource("StandardMaterial3D_eh1rf")
 mesh = SubResource("PrismMesh_eh1rf")
 
+[node name="AudioListener3D" type="AudioListener3D" parent="WindowStream/Camera3DStream"]
+current = true
+
 [node name="WorldRoot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -632.583, -12.6962, 196.349)
 
 [node name="Chat" type="AnimatableBody3D" parent="WorldRoot"]
 transform = Transform3D(0.975661, 0, 0.219284, 0, 1, 0, -0.219284, 0, 0.975661, -2.41323, 3.1, -2.45024)
@@ -246,6 +269,9 @@ one_shot = true
 wait_time = 5.0
 one_shot = true
 
+[node name="island" parent="." instance=ExtResource("5_48irk")]
+
+[connection signal="drawing_enabled" from="." to="WorldRoot/Capture" method="_on_game_world_drawing_enabled"]
 [connection signal="erase_marker_permissions_requested" from="." to="WorldRoot/Capture" method="_on_game_world_erase_marker_permissions_requested"]
 [connection signal="marker_permissions_requested" from="." to="WindowTools" method="_on_game_world_marker_permissions_requested"]
 [connection signal="marker_permissions_requested" from="." to="WorldRoot/Capture" method="_on_game_world_marker_permissions_requested"]
@@ -257,11 +283,14 @@ one_shot = true
 [connection signal="marker_permissions_restored" from="WindowTools" to="." method="_on_window_tools_marker_permissions_restored"]
 [connection signal="marker_permissions_revoked" from="WindowTools" to="." method="_on_window_tools_marker_permissions_revoked"]
 [connection signal="marker_permissions_revoked" from="WindowTools" to="WorldRoot/Capture" method="_on_window_tools_marker_permissions_revoked"]
+[connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonASMR" to="." method="_on_check_button_asmr_toggled"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WindowTools" method="_on_check_button_brb_toggled"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WorldRoot/Capture" method="_on_check_button_brb_toggled"]
 [connection signal="text_changed" from="WindowTools/VBoxContainer/LineEditText3D" to="WorldRoot/Capture" method="_on_line_edit_text_3d_text_changed"]
 [connection signal="pressed" from="WindowTools/VBoxContainer/ClearMarkers" to="WorldRoot/Capture" method="_on_clear_markers_pressed"]
 [connection signal="value_changed" from="WindowTools/VBoxContainer/HBoxContainer/HSliderMarkerAudio" to="WindowTools" method="_on_h_slider_marker_audio_value_changed"]
+[connection signal="mouse_entered" from="WindowPlayer" to="." method="_on_window_player_mouse_entered"]
+[connection signal="mouse_exited" from="WindowPlayer" to="." method="_on_window_player_mouse_exited"]
 [connection signal="window_input" from="WindowPlayer" to="." method="_on_window_window_input"]
 [connection signal="timeout" from="Timer5s" to="." method="_on_timer_5s_timeout"]
 [connection signal="timeout" from="TimerSavePosition" to="." method="_on_timer_save_position_timeout"]

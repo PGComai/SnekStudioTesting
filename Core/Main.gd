@@ -106,7 +106,7 @@ func _ready():
 	# Auto-load on startup.
 	load_settings()
 	
-	$AudioStreamRecord.play()
+	#$AudioStreamRecord.play()
 
 func _exit_tree():
 	# We may need to kill some background processes and stuff (like the

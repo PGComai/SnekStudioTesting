@@ -39,6 +39,7 @@ var text_3d: String = "BRB":
 var cursor_speed_rolling: Array[float] = []
 var marker_permissions: Array[String] = []
 var erase_marker_permissions: Array[String] = []
+var enabled_drawers: Array[String] = []
 var viewer_cursors: Dictionary[String, ViewerCursor]
 var viewer_windows: Dictionary[String, ViewerWindow]
 var marker_display_names: Dictionary[String, String]
@@ -195,8 +196,11 @@ func handle_gh_packet(packet: Dictionary) -> void:
 	#print(packet)
 	var is_mod: bool = mod_ids.has(id)
 	var can_draw: bool = marker_permissions.has(id) or testing_markers
+	var draw_enabled: bool = enabled_drawers.has(id)
 	if mod_markers_only:
 		can_draw = is_mod
+	else:
+		can_draw = can_draw and draw_enabled
 	if can_draw:
 		if not brushes.has(id):
 			var new_brush := Brush.new()
@@ -206,7 +210,7 @@ func handle_gh_packet(packet: Dictionary) -> void:
 		handle_common(packet)
 		var detected_release := false
 		var shift: bool = packet.shift
-		var can_erase: bool = erase_marker_permissions.has(id)
+		var can_erase: bool = true#erase_marker_permissions.has(id)
 		var pos := Vector2(packet["x"], packet["y"]) * Vector2(1920.0, 1080.0)
 		var pos_screen := Vector2(packet["x"], packet["y"]) * Vector2(3840.0, 2160.0)
 		var cast_result: Dictionary = cast(pos)
@@ -351,43 +355,6 @@ func _on_timer_thicker_lines_timeout() -> void:
 		brushes[id].make_brush()
 
 
-func _on_timer_check_pointer_timeout() -> void:
-	pass
-	#var d := DirAccess.open("/var/log")
-	#print(DirAccess.get_open_error())
-	
-	
-	#var output_checks: Array[String] = []
-	#
-	#var output_dict: Dictionary[String, float] = {}
-	#
-	#var exit_code_checks = OS.execute("bash", ["-c", "cat /home/pgcomai/Documents/Xlog_copy.log"], output_checks, true)
-	##var exit_code_checks = OS.execute("./test.sh", [], output_checks, true)
-	#
-	#var output_checks0 := output_checks[0].split("\n")
-	#print(output_checks0)
-	
-	
-	#print(stupid_pipe.get_line())
-	
-	#if stupid_pipe:
-		#print(stupid_pipe.get_line())
-		#OS.kill(pipe_pid)
-	#
-	#var pipe := OS.execute_with_pipe("/home/Documents/sneklog.sh", [], false)
-	#stupid_pipe = pipe.stderr
-	#pipe_pid = pipe.pid
-	
-	
-	#var output_grabs: Array[String] = []
-	#
-	##var exit_code_grabs = OS.execute("bash", ["-c", "cat /var/log/Xorg.0.log"], output_grabs, true)
-	#var exit_code_grabs = OS.execute("./check.sh", [], output_grabs, true)
-	#
-	#var output_grabs0 := output_grabs[0].split("\n")
-	#print(output_grabs0)
-
-
 func get_system_temps() -> Dictionary[String, float]:
 	var output_name: Array[String] = []
 	var output_temp: Array[String] = []
@@ -451,3 +418,8 @@ func _on_timer_mods_only_draw_timeout() -> void:
 
 func _on_game_world_save_drawing() -> void:
 	save_drawing.emit()
+
+
+func _on_game_world_drawing_enabled(user_id: String, display_name: String) -> void:
+	if not enabled_drawers.has(user_id):
+		enabled_drawers.append(user_id)
