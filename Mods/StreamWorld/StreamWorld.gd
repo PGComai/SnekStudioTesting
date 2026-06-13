@@ -72,14 +72,14 @@ var revoked_marker_ids: Dictionary[String, String] = {}
 
 
 func _ready() -> void:
-	var model = get_model()
-	var anim_player_2 := AnimationPlayer.new()
-	model.add_child(anim_player_2)
-	anim_player_2.name = "AnimationPlayer2"
-	#var anim_player : AnimationPlayer = model.find_child("AnimationPlayer", false, false)
-	anim_player_2.add_animation_library("", AnimationLibrary.new())
-	anim_player_2.get_animation_library("").add_animation("Walk", preload("res://Mods/StreamWorld/animation/walk.res"))
-	anim_player_2.play("Walk")
+	#var model = get_model()
+	#var anim_player_2 := AnimationPlayer.new()
+	#model.add_child(anim_player_2)
+	#anim_player_2.name = "AnimationPlayer2"
+	##var anim_player : AnimationPlayer = model.find_child("AnimationPlayer", false, false)
+	#anim_player_2.add_animation_library("", AnimationLibrary.new())
+	#anim_player_2.get_animation_library("").add_animation("Walk", preload("res://Mods/StreamWorld/animation/walk.res"))
+	#anim_player_2.play("Walk")
 	
 	window_stream.visible = true
 	for ac in default_key_actions:

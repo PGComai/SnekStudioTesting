@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://b4b2uerwc5m6r"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b4b2uerwc5m6r"]
 
 [ext_resource type="Shader" uid="uid://bg3n2ub5jn0uy" path="res://Mods/StreamWorld/island/island_proto.tres" id="1_oiftp"]
 
@@ -10,10 +10,10 @@ noise_type = 4
 frequency = 0.079
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ebc35"]
-in_3d_space = true
-seamless = true
-color_ramp = SubResource("Gradient_oiftp")
 noise = SubResource("FastNoiseLite_3p6nc")
+color_ramp = SubResource("Gradient_oiftp")
+seamless = true
+in_3d_space = true
 
 [sub_resource type="Curve" id="Curve_3p6nc"]
 _data = [Vector2(0, 0.550047), 0.0, 0.0, 0, 0, Vector2(0.501845, 0.979732), 0.0, 0.0, 0, 0, Vector2(1, 0.278453), 0.0, 0.0, 0, 0]

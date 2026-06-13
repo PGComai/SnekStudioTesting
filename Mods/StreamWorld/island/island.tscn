@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dfsxj60t0lqms"]
+[gd_scene format=3 uid="uid://dfsxj60t0lqms"]
 
 [ext_resource type="PackedScene" uid="uid://cayjvqr5axp71" path="res://Mods/StreamWorld/island/island.glb" id="1_0a0ji"]
 [ext_resource type="Material" uid="uid://b4b2uerwc5m6r" path="res://Mods/StreamWorld/island/island_proto_material.tres" id="2_3p6nc"]
@@ -8,7 +8,7 @@ transparency = 1
 albedo_color = Color(0, 0.415686, 0.909804, 0.870588)
 roughness = 0.42
 
-[node name="island" instance=ExtResource("1_0a0ji")]
+[node name="island" unique_id=107648171 instance=ExtResource("1_0a0ji")]
 
 [node name="Land" parent="." index="0"]
 material_override = ExtResource("2_3p6nc")
