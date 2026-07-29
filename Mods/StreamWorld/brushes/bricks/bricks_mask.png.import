@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://x7av5awkrido"
+path="res://.godot/imported/bricks_mask.png-b3ff0e6ba6935c709ea404b7cc65b00d.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/bricks/bricks_mask.png"
+dest_files=["res://.godot/imported/bricks_mask.png-b3ff0e6ba6935c709ea404b7cc65b00d.image"]
+
+[params]
+

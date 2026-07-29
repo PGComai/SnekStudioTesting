@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://dj1entia7twjo"
+path="res://.godot/imported/dirt_mask.png-11268ac96e26ab8eb11a8ad9b850d470.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/dirt/dirt_mask.png"
+dest_files=["res://.godot/imported/dirt_mask.png-11268ac96e26ab8eb11a8ad9b850d470.image"]
+
+[params]
+

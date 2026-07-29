@@ -2,16 +2,23 @@
 
 [ext_resource type="Script" uid="uid://mi6afv06vg6f" path="res://Mods/StreamWorld/helper/CaptureScene.gd" id="1_a202f"]
 [ext_resource type="ArrayMesh" uid="uid://d1yjkdoqorvn7" path="res://Mods/StreamWorld/monitor.obj" id="2_3414e"]
-[ext_resource type="PackedScene" uid="uid://drhg1cvv8u2hm" path="res://Mods/StreamWorld/ChatBubbleGame/chat_bubble_game.tscn" id="3_kb54l"]
 [ext_resource type="Script" uid="uid://d2o2x3bq5opf1" path="res://addons/GreenHeatGD/GreenHeat.gd" id="4_lha3j"]
+[ext_resource type="Script" uid="uid://bmd4qbaj7tyap" path="res://Mods/StreamWorld/helper/brush_preview.gd" id="4_qjh7t"]
 [ext_resource type="Script" uid="uid://bb1w7di87n4xg" path="res://Mods/StreamWorld/helper/WindowPaint.gd" id="5_37l3g"]
+[ext_resource type="Image" uid="uid://baasq5g0i0tov" path="res://Mods/StreamWorld/brushes/DK64DonkeyKongIcon32_mask.png" id="5_ilncf"]
 [ext_resource type="Shader" uid="uid://bhgfjcdo3hili" path="res://Mods/StreamWorld/helper/color_palette_shader.tres" id="5_su72v"]
+[ext_resource type="Image" uid="uid://ca7ly7axwf2w4" path="res://Mods/StreamWorld/brushes/DK64DonkeyKongIcon32.png" id="5_vt1bh"]
+[ext_resource type="Image" uid="uid://ipebroq0y0r2" path="res://Mods/StreamWorld/brushes/bricks/bricks_albedo.png" id="6_s0ud2"]
 [ext_resource type="Gradient" uid="uid://bf1ydvlcq6wj3" path="res://Mods/StreamWorld/helper/marker_palette_gradient.tres" id="6_xtl51"]
 [ext_resource type="Script" uid="uid://bk827oe5hg8f0" path="res://Mods/StreamWorld/helper/window_eraser.gd" id="6_ycwmq"]
 [ext_resource type="Gradient" uid="uid://bmrdymi6qytcn" path="res://Mods/StreamWorld/helper/marker_palette_gradient_gray.tres" id="7_3wliy"]
 [ext_resource type="PackedScene" uid="uid://c73man0k50eti" path="res://Mods/StreamWorld/helper/eraser.glb" id="7_73vr2"]
 [ext_resource type="Shader" uid="uid://b7ign01iy5to4" path="res://Mods/StreamWorld/helper/paint_shadow_shader.tres" id="7_dqwju"]
+[ext_resource type="Image" uid="uid://x7av5awkrido" path="res://Mods/StreamWorld/brushes/bricks/bricks_mask.png" id="7_vt1bh"]
+[ext_resource type="Image" uid="uid://dlueaef00xifd" path="res://Mods/StreamWorld/brushes/dirt/dirt_albedo.png" id="9_p00cp"]
+[ext_resource type="Image" uid="uid://dj1entia7twjo" path="res://Mods/StreamWorld/brushes/dirt/dirt_mask.png" id="10_wb8ux"]
 [ext_resource type="Script" uid="uid://bxtht5gu5652j" path="res://Mods/StreamWorld/helper/clickview.gd" id="11_qjh7t"]
+[ext_resource type="Image" uid="uid://dyehrbs0xxbi1" path="res://Mods/StreamWorld/brushes/circle/circle_albedo.png" id="11_wb8ux"]
 [ext_resource type="Script" uid="uid://bm2u4mlvjh6v3" path="res://Mods/StreamWorld/helper/marker_sounds.gd" id="12_llkab"]
 [ext_resource type="AudioStream" uid="uid://dygrk02lhhoga" path="res://Mods/StreamWorld/audio/dry erase drag squeak.wav" id="12_wl5gr"]
 [ext_resource type="AudioStream" uid="uid://dy1fat8m86ete" path="res://Mods/StreamWorld/audio/dry erase drag.wav" id="13_llkab"]
@@ -27,6 +34,9 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3wliy"]
 albedo_color = Color(0, 0, 0, 1)
 roughness = 0.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_llkab"]
+size = Vector3(2, 0.2, 0.1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_4xowi"]
 size = Vector2(3.84, 2.16)
@@ -92,6 +102,41 @@ marker_palette_gray_gradient = ExtResource("7_3wliy")
 donut_material = SubResource("StandardMaterial3D_3wliy")
 cast_layer = 32768
 
+[node name="BrushStore" type="MeshInstance3D" parent="." unique_id=1073332002]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.96132904, 0.27540246, 0, -0.27540246, 0.96132904, -0.89577377, -1.2494602, 0.022060871)
+mesh = SubResource("BoxMesh_llkab")
+
+[node name="BrushPreviewDK" type="Sprite3D" parent="BrushStore" unique_id=1219996134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.89885306, -9.313226e-10, 0.06713456)
+pixel_size = 0.005
+texture_filter = 2
+script = ExtResource("4_qjh7t")
+img = ExtResource("5_vt1bh")
+mask = ExtResource("5_ilncf")
+hit_layer = 32768
+
+[node name="BrushPreviewBrick" type="Sprite3D" parent="BrushStore" unique_id=287469372]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6988531, -9.313226e-10, 0.06713456)
+pixel_size = 0.005
+texture_filter = 2
+script = ExtResource("4_qjh7t")
+img = ExtResource("6_s0ud2")
+mask = ExtResource("7_vt1bh")
+hit_layer = 32768
+tiled = true
+
+[node name="BrushPreviewDirt" type="Sprite3D" parent="BrushStore" unique_id=2087482112]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.49885306, -9.313226e-10, 0.06713456)
+pixel_size = 0.005
+texture_filter = 2
+script = ExtResource("4_qjh7t")
+img = ExtResource("9_p00cp")
+mask = ExtResource("10_wb8ux")
+mask2 = ExtResource("11_wb8ux")
+hit_layer = 32768
+tiled = true
+
 [node name="WholeMonitor" type="Node3D" parent="." unique_id=1345857603]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.07)
 
@@ -130,9 +175,6 @@ sync_to_physics = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MeshInstance3D/Monitor/MonitorBody" unique_id=364484731]
 shape = SubResource("BoxShape3D_3414e")
 
-[node name="ChatBubbleGame" parent="WholeMonitor" unique_id=316430033 instance=ExtResource("3_kb54l")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -0.1)
-
 [node name="Text" type="MeshInstance3D" parent="WholeMonitor" unique_id=1020788353]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -0.0773568)
 mesh = SubResource("TextMesh_3414e")
@@ -145,7 +187,7 @@ visible = false
 transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, 0, 0, 0.0693885)
 
 [node name="MarkerColors" type="MeshInstance3D" parent="WholeMonitor" unique_id=1118310528]
-transform = Transform3D(1, 0, 0, 0, 0.585934, 0.810359, 0, -0.810359, 0.585934, -0.918979, -1.26637, 0.152909)
+transform = Transform3D(-4.371139e-08, 0.585934, 0.810359, -1, -2.5611987e-08, -3.5421916e-08, 0, -0.810359, 0.585934, -2.1168132, -0.1187368, 0.152909)
 material_override = SubResource("ShaderMaterial_mmyg4")
 mesh = SubResource("BoxMesh_dqwju")
 
@@ -194,10 +236,12 @@ unfocusable = true
 script = ExtResource("5_37l3g")
 
 [node name="TextureRect" type="TextureRect" parent="WindowPaint" unique_id=6299395]
+unique_name_in_owner = true
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="TextureRectShadow" type="TextureRect" parent="WindowPaint" unique_id=630250970]
+unique_name_in_owner = true
 z_index = -1
 material = SubResource("ShaderMaterial_su72v")
 offset_left = 4.0

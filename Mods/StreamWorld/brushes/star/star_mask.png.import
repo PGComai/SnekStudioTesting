@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://cp1m5ichtjuhl"
+path="res://.godot/imported/star_mask.png-015cf208c1b9e01f9ec360c5a664c32d.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/star/star_mask.png"
+dest_files=["res://.godot/imported/star_mask.png-015cf208c1b9e01f9ec360c5a664c32d.image"]
+
+[params]
+

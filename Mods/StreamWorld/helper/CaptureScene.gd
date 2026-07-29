@@ -27,9 +27,6 @@ var brb := false:
 	set(value):
 		if brb != value:
 			brb = value
-			if chat_bubble_game and bubble_game:
-				chat_bubble_game.enabled = value
-				chat_bubble_game.visible = value
 var text_3d: String = "BRB":
 	set(value):
 		if text_3d != value:
@@ -49,6 +46,7 @@ var last_mouse_pos := Vector2i.ZERO
 var stupid_pipe: FileAccess
 var pipe_pid: int
 var viewer_color_donuts: Dictionary[String, ColorDonut]
+var viewer_brush_donuts: Dictionary[String, ColorDonut]
 var mod_markers_only := false
 var mod_ids: Array[String] = []
 # TODO: try to match marker color to chatter color
@@ -59,7 +57,6 @@ var mod_ids: Array[String] = []
 @onready var mesh_instance_3d: MeshInstance3D = $WholeMonitor/MeshInstance3D
 @onready var mouse: AnimatableBody3D = $WholeMonitor/MeshInstance3D/Mouse
 @onready var cursor: RigidBody3D = $Cursor
-@onready var chat_bubble_game: ChatBubbleGame = $WholeMonitor/ChatBubbleGame
 @onready var whole_monitor: Node3D = $WholeMonitor
 @onready var text: MeshInstance3D = $WholeMonitor/Text
 @onready var timer_thicker_lines: Timer = $TimerThickerLines
@@ -70,7 +67,6 @@ var mod_ids: Array[String] = []
 
 
 func _ready() -> void:
-	chat_bubble_game.visible = false
 	x_11_display_capture.texture_changed.connect(_texture_changed)
 	x_11_display_capture.set_index(0)
 	#var pipe := OS.execute_with_pipe("bash", ["-c", "cat /var/log/Xorg.0.log"], false)
@@ -130,11 +126,6 @@ func _physics_process(delta: float) -> void:
 		whole_monitor.rotation.y = maxf(whole_monitor.rotation.y - delta, 0.0)
 
 
-func launch_bubble() -> void:
-	if chat_bubble_game.enabled:
-		chat_bubble_game.fire_bubble()
-
-
 func _on_check_button_brb_toggled(toggled_on: bool) -> void:
 	brb = toggled_on
 
@@ -186,12 +177,29 @@ func add_color_donut(id: String, pos: Vector3) -> void:
 	viewer_color_donuts[id] = new_donut
 
 
+func add_brush_donut(id: String, pos: Vector3) -> void:
+	var new_donut := ColorDonut.new()
+	new_donut.mat = donut_material
+	new_donut.pos = pos
+	new_donut.id = id
+	new_donut.bye.connect(_on_brush_donut_bye)
+	%BrushStore.add_child(new_donut)
+	viewer_brush_donuts[id] = new_donut
+
+
 func _on_color_donut_bye(id: String) -> void:
 	if viewer_color_donuts.has(id):
 		viewer_color_donuts.erase(id)
 
 
+func _on_brush_donut_bye(id: String) -> void:
+	if viewer_brush_donuts.has(id):
+		viewer_brush_donuts.erase(id)
+
+
 func handle_gh_packet(packet: Dictionary) -> void:
+	if not %TextureRect.visible:
+		return
 	var id: String = packet["id"]
 	var is_mod: bool = mod_ids.has(id)
 	var can_draw: bool = marker_permissions.has(id) or testing_markers
@@ -204,8 +212,8 @@ func handle_gh_packet(packet: Dictionary) -> void:
 		if not brushes.has(id):
 			var new_brush := Brush.new()
 			new_brush.size = 12
-			if testing_markers:
-				new_brush.type = Brush.BrushType.DK
+			#if testing_markers:
+				#new_brush.type = Brush.BrushType.DK
 			new_brush.make_brush()
 			brushes[id] = new_brush
 		handle_common(packet)
@@ -247,9 +255,11 @@ func handle_gh_packet(packet: Dictionary) -> void:
 						color_mix = color_mix.darkened(0.5)
 				if packet.type == "drag" or packet.type == "click":
 					if viewer_windows.has(id):
-						colors[id] = color_mix
-						viewer_windows[id].clr = color_mix
-						brushes[id].clr = color_mix
+						if packet.type == "click":
+							colors[id] = color_mix
+							viewer_windows[id].clr = color_mix
+							brushes[id].clr = color_mix
+							brushes[id].render_color_or_colorless()
 					elif viewer_windows.size() < MAX_VIEWER_WINDOWS:
 						var new_viewer_cursor := ViewerCursor.new()
 						new_viewer_cursor.clr = colors[packet.id]
@@ -276,6 +286,7 @@ func handle_gh_packet(packet: Dictionary) -> void:
 						colors[id] = color_mix
 						viewer_windows[id].clr = color_mix
 						brushes[id].clr = color_mix
+						brushes[id].render_color_or_colorless()
 			elif cast_collider == monitor_body:
 				if packet.type == "release":
 					detected_release = true
@@ -312,6 +323,29 @@ func handle_gh_packet(packet: Dictionary) -> void:
 					window_paint.add_child(new_viewer_window)
 					viewer_windows[id] = new_viewer_window
 			else:
+				if cast_collider.has_meta("img"):
+					var pos3d_brush: Vector3 = %BrushStore.to_local(cast_result["position"])
+					pos3d_brush.z = 0.08
+					if not viewer_brush_donuts.has(id):
+						add_brush_donut(id, pos3d_brush)
+					viewer_brush_donuts[id].pos = pos3d_brush
+					if packet.type == "click":
+						var brush_preview: BrushPreview = cast_collider.get_parent()
+						#brush_preview.hovered = true
+						#brush_preview.highlighted = 1.0
+						if brushes.has(id):
+							if brush_preview.tiled:
+								brushes[id].type = Brush.BrushType.CUSTOM_TILE
+								brushes[id].sparse = 16
+							else:
+								brushes[id].type = Brush.BrushType.CUSTOM
+							brushes[id].custom_image = brush_preview.img
+							brushes[id].custom_mask = brush_preview.mask
+							if brush_preview.mask2:
+								brushes[id].custom_mask_2 = brush_preview.mask2
+							else:
+								brushes[id].clear_custom_mask()
+							brushes[id].make_brush()
 				if packet.type == "drag":
 					detected_release = true
 					user_released.emit(id)
@@ -455,3 +489,8 @@ func _on_game_world_save_drawing() -> void:
 func _on_game_world_drawing_enabled(user_id: String, display_name: String) -> void:
 	if not enabled_drawers.has(user_id):
 		enabled_drawers.append(user_id)
+
+
+func _on_check_button_hide_drawing_toggled(toggled_on: bool) -> void:
+	%TextureRect.visible = not toggled_on
+	%TextureRectShadow.visible = not toggled_on

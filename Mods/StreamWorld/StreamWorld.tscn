@@ -92,6 +92,11 @@ grow_vertical = 2
 layout_mode = 2
 text = "ASMR"
 
+[node name="CheckButtonHideDrawing" type="CheckButton" parent="WindowTools/VBoxContainer" unique_id=2017824064]
+layout_mode = 2
+focus_mode = 0
+text = "Hide Drawing"
+
 [node name="CheckButtonBRB" type="CheckButton" parent="WindowTools/VBoxContainer" unique_id=1542633684]
 layout_mode = 2
 focus_mode = 0
@@ -159,6 +164,7 @@ positional_shadow_atlas_size = 0
 oversampling_override = 1.0
 position = Vector2i(0, 36)
 size = Vector2i(864, 486)
+visible = false
 
 [node name="Camera3DPlayer" type="Camera3D" parent="WindowPlayer" unique_id=2069832547]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -632.583, -10.9259, 199.295)
@@ -293,6 +299,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -627.0626, -11.598275, 188.94
 [connection signal="marker_permissions_revoked" from="WindowTools" to="." method="_on_window_tools_marker_permissions_revoked"]
 [connection signal="marker_permissions_revoked" from="WindowTools" to="WorldRoot/Capture" method="_on_window_tools_marker_permissions_revoked"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonASMR" to="." method="_on_check_button_asmr_toggled"]
+[connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonHideDrawing" to="WorldRoot/Capture" method="_on_check_button_hide_drawing_toggled"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WindowTools" method="_on_check_button_brb_toggled"]
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WorldRoot/Capture" method="_on_check_button_brb_toggled"]
 [connection signal="text_changed" from="WindowTools/VBoxContainer/LineEditText3D" to="WorldRoot/Capture" method="_on_line_edit_text_3d_text_changed"]

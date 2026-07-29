@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://dlueaef00xifd"
+path="res://.godot/imported/dirt_albedo.png-d71ac97875954d18c46dedd5b67a7086.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/dirt/dirt_albedo.png"
+dest_files=["res://.godot/imported/dirt_albedo.png-d71ac97875954d18c46dedd5b67a7086.image"]
+
+[params]
+

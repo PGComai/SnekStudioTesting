@@ -15,6 +15,7 @@ const BRUSH_SIZE_THICK: float = 25.0
 const ERASER_SIZE: Vector2 = Vector2(200.0, 100.0)
 const ERASER_SIZE_MOD: Vector2 = Vector2(100.0, 100.0)
 const SAVED_DRAWINGS_DIR: String = "user://drawings"
+const DRAWING_CACHE_FILE: String = "user://drawing.png"
 
 
 var img: Image
@@ -41,6 +42,7 @@ var clear_queued := false
 var brush_round: Image
 var brush_round_mask: Image
 var thread_rng: RandomNumberGenerator
+var save_timer: Timer
 
 
 @onready var texture_rect: TextureRect = $TextureRect
@@ -53,6 +55,12 @@ func _ready() -> void:
 	
 	#brush_round_mask.resize(BRUSH_ROUND_SIZE, BRUSH_ROUND_SIZE, Image.INTERPOLATE_BILINEAR)
 	
+	save_timer = Timer.new()
+	save_timer.autostart = false
+	save_timer.one_shot = true
+	add_child(save_timer)
+	save_timer.timeout.connect(_on_save_timer_timeout)
+	
 	mutex = Mutex.new()
 	semaphore = Semaphore.new()
 	exit_thread = true
@@ -61,8 +69,10 @@ func _ready() -> void:
 	thread = Thread.new()
 	thread.start(_thread_function, Thread.PRIORITY_HIGH)
 	
-	img = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_RGBA8)
-	img.fill(Color(0.0, 0.0, 0.0, 0.0))
+	var loaded_cached:bool = load_cached_drawing()
+	if not loaded_cached:
+		img = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_RGBA8)
+		img.fill(Color(0.0, 0.0, 0.0, 0.0))
 	img_tex = ImageTexture.create_from_image(img)
 	texture_rect.texture = img_tex
 	texture_rect_shadow.texture = img_tex
@@ -73,6 +83,26 @@ func _ready() -> void:
 	img_fade_mask.fill(Color(0.0, 0.0, 0.0, 0.0))
 	img_fade_mask_fade = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_LA8)
 	img_fade_mask_fade.fill(Color(0.0, 0.0, 0.0, 1.0))
+
+
+func _on_save_timer_timeout() -> void:
+	cache_drawing()
+
+
+func cache_drawing() -> void:
+	img.save_png(DRAWING_CACHE_FILE)
+	print("cached drawing")
+
+
+func load_cached_drawing() -> bool:
+	if FileAccess.file_exists(DRAWING_CACHE_FILE):
+		var modified_time: int = FileAccess.get_modified_time(DRAWING_CACHE_FILE)
+		var current_time: int = int(Time.get_unix_time_from_system())
+		var diff: int = current_time - modified_time
+		if diff < 21600:
+			img = Image.load_from_file(DRAWING_CACHE_FILE)
+			return true
+	return false
 
 
 func _on_tree_exiting():
@@ -144,7 +174,15 @@ func _thread_function() -> void:
 											Vector2i(drag[i+1])
 										):
 										if sparse % drag_brush.sparse == 0:
-											_brush_at(pixel, drag_brush.brush_image, drag_brush.brush_mask, drag_brush.splatter)
+											if drag_brush.type == Brush.BrushType.CUSTOM_TILE:
+												drag_brush.tiling_offset = pixel
+												drag_brush.render_offset()
+											var desired_mask: Image
+											if drag_brush.custom_secondary_mask:
+												desired_mask = drag_brush.custom_secondary_mask
+											else:
+												desired_mask = drag_brush.brush_mask
+											_brush_at(pixel, drag_brush.brush_image, desired_mask, drag_brush.splatter)
 										sparse += 1
 								else:
 									for pixel: Vector2i in Geometry2D.bresenham_line(
@@ -209,6 +247,7 @@ func _thread_function() -> void:
 		mutex.lock()
 		exit_thread = true
 		mutex.unlock()
+		save_timer.start.call_deferred()
 
 
 func color_brush(brush: Image, clr: Color) -> Image:
@@ -248,6 +287,7 @@ func _mod_erase_at(_position: Vector2) -> void:
 
 
 func clear() -> void:
+	OS.move_to_trash(ProjectSettings.globalize_path(DRAWING_CACHE_FILE))
 	clear_queued = true
 	thread_needed = true
 	debug_clear.emit()
@@ -310,6 +350,7 @@ func _on_timer_thread_timeout() -> void:
 	if thread_needed:
 		if exit_thread:
 			exit_thread = false
+			save_timer.stop()
 			semaphore.post()
 		else:
 			queue_thread = true
