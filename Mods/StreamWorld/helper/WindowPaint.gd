@@ -1,6 +1,8 @@
 extends Window
 class_name WindowPaint
 
+#TODO temp clear (hide palette selector as well)
+
 
 signal debug_click(pos: Vector2)
 signal debug_thread_click(pos: Vector2)
@@ -38,6 +40,7 @@ var done_erasing := true
 var clear_queued := false
 var brush_round: Image
 var brush_round_mask: Image
+var thread_rng: RandomNumberGenerator
 
 
 @onready var texture_rect: TextureRect = $TextureRect
@@ -53,6 +56,7 @@ func _ready() -> void:
 	mutex = Mutex.new()
 	semaphore = Semaphore.new()
 	exit_thread = true
+	thread_rng = RandomNumberGenerator.new()
 	
 	thread = Thread.new()
 	thread.start(_thread_function, Thread.PRIORITY_HIGH)
@@ -133,15 +137,21 @@ func _thread_function() -> void:
 						var new_drag := PackedVector2Array([])
 						for i: int in drag.size():
 							if i < drag.size() - 1:
-								for pixel: Vector2i in Geometry2D.bresenham_line(
-										Vector2i(drag[i]),
-										Vector2i(drag[i+1])
-									):
-									#img_fade_mask.blit_rect(
-												#drag_brush.brush_mask,
-												#Rect2i(Vector2i.ZERO, drag_brush.brush_mask.get_size()),
-												#Vector2i(pixel) - (drag_brush.brush_mask.get_size() / 2))
-									_brush_at(pixel, drag_brush.brush_image, drag_brush.brush_mask)
+								if drag_brush.sparse:
+									var sparse: int = 0
+									for pixel: Vector2i in Geometry2D.bresenham_line(
+											Vector2i(drag[i]),
+											Vector2i(drag[i+1])
+										):
+										if sparse % drag_brush.sparse == 0:
+											_brush_at(pixel, drag_brush.brush_image, drag_brush.brush_mask, drag_brush.splatter)
+										sparse += 1
+								else:
+									for pixel: Vector2i in Geometry2D.bresenham_line(
+											Vector2i(drag[i]),
+											Vector2i(drag[i+1])
+										):
+										_brush_at(pixel, drag_brush.brush_image, drag_brush.brush_mask, drag_brush.splatter)
 							else:
 								new_drag.append(drag[i])
 			
@@ -221,7 +231,9 @@ func _process(delta: float) -> void:
 			queue_thread = false
 
 
-func _brush_at(_position: Vector2, brush: Image, brush_mask: Image) -> void:
+func _brush_at(_position: Vector2, brush: Image, brush_mask: Image, brush_splatter: float) -> void:
+	if brush_splatter:
+		_position += Vector2(thread_rng.randfn(0.0, brush_splatter), thread_rng.randfn(0.0, brush_splatter))
 	var brush_size: Vector2i = brush.get_size()
 	img.blend_rect_mask(brush, brush_mask, Rect2i(Vector2i.ZERO, brush_size), Vector2i(_position) - (brush_size / 2))
 	#img.fill_rect(Rect2(_position, Vector2.ONE).grow(brush_thickness), clr)
@@ -259,13 +271,16 @@ func _on_node_3d_screen_interacted(
 			if mod_erasings.has(packet.id):
 				mod_erasings.erase(packet.id)
 	else:
-		if packet.type == "drag":
+		if packet.type == "drag" or packet.type == "click":
 			if drags.has(packet.id):
 				var drag: PackedVector2Array = drags[packet.id]
 				drag.append(virtual_screen_pos)
 				drags[packet.id] = drag
 			else:
-				drags[packet.id] = PackedVector2Array([virtual_screen_pos])
+				if packet.type == "drag":
+					drags[packet.id] = PackedVector2Array([virtual_screen_pos])
+				elif packet.type == "click":
+					drags[packet.id] = PackedVector2Array([virtual_screen_pos, virtual_screen_pos])
 			#debug_click.emit(virtual_screen_pos)
 			thread_needed = true
 		elif packet.type == "release":

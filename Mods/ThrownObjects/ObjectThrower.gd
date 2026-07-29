@@ -151,18 +151,20 @@ func _physics_process(delta):
 			add_child(bit_scene)
 			
 			var head_position = Vector3(0.0, 1.8, 0.0)
+			var head_basis = Basis.IDENTITY
 			
 			var skel = get_skeleton()
 			# TODO: Make target bone configurable!
 			var head_bone_index = skel.find_bone("Head")
 			if head_bone_index != -1:
 				var bone_transform = skel.global_transform * skel.get_bone_global_pose(head_bone_index)
+				head_basis = bone_transform.basis
 				if bone_transform:
 					head_position = bone_transform.origin
 
 			# Pick a random position, as an offset from the targeted bone, in front of
 			# the character.
-			var random_start_position = Vector3(
+			var random_start_position = head_basis * Vector3(
 				(randf() - 0.5) * 2,
 				((randf() - 0.5) * 2) * 0.25,
 				randf()).normalized() * 2.0
@@ -187,7 +189,7 @@ func _physics_process(delta):
 			#   (random_start_position.length() - head_position.length()) + bit_scene.linear_velocity.length() * t = 0
 			#   (random_start_position.length() - head_position.length()) = -bit_scene.linear_velocity.length() * t
 			#   ((random_start_position.length() - head_position.length())) / -bit_scene.linear_velocity.length() = t
-			var t = (random_start_position - head_position).length() / bit_scene.linear_velocity.length()
+			var t = random_start_position.length() / bit_scene.linear_velocity.length()
 
 			# Determine a vertical velocity offset such that gravity would perfectly
 			# negate it by the time we reach time t.

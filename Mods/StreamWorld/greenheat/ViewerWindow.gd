@@ -1,4 +1,4 @@
-extends Window
+extends TextureRect
 class_name ViewerWindow
 
 
@@ -24,26 +24,29 @@ var id: String
 var pos: Vector2
 var internal_pos: Vector2
 var timer: Timer
-var tex_rect: TextureRect
+#var tex_rect: TextureRect
 var clr: Color
 var hover := true
 
 
 func _ready() -> void:
-	transparent = true
-	unresizable = true
-	borderless = true
-	always_on_top = true
-	unfocusable = true
+	#transparent = true
+	#unresizable = true
+	#borderless = true
+	#always_on_top = true
+	#unfocusable = true
 	size = Vector2i(256, 256)
-	mouse_passthrough_polygon = POLY
-	var new_tex_rect := TextureRect.new()
-	new_tex_rect.texture = VIEWERMARKER
-	#new_tex_rect.scale = Vector2(2.0, 2.0)
-	new_tex_rect.modulate = clr
-	new_tex_rect.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	add_child(new_tex_rect)
-	tex_rect = new_tex_rect
+	#mouse_passthrough_polygon = POLY
+	#var new_tex_rect := TextureRect.new()
+	#new_tex_rect.texture = VIEWERMARKER
+	##new_tex_rect.scale = Vector2(2.0, 2.0)
+	#new_tex_rect.modulate = clr
+	#new_tex_rect.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	#add_child(new_tex_rect)
+	#tex_rect = new_tex_rect
+	texture = VIEWERMARKER
+	modulate = clr
+	#set_anchors_preset(Control.PRESET_TOP_LEFT)
 	
 	var new_label := Label.new()
 	new_label.text = display_name
@@ -71,7 +74,8 @@ func _process(delta: float) -> void:
 	position = internal_pos - Vector2(size)
 	
 	var a: float = clampf(remap(timer.time_left, 0.0, timer.wait_time - FADE_START, 0.0, 1.0), 0.0, 1.0)
-	tex_rect.modulate = Color(clr.r, clr.g, clr.b, a)
+	#tex_rect.modulate = Color(clr.r, clr.g, clr.b, a)
+	modulate = Color(clr.r, clr.g, clr.b, a)
 
 
 func update() -> void:

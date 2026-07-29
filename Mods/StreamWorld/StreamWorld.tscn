@@ -6,8 +6,7 @@
 [ext_resource type="Script" uid="uid://b7aevdpql8uyu" path="res://Mods/StreamWorld/helper/window_tools.gd" id="2_tpcd6"]
 [ext_resource type="LabelSettings" uid="uid://bqrpchqvvlv7f" path="res://Mods/StreamWorld/helper/marker_display_name_labelsettings.tres" id="3_dd1gk"]
 [ext_resource type="PackedScene" uid="uid://dfsxj60t0lqms" path="res://Mods/StreamWorld/island/island.tscn" id="5_48irk"]
-
-[sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_dd1gk"]
+[ext_resource type="PackedScene" uid="uid://8mu48tfq0esn" path="res://Mods/StreamWorld/StreamerCar/streamer_car.tscn" id="7_7ugjq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_shy1m"]
 
@@ -51,23 +50,18 @@ radius = 0.1
 [sub_resource type="SphereShape3D" id="SphereShape3D_ofdl7"]
 radius = 0.1
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_7ugjq"]
+height = 2.48
+radius = 1.035
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_afllp"]
 radius = 0.1
 
 [node name="GameWorld" type="Node3D" unique_id=1708590383]
 script = ExtResource("1_wv6bo")
-pos_override_value = Vector3(-632.634, -12.4233, 194.303)
+pos_override = true
+pos_override_value = Vector3(-632.634, -10.848532, 195.12924)
 island_material = ExtResource("2_f4sgu")
-
-[node name="VoiceBox" type="AudioStreamPlayer3D" parent="." unique_id=618334692]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -632.634, -12.4233, 194.303)
-stream = SubResource("AudioStreamMicrophone_dd1gk")
-attenuation_model = 3
-unit_size = 1.0
-autoplay = true
-panning_strength = 0.0
-bus = &"Record"
-doppler_tracking = 2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1658642696]
 transform = Transform3D(0.798049, -0.521861, 0.301295, 1.47562e-08, 0.499998, 0.866027, -0.602592, -0.691132, 0.399024, 0, 0, 0)
@@ -244,6 +238,15 @@ shape = SubResource("SphereShape3D_ofdl7")
 node_a = NodePath("..")
 node_b = NodePath("../../../../RigidMainCameraHolder")
 
+[node name="ThingDetector" type="Area3D" parent="WorldRoot/CharacterBody3D" unique_id=1226068302]
+collision_layer = 128
+collision_mask = 128
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldRoot/CharacterBody3D/ThingDetector" unique_id=13121078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_7ugjq")
+
 [node name="RigidMainCameraHolder" type="RigidBody3D" parent="WorldRoot" unique_id=1844570389]
 collision_layer = 4096
 collision_mask = 4096
@@ -256,6 +259,7 @@ shape = SubResource("SphereShape3D_afllp")
 
 [node name="Capture" parent="WorldRoot" unique_id=1942874489 node_paths=PackedStringArray("cast_camera") instance=ExtResource("2_eh1rf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.02901, -2.38955)
+testing_markers = true
 cast_camera = NodePath("../../WindowStream/Camera3DStream")
 
 [node name="Timer5s" type="Timer" parent="." unique_id=1931378675]
@@ -272,6 +276,9 @@ wait_time = 5.0
 one_shot = true
 
 [node name="island" parent="." unique_id=591689908 instance=ExtResource("5_48irk")]
+
+[node name="StreamerCar" parent="." unique_id=1329945654 instance=ExtResource("7_7ugjq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -627.0626, -11.598275, 188.9491)
 
 [connection signal="drawing_enabled" from="." to="WorldRoot/Capture" method="_on_game_world_drawing_enabled"]
 [connection signal="erase_marker_permissions_requested" from="." to="WorldRoot/Capture" method="_on_game_world_erase_marker_permissions_requested"]
@@ -294,6 +301,8 @@ one_shot = true
 [connection signal="mouse_entered" from="WindowPlayer" to="." method="_on_window_player_mouse_entered"]
 [connection signal="mouse_exited" from="WindowPlayer" to="." method="_on_window_player_mouse_exited"]
 [connection signal="window_input" from="WindowPlayer" to="." method="_on_window_window_input"]
+[connection signal="area_entered" from="WorldRoot/CharacterBody3D/ThingDetector" to="." method="_on_thing_detector_area_entered"]
+[connection signal="area_exited" from="WorldRoot/CharacterBody3D/ThingDetector" to="." method="_on_thing_detector_area_exited"]
 [connection signal="timeout" from="Timer5s" to="." method="_on_timer_5s_timeout"]
 [connection signal="timeout" from="TimerSavePosition" to="." method="_on_timer_save_position_timeout"]
 [connection signal="timeout" from="TimerSaveDrawing" to="." method="_on_timer_save_drawing_timeout"]

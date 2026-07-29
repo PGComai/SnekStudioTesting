@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://28lhil1ra5w2"]
+
+[ext_resource type="Script" uid="uid://cwckj5lkj0i8o" path="res://Mods/StreamWorld/StreamerCar/soft_wheel.gd" id="1_l2bpq"]
+
+[node name="SoftWheel" type="RigidBody3D" unique_id=860875518]
+script = ExtResource("1_l2bpq")

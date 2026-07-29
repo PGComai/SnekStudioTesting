@@ -193,10 +193,9 @@ func _on_color_donut_bye(id: String) -> void:
 
 func handle_gh_packet(packet: Dictionary) -> void:
 	var id: String = packet["id"]
-	#print(packet)
 	var is_mod: bool = mod_ids.has(id)
 	var can_draw: bool = marker_permissions.has(id) or testing_markers
-	var draw_enabled: bool = enabled_drawers.has(id)
+	var draw_enabled: bool = enabled_drawers.has(id) or testing_markers
 	if mod_markers_only:
 		can_draw = is_mod
 	else:
@@ -205,6 +204,8 @@ func handle_gh_packet(packet: Dictionary) -> void:
 		if not brushes.has(id):
 			var new_brush := Brush.new()
 			new_brush.size = 12
+			if testing_markers:
+				new_brush.type = Brush.BrushType.DK
 			new_brush.make_brush()
 			brushes[id] = new_brush
 		handle_common(packet)
@@ -214,15 +215,22 @@ func handle_gh_packet(packet: Dictionary) -> void:
 		var pos := Vector2(packet["x"], packet["y"]) * Vector2(1920.0, 1080.0)
 		var pos_screen := Vector2(packet["x"], packet["y"]) * Vector2(3840.0, 2160.0)
 		var cast_result: Dictionary = cast(pos)
+		var tick: int = Time.get_ticks_msec()
 		if cast_result.has("position"):
 			var cast_collider: Node3D = cast_result["collider"]
+			var pos3d: Vector3 = whole_monitor.to_local(cast_result["position"])
+			# -3.84 / 2.0 < pos3d.x < 3.84 / 2.0
+			var virtual_x: float = remap(pos3d.x, -3.84 / 2.0, 3.84 / 2.0, 0.0, 3840.0)
+			var virtual_y: float = -remap(pos3d.y, -2.16 / 2.0, 2.16 / 2.0, -2160.0, 0.0)
+			var pos_virtual_screen := Vector2(virtual_x + 1080.0, virtual_y)
+			var pos_virtual_screen_2 := Vector2(virtual_x, virtual_y)
 			if cast_collider == marker_color_area:
-				var pos3d: Vector3 = marker_color_area.to_local(cast_result["position"])
-				pos3d.z = 0.05
+				var pos3d_color: Vector3 = marker_color_area.to_local(cast_result["position"])
+				pos3d_color.z = 0.05
 				if not viewer_color_donuts.has(id):
-					add_color_donut(id, pos3d)
-				viewer_color_donuts[id].pos = pos3d
-				var pos2d_topleft: Vector2 = Vector2(pos3d.x, pos3d.y) + Vector2(1.0, -0.15)
+					add_color_donut(id, pos3d_color)
+				viewer_color_donuts[id].pos = pos3d_color
+				var pos2d_topleft: Vector2 = Vector2(pos3d_color.x, pos3d_color.y) + Vector2(1.0, -0.15)
 				var pos2d_scaled: Vector2 = pos2d_topleft * Vector2(0.5, -1.0 / 0.3)
 				var color_color: Color = marker_palette_color_gradient.sample(pos2d_scaled.x)
 				var color_gray: Color = marker_palette_gray_gradient.sample(pos2d_scaled.y)
@@ -242,21 +250,43 @@ func handle_gh_packet(packet: Dictionary) -> void:
 						colors[id] = color_mix
 						viewer_windows[id].clr = color_mix
 						brushes[id].clr = color_mix
+					elif viewer_windows.size() < MAX_VIEWER_WINDOWS:
+						var new_viewer_cursor := ViewerCursor.new()
+						new_viewer_cursor.clr = colors[packet.id]
+						new_viewer_cursor.pos = pos3d
+						new_viewer_cursor.last_input = tick
+						whole_monitor.add_child(new_viewer_cursor)
+						viewer_cursors[id] = new_viewer_cursor
+						
+						var new_viewer_window := ViewerWindow.new()
+						if marker_display_names.has(id):
+							new_viewer_window.display_name = marker_display_names[id]
+						else:
+							new_viewer_window.display_name = "???"
+						#new_viewer_window.pos = pos_virtual_screen
+						new_viewer_window.pos = pos_virtual_screen_2
+						new_viewer_window.internal_pos = pos_virtual_screen
+						new_viewer_window.id = id
+						new_viewer_window.clr = colors[packet.id]
+						new_viewer_window.leaving.connect(_on_viewer_window_leaving)
+						#add_child(new_viewer_window)
+						window_paint.add_child(new_viewer_window)
+						viewer_windows[id] = new_viewer_window
+						
+						colors[id] = color_mix
+						viewer_windows[id].clr = color_mix
+						brushes[id].clr = color_mix
 			elif cast_collider == monitor_body:
-				var pos3d: Vector3 = whole_monitor.to_local(cast_result["position"])
-				# -3.84 / 2.0 < pos3d.x < 3.84 / 2.0
-				var virtual_x: float = remap(pos3d.x, -3.84 / 2.0, 3.84 / 2.0, 0.0, 3840.0)
-				var virtual_y: float = -remap(pos3d.y, -2.16 / 2.0, 2.16 / 2.0, -2160.0, 0.0)
-				var pos_virtual_screen := Vector2(virtual_x + 1080.0, virtual_y)
 				if packet.type == "release":
 					detected_release = true
 				screen_interacted.emit(packet, Vector2(virtual_x, virtual_y), can_erase and shift)
-				var tick: int = Time.get_ticks_msec()
+				
 				if viewer_cursors.has(id):
 					viewer_cursors[id].pos = pos3d
 					viewer_cursors[id].last_input = tick
 					
-					viewer_windows[id].pos = pos_virtual_screen
+					#viewer_windows[id].pos = pos_virtual_screen
+					viewer_windows[id].pos = pos_virtual_screen_2
 					viewer_windows[id].hover = packet.type == "hover"
 					viewer_windows[id].update()
 				elif viewer_windows.size() < MAX_VIEWER_WINDOWS:
@@ -272,12 +302,14 @@ func handle_gh_packet(packet: Dictionary) -> void:
 						new_viewer_window.display_name = marker_display_names[id]
 					else:
 						new_viewer_window.display_name = "???"
-					new_viewer_window.pos = pos_virtual_screen
+					#new_viewer_window.pos = pos_virtual_screen
+					new_viewer_window.pos = pos_virtual_screen_2
 					new_viewer_window.internal_pos = pos_virtual_screen
 					new_viewer_window.id = id
 					new_viewer_window.clr = colors[packet.id]
 					new_viewer_window.leaving.connect(_on_viewer_window_leaving)
-					add_child(new_viewer_window)
+					#add_child(new_viewer_window)
+					window_paint.add_child(new_viewer_window)
 					viewer_windows[id] = new_viewer_window
 			else:
 				if packet.type == "drag":

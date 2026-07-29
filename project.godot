@@ -29,6 +29,10 @@ config/icon="res://Core/UI/Images/kiri_smug.png"
 buses/default_bus_layout="uid://o8d811r80yx5"
 driver/enable_input=true
 
+[autoload]
+
+VoiceBoxSync="*uid://c4w2s44p05yrl"
+
 [debug]
 
 settings/stdout/print_fps=true
@@ -52,6 +56,7 @@ import/blender/enabled=false
 [global_group]
 
 chat_bubble=""
+car_area=""
 
 [input]
 

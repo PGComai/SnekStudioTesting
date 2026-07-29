@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://dl8gk83mipj5w"]
+[gd_scene format=3 uid="uid://dl8gk83mipj5w"]
 
 [ext_resource type="Script" uid="uid://mi6afv06vg6f" path="res://Mods/StreamWorld/helper/CaptureScene.gd" id="1_a202f"]
 [ext_resource type="ArrayMesh" uid="uid://d1yjkdoqorvn7" path="res://Mods/StreamWorld/monitor.obj" id="2_3414e"]
@@ -85,30 +85,30 @@ shader_parameter/ShadowColor = Color(0, 0, 0, 0.858824)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_37l3g"]
 
-[node name="CaptureScene" type="Node3D"]
+[node name="CaptureScene" type="Node3D" unique_id=1122831023]
 script = ExtResource("1_a202f")
 marker_palette_color_gradient = ExtResource("6_xtl51")
 marker_palette_gray_gradient = ExtResource("7_3wliy")
 donut_material = SubResource("StandardMaterial3D_3wliy")
 cast_layer = 32768
 
-[node name="WholeMonitor" type="Node3D" parent="."]
+[node name="WholeMonitor" type="Node3D" parent="." unique_id=1345857603]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.07)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WholeMonitor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WholeMonitor" unique_id=1847456111]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.07)
 mesh = SubResource("QuadMesh_4xowi")
 skeleton = NodePath("../..")
 
-[node name="Mouse" type="AnimatableBody3D" parent="WholeMonitor/MeshInstance3D"]
+[node name="Mouse" type="AnimatableBody3D" parent="WholeMonitor/MeshInstance3D" unique_id=616060629]
 collision_layer = 8
 collision_mask = 8
 sync_to_physics = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MeshInstance3D/Mouse"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MeshInstance3D/Mouse" unique_id=257262560]
 shape = SubResource("SphereShape3D_jcte5")
 
-[node name="HingeJoint3D" type="Generic6DOFJoint3D" parent="WholeMonitor/MeshInstance3D/Mouse"]
+[node name="HingeJoint3D" type="Generic6DOFJoint3D" parent="WholeMonitor/MeshInstance3D/Mouse" unique_id=723881021]
 node_a = NodePath("..")
 node_b = NodePath("../../../../Cursor")
 angular_limit_z/enabled = false
@@ -116,70 +116,71 @@ angular_spring_z/enabled = true
 angular_spring_z/stiffness = 1.48
 angular_spring_z/damping = 0.045
 
-[node name="Monitor" type="MeshInstance3D" parent="WholeMonitor/MeshInstance3D"]
+[node name="Monitor" type="MeshInstance3D" parent="WholeMonitor/MeshInstance3D" unique_id=1697170406]
 material_override = SubResource("StandardMaterial3D_3414e")
 mesh = ExtResource("2_3414e")
 skeleton = NodePath("../../..")
 
-[node name="MonitorBody" type="AnimatableBody3D" parent="WholeMonitor/MeshInstance3D/Monitor"]
+[node name="MonitorBody" type="AnimatableBody3D" parent="WholeMonitor/MeshInstance3D/Monitor" unique_id=69832354]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0757508)
 collision_layer = 32896
 collision_mask = 128
 sync_to_physics = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MeshInstance3D/Monitor/MonitorBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MeshInstance3D/Monitor/MonitorBody" unique_id=364484731]
 shape = SubResource("BoxShape3D_3414e")
 
-[node name="ChatBubbleGame" parent="WholeMonitor" instance=ExtResource("3_kb54l")]
+[node name="ChatBubbleGame" parent="WholeMonitor" unique_id=316430033 instance=ExtResource("3_kb54l")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -0.1)
 
-[node name="Text" type="MeshInstance3D" parent="WholeMonitor"]
+[node name="Text" type="MeshInstance3D" parent="WholeMonitor" unique_id=1020788353]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -0.0773568)
 mesh = SubResource("TextMesh_3414e")
 
-[node name="EraserCursor" type="Node3D" parent="WholeMonitor"]
+[node name="EraserCursor" type="Node3D" parent="WholeMonitor" unique_id=1687868342]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.07)
 visible = false
 
-[node name="eraser" parent="WholeMonitor/EraserCursor" instance=ExtResource("7_73vr2")]
+[node name="eraser" parent="WholeMonitor/EraserCursor" unique_id=834497355 instance=ExtResource("7_73vr2")]
 transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, 0, 0, 0.0693885)
 
-[node name="MarkerColors" type="MeshInstance3D" parent="WholeMonitor"]
+[node name="MarkerColors" type="MeshInstance3D" parent="WholeMonitor" unique_id=1118310528]
 transform = Transform3D(1, 0, 0, 0, 0.585934, 0.810359, 0, -0.810359, 0.585934, -0.918979, -1.26637, 0.152909)
 material_override = SubResource("ShaderMaterial_mmyg4")
 mesh = SubResource("BoxMesh_dqwju")
 
-[node name="MarkerColorArea" type="Area3D" parent="WholeMonitor/MarkerColors"]
+[node name="MarkerColorArea" type="Area3D" parent="WholeMonitor/MarkerColors" unique_id=1209392784]
 collision_layer = 32768
 collision_mask = 0
 monitoring = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MarkerColors/MarkerColorArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WholeMonitor/MarkerColors/MarkerColorArea" unique_id=1357173539]
 shape = SubResource("BoxShape3D_su72v")
 
-[node name="X11DisplayCapture" type="X11DisplayCapture" parent="."]
+[node name="X11DisplayCapture" type="X11DisplayCapture" parent="." unique_id=1534760939]
 
-[node name="Cursor" type="RigidBody3D" parent="."]
+[node name="Cursor" type="RigidBody3D" parent="." unique_id=1316722558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0251495, -0.0427868, 0)
 collision_layer = 8
 collision_mask = 8
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Cursor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Cursor" unique_id=805558466]
 transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, -0.00963157, 0.016997, 0.0195256)
 material_override = SubResource("StandardMaterial3D_jcte5")
 mesh = SubResource("PrismMesh_jcte5")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Cursor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Cursor" unique_id=1156024928]
 shape = SubResource("SphereShape3D_3414e")
 
-[node name="GreenHeat" type="Node" parent="."]
+[node name="GreenHeat" type="Node" parent="." unique_id=898816047]
 script = ExtResource("4_lha3j")
 simulating_input = true
 channel_name = "pgcomai"
 metadata/_custom_type_script = "uid://d2o2x3bq5opf1"
 
-[node name="WindowPaint" type="Window" parent="."]
+[node name="WindowPaint" type="Window" parent="." unique_id=1764637734]
 transparent_bg = true
+oversampling_override = 1.0
 mode = 2
 title = "Paint"
 initial_position = 1
@@ -192,11 +193,11 @@ transparent = true
 unfocusable = true
 script = ExtResource("5_37l3g")
 
-[node name="TextureRect" type="TextureRect" parent="WindowPaint"]
+[node name="TextureRect" type="TextureRect" parent="WindowPaint" unique_id=6299395]
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="TextureRectShadow" type="TextureRect" parent="WindowPaint"]
+[node name="TextureRectShadow" type="TextureRect" parent="WindowPaint" unique_id=630250970]
 z_index = -1
 material = SubResource("ShaderMaterial_su72v")
 offset_left = 4.0
@@ -204,26 +205,27 @@ offset_top = 4.0
 offset_right = 44.0
 offset_bottom = 44.0
 
-[node name="TimerThread" type="Timer" parent="WindowPaint"]
+[node name="TimerThread" type="Timer" parent="WindowPaint" unique_id=795653928]
 wait_time = 0.1
 autostart = true
 
-[node name="Clickview" type="Node2D" parent="WindowPaint"]
+[node name="Clickview" type="Node2D" parent="WindowPaint" unique_id=1119854053]
 visible = false
 script = ExtResource("11_qjh7t")
 
-[node name="TimerFade" type="Timer" parent="WindowPaint"]
+[node name="TimerFade" type="Timer" parent="WindowPaint" unique_id=279829402]
 autostart = true
 
-[node name="WindowEraser" type="Window" parent="."]
+[node name="WindowEraser" type="Window" parent="." unique_id=2093543442]
 transparent_bg = true
+oversampling_override = 1.0
 size = Vector2i(200, 100)
 borderless = true
 always_on_top = true
 transparent = true
 script = ExtResource("6_ycwmq")
 
-[node name="TextureRect" type="TextureRect" parent="WindowEraser"]
+[node name="TextureRect" type="TextureRect" parent="WindowEraser" unique_id=1973374596]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -231,58 +233,58 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("PlaceholderTexture2D_37l3g")
 
-[node name="TimerThickerLines" type="Timer" parent="."]
+[node name="TimerThickerLines" type="Timer" parent="." unique_id=902061335]
 wait_time = 60.0
 one_shot = true
 
-[node name="TimerMouseCheck" type="Timer" parent="."]
+[node name="TimerMouseCheck" type="Timer" parent="." unique_id=1031389170]
 wait_time = 0.2
 autostart = true
 
-[node name="MarkerSounds" type="Node3D" parent="."]
+[node name="MarkerSounds" type="Node3D" parent="." unique_id=599721164]
 script = ExtResource("12_llkab")
 
-[node name="DryEraseDragSqueak" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseDragSqueak" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=1091364461]
 stream = ExtResource("12_wl5gr")
 bus = &"Marker"
 
-[node name="DryEraseDrag" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseDrag" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=415483700]
 stream = ExtResource("13_llkab")
 bus = &"Marker"
 
-[node name="DryEraseHardSqueak" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseHardSqueak" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=1388878291]
 stream = ExtResource("14_qjh7t")
 bus = &"Marker"
 
-[node name="DryEraseShortSqueak" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseShortSqueak" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=623653847]
 stream = ExtResource("15_ilncf")
 bus = &"Marker"
 
-[node name="DryEraseSlide2" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseSlide2" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=1254659014]
 stream = ExtResource("16_nx20o")
 bus = &"Marker"
 
-[node name="DryEraseSlideDrag" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseSlideDrag" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=656421197]
 stream = ExtResource("17_s0ud2")
 bus = &"Marker"
 
-[node name="DryEraseSlide" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseSlide" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=418691727]
 stream = ExtResource("18_vt1bh")
 bus = &"Marker"
 
-[node name="DryEraseSoftDrag" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseSoftDrag" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=141317297]
 stream = ExtResource("19_ybi78")
 bus = &"Marker"
 
-[node name="DryEraseSoftSqueak" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseSoftSqueak" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=275374057]
 stream = ExtResource("20_p00cp")
 bus = &"Marker"
 
-[node name="DryEraseSqueakDrag" type="AudioStreamPlayer" parent="MarkerSounds"]
+[node name="DryEraseSqueakDrag" type="AudioStreamPlayer" parent="MarkerSounds" unique_id=576435368]
 stream = ExtResource("21_wb8ux")
 bus = &"Marker"
 
-[node name="TimerModsOnlyDraw" type="Timer" parent="."]
+[node name="TimerModsOnlyDraw" type="Timer" parent="." unique_id=2019899331]
 wait_time = 300.0
 one_shot = true
 

@@ -49,6 +49,7 @@ var player_position: Vector3 = Vector3.ZERO
 var player_rotation: float = 0.0
 var mod_ids: Array[String] = []
 var revoked_marker_ids: Dictionary[String, String] = {}
+var car: StreamerCar
 
 
 @onready var world_root: Node3D = $WorldRoot
@@ -68,10 +69,11 @@ var revoked_marker_ids: Dictionary[String, String] = {}
 @onready var camera_3d_stream: Camera3D = $WindowStream/Camera3DStream
 @onready var timer_save_position: Timer = $TimerSavePosition
 @onready var timer_save_drawing: Timer = $TimerSaveDrawing
-@onready var voice_box: AudioStreamPlayer3D = $VoiceBox
+@onready var collision_shape_3d: CollisionShape3D = $WorldRoot/CharacterBody3D/CollisionShape3D
 
 
 func _ready() -> void:
+	VoiceBoxSync.set_voice_settings({"asmr": false})
 	#var model = get_model()
 	#var anim_player_2 := AnimationPlayer.new()
 	#model.add_child(anim_player_2)
@@ -173,6 +175,7 @@ func handle_channel_chat_message_v2(
 	var chatter_data: Dictionary = await get_twitch_id(chatter_username)
 	var chatter_id: String = chatter_data.id
 	drawing_enabled.emit(chatter_id, chatter_display_name)
+	
 	#if message == "!save":
 		#if timer_save_drawing.is_stopped():
 			#save_drawing.emit()
@@ -252,7 +255,24 @@ func create_input_event_key(phys_keycode: Key) -> InputEventKey:
 	return iek
 
 
+func is_driving() -> bool:
+	if car:
+		if car.player_in_car:
+			return true
+	return false
+
+
 func _process(delta: float) -> void:
+	if VoiceBoxSync.multiplayer.get_peers():
+		VoiceBoxSync.sync_cam_xform.rpc(camera_3d_stream.global_transform)
+		var skel = get_skeleton()
+		var head: Node3D = skel.get_node_or_null("head")
+		if head:
+			var head_xform: Transform3D = head.global_transform
+			head_xform.basis = head_xform.basis.rotated(head_xform.basis.y, PI)
+			VoiceBoxSync.sync_head_xform.rpc(head_xform)
+		
+	
 	cam_h.rotation.y = rot_h
 	cam_v.rotation.x = rot_v
 
@@ -267,54 +287,60 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	var skel = get_skeleton()
 	var head: Node3D = skel.get_node_or_null("HeadOutside")
-	if head:
-		voice_box.global_transform = head.global_transform
-		voice_box.global_basis = voice_box.global_basis.rotated(voice_box.global_basis.y, PI)
-	
-	if not character_body_3d.is_on_floor():
-		character_body_3d.velocity += character_body_3d.get_gravity() * delta
-	else:
-		if Input.is_action_just_pressed("jump") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			character_body_3d.velocity.y = JUMP
-
-	var input := Input.get_vector("left", "right", "fwd", "back")
-	var dir := cam_h.global_basis * Vector3(input.x, 0.0, input.y)
-	
-	if input:
-		timer_save_position.start()
-
-	var accel: float
-
-	if character_body_3d.is_on_floor():
-		accel = ACCEL
-	else:
-		accel = ACCEL_AIR
-
-	if dir and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		character_body_3d.velocity.x = lerpf(character_body_3d.velocity.x, dir.x * SPEED, accel)
-		character_body_3d.velocity.z = lerpf(character_body_3d.velocity.z, dir.z * SPEED, accel)
-	else:
-		character_body_3d.velocity.x = lerpf(character_body_3d.velocity.x, 0.0, accel)
-		character_body_3d.velocity.z = lerpf(character_body_3d.velocity.z, 0.0, accel)
-
-	character_body_3d.move_and_slide()
-
 	var model := get_model_controller()
-	if model:
+	
+	var input := Input.get_vector("left", "right", "fwd", "back")
+	
+	if is_driving():
+		var car_dir: Vector3 = -car.global_basis.z
+		var car_dir_2d := Vector2(car_dir.x, car_dir.z)
+		player_rotation = -car_dir_2d.angle() + (PI/2.0)
+		character_body_3d.global_position = car.body.global_position
 		model.global_position = character_body_3d.global_position
-		var dir_2d := Vector2(dir.x, dir.z)
-		var look_angle: float
-		if Input.is_action_pressed("face_cam"):
-			var dir_to_cam: Vector3 = model.global_position.direction_to(camera_3d_stream.global_position)
-			var dir_to_cam_2d := Vector2(dir_to_cam.x, dir_to_cam.z)
-			look_angle = -dir_to_cam_2d.angle() + (PI/2.0)
+		character_body_3d.move_and_slide()
+	else:
+		if not character_body_3d.is_on_floor():
+			character_body_3d.velocity += character_body_3d.get_gravity() * delta
 		else:
-			look_angle = -dir_2d.angle() + (PI/2.0)
+			if Input.is_action_just_pressed("jump") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+				character_body_3d.velocity.y = JUMP
 
-		if (dir_2d or Input.is_action_pressed("face_cam")) and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			player_rotation = lerp_angle(player_rotation, look_angle, 0.1)
+		var dir := cam_h.global_basis * Vector3(input.x, 0.0, input.y)
+		
+		if input:
+			timer_save_position.start()
 
-		main_cam_h.global_rotation.y = lerp_angle(main_cam_h.global_rotation.y, model.global_rotation.y, 0.4)
+		var accel: float
+
+		if character_body_3d.is_on_floor():
+			accel = ACCEL
+		else:
+			accel = ACCEL_AIR
+
+		if dir and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			character_body_3d.velocity.x = lerpf(character_body_3d.velocity.x, dir.x * SPEED, accel)
+			character_body_3d.velocity.z = lerpf(character_body_3d.velocity.z, dir.z * SPEED, accel)
+		else:
+			character_body_3d.velocity.x = lerpf(character_body_3d.velocity.x, 0.0, accel)
+			character_body_3d.velocity.z = lerpf(character_body_3d.velocity.z, 0.0, accel)
+
+		character_body_3d.move_and_slide()
+
+		if model:
+			model.global_position = character_body_3d.global_position
+			var dir_2d := Vector2(dir.x, dir.z)
+			var look_angle: float
+			if Input.is_action_pressed("face_cam"):
+				var dir_to_cam: Vector3 = model.global_position.direction_to(camera_3d_stream.global_position)
+				var dir_to_cam_2d := Vector2(dir_to_cam.x, dir_to_cam.z)
+				look_angle = -dir_to_cam_2d.angle() + (PI/2.0)
+			else:
+				look_angle = -dir_2d.angle() + (PI/2.0)
+
+			if (dir_2d or Input.is_action_pressed("face_cam")) and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+				player_rotation = lerp_angle(player_rotation, look_angle, 0.1)
+
+			main_cam_h.global_rotation.y = lerp_angle(main_cam_h.global_rotation.y, model.global_rotation.y, 0.4)
 
 	if Input.is_action_just_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -337,6 +363,16 @@ func _on_window_window_input(event: InputEvent) -> void:
 		if event is InputEventMouseMotion:
 			rot_h -= event.relative.x * SENS
 			rot_v -= event.relative.y * SENS
+		elif event is InputEventKey:
+			if event.physical_keycode == KEY_E:
+				if car:
+					if event.pressed:
+						car.player_in_car = not car.player_in_car
+						collision_shape_3d.disabled = car.player_in_car
+						if car.player_in_car:
+							spring_arm_3d.spring_length = 5.0
+						else:
+							spring_arm_3d.spring_length = 2.5
 
 
 func _on_timer_5s_timeout() -> void:
@@ -378,14 +414,7 @@ func _on_timer_save_drawing_timeout() -> void:
 
 
 func _on_check_button_asmr_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		voice_box.attenuation_model = AudioStreamPlayer3D.ATTENUATION_LOGARITHMIC
-		voice_box.panning_strength = 1.0
-		voice_box.emission_angle_enabled = true
-	else:
-		voice_box.attenuation_model = AudioStreamPlayer3D.ATTENUATION_DISABLED
-		voice_box.panning_strength = 0.0
-		voice_box.emission_angle_enabled = false
+	VoiceBoxSync.set_voice_settings.rpc({"asmr": toggled_on})
 
 
 func _on_window_player_mouse_entered() -> void:
@@ -394,3 +423,15 @@ func _on_window_player_mouse_entered() -> void:
 
 func _on_window_player_mouse_exited() -> void:
 	window_player.scaling_3d_scale = 0.5
+
+
+func _on_thing_detector_area_entered(area: Area3D) -> void:
+	if area.is_in_group("car_area"):
+		var car_path: NodePath = area.get_meta("relevant_thing")
+		car = area.get_node(car_path)
+
+
+func _on_thing_detector_area_exited(area: Area3D) -> void:
+	if area.is_in_group("car_area"):
+		if not is_driving():
+			car = null

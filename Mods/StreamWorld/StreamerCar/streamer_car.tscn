@@ -1,0 +1,209 @@
+[gd_scene format=3 uid="uid://8mu48tfq0esn"]
+
+[ext_resource type="Script" uid="uid://3bgum86gtydx" path="res://Mods/StreamWorld/StreamerCar/streamer_car.gd" id="1_lpvuf"]
+[ext_resource type="Script" uid="uid://cwckj5lkj0i8o" path="res://Mods/StreamWorld/StreamerCar/soft_wheel.gd" id="1_q78rb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8xsr7"]
+size = Vector3(1.5, 1, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8xsr7"]
+size = Vector3(1.5, 1, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mlt5x"]
+size = Vector3(3.99, 1.63, 4.265)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lpvuf"]
+radius = 0.1
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_lpvuf"]
+radius = 0.1
+height = 2.5
+
+[node name="StreamerCar" type="Node3D" unique_id=1329945654]
+script = ExtResource("1_lpvuf")
+
+[node name="Body" type="RigidBody3D" parent="." unique_id=696452710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+collision_layer = 128
+collision_mask = 128
+mass = 100.0
+can_sleep = false
+continuous_cd = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body" unique_id=327981544]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29999995, 0)
+shape = SubResource("BoxShape3D_8xsr7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Body" unique_id=2082281966]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29999995, 0)
+mesh = SubResource("BoxMesh_8xsr7")
+
+[node name="Area3D" type="Area3D" parent="Body" unique_id=167533174 groups=["car_area"]]
+collision_layer = 128
+collision_mask = 128
+monitoring = false
+metadata/relevant_thing = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Area3D" unique_id=1456024713]
+shape = SubResource("BoxShape3D_mlt5x")
+
+[node name="CamPos" type="Node3D" parent="Body" unique_id=1395315417]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7683716e-07, 1.5307763, 3.9885254)
+
+[node name="SoftWheelFR" type="RigidBody3D" parent="." unique_id=791253176 node_paths=PackedStringArray("connect_to")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3000001, 0.6, -1.3000001)
+collision_layer = 128
+collision_mask = 128
+mass = 10.0
+can_sleep = false
+continuous_cd = true
+script = ExtResource("1_q78rb")
+radius = 0.5
+res = 32
+connect_to = NodePath("../AxleF")
+tire_collision_layer = 128
+tire_collision_mask = 128
+metadata/_custom_type_script = "uid://cwckj5lkj0i8o"
+
+[node name="SoftWheelFL" type="RigidBody3D" parent="." unique_id=1885549679 node_paths=PackedStringArray("connect_to")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.6, -1.3)
+collision_layer = 128
+collision_mask = 128
+mass = 10.0
+can_sleep = false
+continuous_cd = true
+script = ExtResource("1_q78rb")
+radius = 0.5
+res = 32
+connect_to = NodePath("../AxleF")
+tire_collision_layer = 128
+tire_collision_mask = 128
+metadata/_custom_type_script = "uid://cwckj5lkj0i8o"
+
+[node name="SoftWheelBR" type="RigidBody3D" parent="." unique_id=2135298353 node_paths=PackedStringArray("connect_to")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3000001, 0.6, 1.3000001)
+collision_layer = 128
+collision_mask = 128
+mass = 10.0
+can_sleep = false
+continuous_cd = true
+script = ExtResource("1_q78rb")
+radius = 0.5
+res = 32
+connect_to = NodePath("../AxleB")
+tire_collision_layer = 128
+tire_collision_mask = 128
+metadata/_custom_type_script = "uid://cwckj5lkj0i8o"
+
+[node name="SoftWheelBL" type="RigidBody3D" parent="." unique_id=496867151 node_paths=PackedStringArray("connect_to")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.6, 1.3000002)
+collision_layer = 128
+collision_mask = 128
+mass = 10.0
+can_sleep = false
+continuous_cd = true
+script = ExtResource("1_q78rb")
+radius = 0.5
+res = 32
+connect_to = NodePath("../AxleB")
+tire_collision_layer = 128
+tire_collision_mask = 128
+metadata/_custom_type_script = "uid://cwckj5lkj0i8o"
+
+[node name="AxleF" type="RigidBody3D" parent="." unique_id=2014529621]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -1.3000001)
+collision_layer = 128
+collision_mask = 128
+mass = 20.0
+can_sleep = false
+continuous_cd = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AxleF" unique_id=489898697]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_lpvuf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AxleF" unique_id=1222941884]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_lpvuf")
+
+[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="AxleF" unique_id=1935066027]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+node_a = NodePath("..")
+node_b = NodePath("../../Body")
+angular_limit_z/upper_angle = 0.34906584
+angular_limit_z/lower_angle = -0.34906584
+
+[node name="ShockR" type="Generic6DOFJoint3D" parent="AxleF" unique_id=2137117038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0.395, 0)
+node_a = NodePath("..")
+node_b = NodePath("../../Body")
+linear_limit_x/upper_distance = 0.05
+linear_limit_x/lower_distance = -0.05
+linear_limit_y/upper_distance = 0.05
+linear_limit_y/lower_distance = -0.05
+linear_spring_x/enabled = true
+linear_spring_y/enabled = true
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="ShockL" type="Generic6DOFJoint3D" parent="AxleF" unique_id=375202273]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.395, 0)
+node_a = NodePath("..")
+node_b = NodePath("../../Body")
+linear_limit_x/upper_distance = 0.05
+linear_limit_x/lower_distance = -0.05
+linear_limit_y/upper_distance = 0.05
+linear_limit_y/lower_distance = -0.05
+linear_spring_x/enabled = true
+linear_spring_y/enabled = true
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="AxleB" type="RigidBody3D" parent="." unique_id=892159888]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 1.3000001)
+collision_layer = 128
+collision_mask = 128
+mass = 20.0
+can_sleep = false
+continuous_cd = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AxleB" unique_id=420028716]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_lpvuf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AxleB" unique_id=693570308]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_lpvuf")
+
+[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="AxleB" unique_id=1869347339]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+node_a = NodePath("..")
+node_b = NodePath("../../Body")
+angular_limit_z/upper_angle = 0.34906584
+angular_limit_z/lower_angle = -0.34906584
+
+[node name="ShockR" type="Generic6DOFJoint3D" parent="AxleB" unique_id=808405919]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0.395, 0)
+node_a = NodePath("..")
+node_b = NodePath("../../Body")
+linear_limit_x/upper_distance = 0.05
+linear_limit_x/lower_distance = -0.05
+linear_limit_y/upper_distance = 0.05
+linear_limit_y/lower_distance = -0.05
+linear_spring_x/enabled = true
+linear_spring_y/enabled = true
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="ShockL" type="Generic6DOFJoint3D" parent="AxleB" unique_id=625895111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.395, 0)
+node_a = NodePath("..")
+node_b = NodePath("../../Body")
+linear_limit_x/upper_distance = 0.05
+linear_limit_x/lower_distance = -0.05
+linear_limit_y/upper_distance = 0.05
+linear_limit_y/lower_distance = -0.05
+linear_spring_x/enabled = true
+linear_spring_y/enabled = true
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
