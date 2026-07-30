@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://dhr0il1s6q8m4"
+path="res://.godot/imported/pyramid_mask.png-4e7cd76c7d30147c9d041a838cb9dca2.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/pyramid/pyramid_mask.png"
+dest_files=["res://.godot/imported/pyramid_mask.png-4e7cd76c7d30147c9d041a838cb9dca2.image"]
+
+[params]
+

@@ -58,6 +58,7 @@ func _ready() -> void:
 	save_timer = Timer.new()
 	save_timer.autostart = false
 	save_timer.one_shot = true
+	save_timer.wait_time = 30.0
 	add_child(save_timer)
 	save_timer.timeout.connect(_on_save_timer_timeout)
 	

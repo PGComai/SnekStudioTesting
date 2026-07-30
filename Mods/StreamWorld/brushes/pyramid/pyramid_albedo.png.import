@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://l4ba1ctj36s4"
+path="res://.godot/imported/pyramid_albedo.png-53f36876db66a6eeba8be9226a1f56c2.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/pyramid/pyramid_albedo.png"
+dest_files=["res://.godot/imported/pyramid_albedo.png-53f36876db66a6eeba8be9226a1f56c2.image"]
+
+[params]
+

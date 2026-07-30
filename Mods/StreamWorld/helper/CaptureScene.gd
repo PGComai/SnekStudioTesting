@@ -336,9 +336,16 @@ func handle_gh_packet(packet: Dictionary) -> void:
 						if brushes.has(id):
 							if brush_preview.tiled:
 								brushes[id].type = Brush.BrushType.CUSTOM_TILE
+								brushes[id].splatter = 0.0
 								brushes[id].sparse = 16
+							elif brush_preview.default:
+								brushes[id].type = Brush.BrushType.ROUND
+								brushes[id].splatter = 0.0
+								brushes[id].sparse = 0
 							else:
 								brushes[id].type = Brush.BrushType.CUSTOM
+								brushes[id].splatter = brush_preview.spread
+								brushes[id].sparse = brush_preview.sparseness
 							brushes[id].custom_image = brush_preview.img
 							brushes[id].custom_mask = brush_preview.mask
 							if brush_preview.mask2:

@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://pti38qg5gwwh"
+path="res://.godot/imported/rounded_square_albedo.png-d8e58638833c725fc6ea5737cad69853.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/rounded_square/rounded_square_albedo.png"
+dest_files=["res://.godot/imported/rounded_square_albedo.png-d8e58638833c725fc6ea5737cad69853.image"]
+
+[params]
+

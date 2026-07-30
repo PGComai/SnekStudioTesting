@@ -33,7 +33,7 @@ func needs_speedup() -> bool:
 
 
 func make_brush() -> void:
-	if type == BrushType.DK:
+	if type == BrushType.CUSTOM:
 		size = 32
 	brush_image = Image.create_empty(size, size, false, Image.FORMAT_RGBA8)
 	brush_mask = Image.create_empty(size, size, false, Image.FORMAT_LA8)
@@ -56,7 +56,7 @@ func make_brush() -> void:
 		brush_image.convert(Image.FORMAT_RGBA8)
 		brush_mask.convert(Image.FORMAT_LA8)
 	elif type == BrushType.CUSTOM:
-		size = custom_image.get_size().x
+		#size = custom_image.get_size().x
 		brush_image = custom_image
 		brush_mask = custom_mask
 		brush_image.convert(Image.FORMAT_RGBA8)
@@ -142,19 +142,31 @@ func render_color() -> void:
 		clr_img.fill(clr)
 		custom_tile_image.blend_rect_mask(clr_img, custom_tile_mask, Rect2i(0, 0, size * 2, size * 2), Vector2i.ZERO)
 	elif type == BrushType.CUSTOM:
-		var clr_img := Image.create(size, size, false, Image.FORMAT_RGBA8)
-		var clr_img_masked := Image.create(size, size, false, Image.FORMAT_RGBA8)
-		var color_overlay := Color(clr.r, clr.b, clr.g, 0.5)
-		clr_img.fill(color_overlay)
-		clr_img_masked.fill(Color(1.0, 1.0, 1.0, 0.0))
-		var desired_mask: Image
-		if custom_mask_2:
-			desired_mask = custom_mask_2
-		else:
-			desired_mask = custom_mask
-		clr_img_masked.blend_rect_mask(clr_img, desired_mask, Rect2i(0, 0, size, size), Vector2i.ZERO)
-		brush_image = custom_image.duplicate()
-		brush_image.blend_rect_mask(clr_img_masked, desired_mask, Rect2i(0, 0, size, size), Vector2i.ZERO)
+		var colorized_image: Image = custom_image.duplicate()
+		for x: int in size:
+			for y: int in size:
+				var p: Color = colorized_image.get_pixel(x, y)
+				var a: float = p.a
+				p.a = 1.0
+				var blend_clr: Color = clr
+				blend_clr.a = 0.5
+				var new_clr: Color = p.blend(blend_clr)
+				new_clr.a = a
+				colorized_image.set_pixel(x, y, new_clr)
+		brush_image = colorized_image
+		#var clr_img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+		#var clr_img_masked := Image.create(size, size, false, Image.FORMAT_RGBA8)
+		#var color_overlay := Color(clr.r, clr.b, clr.g, 0.5)
+		#clr_img.fill(color_overlay)
+		#clr_img_masked.fill(Color(1.0, 1.0, 1.0, 0.0))
+		#var desired_mask: Image
+		#if custom_mask_2:
+			#desired_mask = custom_mask_2
+		#else:
+			#desired_mask = custom_mask
+		#clr_img_masked.blend_rect_mask(clr_img, desired_mask, Rect2i(0, 0, size, size), Vector2i.ZERO)
+		#brush_image = custom_image.duplicate()
+		#brush_image.blend_rect_mask(clr_img_masked, desired_mask, Rect2i(0, 0, size, size), Vector2i.ZERO)
 
 
 func render_offset() -> void:
