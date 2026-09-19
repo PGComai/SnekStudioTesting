@@ -163,7 +163,7 @@ anisotropic_filtering_level = 0
 positional_shadow_atlas_size = 0
 oversampling_override = 1.0
 position = Vector2i(0, 36)
-size = Vector2i(864, 486)
+size = Vector2i(432, 243)
 visible = false
 
 [node name="Camera3DPlayer" type="Camera3D" parent="WindowPlayer" unique_id=2069832547]

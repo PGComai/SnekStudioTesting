@@ -49,6 +49,7 @@ var viewer_color_donuts: Dictionary[String, ColorDonut]
 var viewer_brush_donuts: Dictionary[String, ColorDonut]
 var mod_markers_only := false
 var mod_ids: Array[String] = []
+var smooth_mousepos := Vector2.ZERO
 # TODO: try to match marker color to chatter color
 
 
@@ -102,6 +103,14 @@ func _process(delta: float) -> void:
 		x_11_display_capture.process_mode = Node.PROCESS_MODE_DISABLED
 	capture = !capture
 	
+	var mousepos: Vector2i = DisplayServer.mouse_get_position() - DisplayServer.screen_get_position(0)
+	var mousepos_scaled: Vector2 = Vector2(mousepos) / Vector2(DisplayServer.screen_get_size(0))
+	
+	if eraser_cursor.visible:
+		smooth_mousepos = Vector2(-1.0, 1.0)
+	else:
+		smooth_mousepos = smooth_mousepos.lerp(mousepos_scaled, 0.2)
+	RenderingServer.global_shader_parameter_set("mouse_pos", smooth_mousepos)
 	#prints("DisplayServer mouse pos: ", DisplayServer.mouse_get_position())
 	mouse.position = mouse_to_world(DisplayServer.mouse_get_position())
 	
@@ -203,27 +212,28 @@ func handle_gh_packet(packet: Dictionary) -> void:
 	var id: String = packet["id"]
 	var is_mod: bool = mod_ids.has(id)
 	var can_draw: bool = marker_permissions.has(id) or testing_markers
-	var draw_enabled: bool = enabled_drawers.has(id) or testing_markers
+	var draw_enabled: bool = true#enabled_drawers.has(id) or testing_markers
 	if mod_markers_only:
 		can_draw = is_mod
 	else:
 		can_draw = can_draw and draw_enabled
 	if can_draw:
 		if not brushes.has(id):
+			print("THIS SHOULDNT HAPPEN (BRUSHES DOESNT HAVE ID)")
 			var new_brush := Brush.new()
 			new_brush.size = 12
 			#if testing_markers:
 				#new_brush.type = Brush.BrushType.DK
 			brushes[id] = new_brush
-			if not colors.has(packet.id):
+			if not colors.has(id):
 				var clr := Color(
 								randf_range(0.3, 0.9),
 								randf_range(0.3, 0.9),
 								randf_range(0.3, 0.9),
 								1.0)
-				colors[packet.id] = clr
-				brushes[packet.id].clr = clr
-			new_brush.make_brush()
+				colors[id] = clr
+				brushes[id].clr = clr
+			brushes[id].make_brush()
 		handle_common(packet)
 		var detected_release := false
 		var shift: bool = packet.shift

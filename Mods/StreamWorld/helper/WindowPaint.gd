@@ -91,6 +91,19 @@ func _on_save_timer_timeout() -> void:
 
 
 func cache_drawing() -> void:
+	#if capture_scene.mesh_instance_3d.material_overlay:
+		#var mat: StandardMaterial3D = capture_scene.mesh_instance_3d.material_overlay
+		#var tex: Texture2D = mat.albedo_texture
+		#if tex:
+			#var bg: Image = tex.get_image()
+			#if bg.get_size() != img.get_size():
+				#bg.resize(img.get_size().x, img.get_size().y)
+			#if bg.get_format() != img.get_format():
+				#bg.convert(img.get_format())
+			#bg.blend_rect(img, Rect2i(Vector2i.ZERO, img.get_size()), Vector2i.ZERO)
+			#bg.save_png(DRAWING_CACHE_FILE)
+			#print("cached drawing + screen")
+			#return
 	img.save_png(DRAWING_CACHE_FILE)
 	print("cached drawing")
 
@@ -137,7 +150,6 @@ func _thread_function() -> void:
 		erasings.clear()
 		mod_erasings.clear()
 		
-		mutex.lock()
 		
 		for id: String in drags_thread:
 			var drag: PackedVector2Array = drags_thread[id]
@@ -149,6 +161,13 @@ func _thread_function() -> void:
 			mod_erasings[id] = PackedVector2Array([mod_erasing[-1]])
 		
 		var brushes_thread: Dictionary[String, Brush] = capture_scene.brushes.duplicate(true)
+		for id: String in brushes_thread:
+			var brush: Brush = brushes_thread[id]
+			if not brush.brush_image:
+				brush.make_brush()
+				print("MADE BRUSH BUT SHOULDNT HAVE NEEDED TO")#TODO
+		
+		mutex.lock()
 		
 		if clear_queued:
 			img.fill(Color(0.0, 0.0, 0.0, 0.0))
@@ -271,11 +290,11 @@ func _process(delta: float) -> void:
 			queue_thread = false
 
 
-func _brush_at(_position: Vector2, brush: Image, brush_mask: Image, brush_splatter: float) -> void:
+func _brush_at(_position: Vector2, brush_img: Image, brush_mask: Image, brush_splatter: float) -> void:
 	if brush_splatter:
 		_position += Vector2(thread_rng.randfn(0.0, brush_splatter), thread_rng.randfn(0.0, brush_splatter))
-	var brush_size: Vector2i = brush.get_size()
-	img.blend_rect_mask(brush, brush_mask, Rect2i(Vector2i.ZERO, brush_size), Vector2i(_position) - (brush_size / 2))
+	var brush_size: Vector2i = brush_img.get_size()
+	img.blend_rect_mask(brush_img, brush_mask, Rect2i(Vector2i.ZERO, brush_size), Vector2i(_position) - (brush_size / 2))
 	#img.fill_rect(Rect2(_position, Vector2.ONE).grow(brush_thickness), clr)
 
 

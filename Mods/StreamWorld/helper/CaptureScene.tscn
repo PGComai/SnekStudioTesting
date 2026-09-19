@@ -31,6 +31,7 @@
 [ext_resource type="AudioStream" uid="uid://dem37qmofm83q" path="res://Mods/StreamWorld/audio/dry erase slide drag.wav" id="17_s0ud2"]
 [ext_resource type="AudioStream" uid="uid://bm1ob8bsf8e71" path="res://Mods/StreamWorld/audio/dry erase slide.wav" id="18_vt1bh"]
 [ext_resource type="AudioStream" uid="uid://dpvsqficpxlaw" path="res://Mods/StreamWorld/audio/dry erase soft drag.wav" id="19_ybi78"]
+[ext_resource type="Shader" uid="uid://bqim03288ms8b" path="res://Mods/StreamWorld/helper/flashlight.tres" id="20_idj4n"]
 [ext_resource type="AudioStream" uid="uid://dcd2fiya8gxyx" path="res://Mods/StreamWorld/audio/dry erase soft squeak.wav" id="20_p00cp"]
 [ext_resource type="AudioStream" uid="uid://3hgghx8nb5dp" path="res://Mods/StreamWorld/audio/dry erase squeak drag.wav" id="21_wb8ux"]
 
@@ -91,6 +92,9 @@ size = Vector3(0.05, 0.05, 0.035)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_3414e"]
 radius = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8p4nv"]
+shader = ExtResource("20_idj4n")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_su72v"]
 shader = ExtResource("7_dqwju")
@@ -263,6 +267,7 @@ script = ExtResource("5_37l3g")
 
 [node name="TextureRect" type="TextureRect" parent="WindowPaint" unique_id=6299395]
 unique_name_in_owner = true
+material = SubResource("ShaderMaterial_8p4nv")
 offset_right = 40.0
 offset_bottom = 40.0
 

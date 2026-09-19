@@ -121,10 +121,13 @@ func clear_custom_mask() -> void:
 
 
 func render_color_or_colorless() -> void:
-	if clr.is_equal_approx(Color.WHITE):
-		render_colorless()
-	else:
-		render_color()
+	if type != BrushType.ROUND:
+		if clr.is_equal_approx(Color.WHITE):
+			if not get_meta(&"colorless", false):
+				render_colorless()
+				return
+	set_meta(&"colorless", false)
+	render_color()
 
 
 func render_colorless() -> void:
@@ -132,6 +135,7 @@ func render_colorless() -> void:
 	if type == BrushType.CUSTOM:
 		brush_image = custom_image
 		brush_image.convert(Image.FORMAT_RGBA8)
+		set_meta(&"colorless", true)
 	elif type == BrushType.CUSTOM_TILE:
 		make_tile()
 

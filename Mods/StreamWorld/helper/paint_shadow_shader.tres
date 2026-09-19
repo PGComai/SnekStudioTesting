@@ -1,12 +1,70 @@
 [gd_resource type="VisualShader" format=3 uid="uid://b7ign01iy5to4"]
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_33x6w"]
+expanded_output_ports = [0]
 parameter_name = "ShadowColor"
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_33x6w"]
+size = Vector2(900, 500)
+expression = "global uniform vec2 mouse_pos;"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_b0jvg"]
+size = Vector2(880, 500.00003)
+expression = "output0 = mouse_pos;"
+
+[sub_resource type="VisualShaderNodeVectorDistance" id="VisualShaderNodeVectorDistance_ocbam"]
+default_input_values = [0, Vector2(0, 0), 1, Vector2(0, 0)]
+op_type = 0
+
+[sub_resource type="VisualShaderNodeClamp" id="VisualShaderNodeClamp_y413a"]
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_ccdet"]
+
+[sub_resource type="Curve" id="Curve_306ui"]
+_data = [Vector2(0.15693903, 0), 0.0, 0.0, 0, 0, Vector2(0.21789882, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_wqe06"]
+curve = SubResource("Curve_306ui")
+
+[sub_resource type="VisualShaderNodeCurveTexture" id="VisualShaderNodeCurveTexture_6i48u"]
+texture = SubResource("CurveTexture_wqe06")
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_33x6w"]
+input_name = "screen_uv"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_b0jvg"]
+expanded_output_ports = [0]
+input_name = "color"
 
 [resource]
 mode = 1
 flags/light_only = false
-nodes/fragment/0/position = Vector2(3140, -1380)
+nodes/fragment/0/position = Vector2(3170, -1890)
 nodes/fragment/10/node = SubResource("VisualShaderNodeColorParameter_33x6w")
-nodes/fragment/10/position = Vector2(600, -1560)
-nodes/fragment/connections = PackedInt32Array(10, 0, 0, 0)
+nodes/fragment/10/position = Vector2(1850, -1970)
+nodes/fragment/11/node = SubResource("VisualShaderNodeGlobalExpression_33x6w")
+nodes/fragment/11/position = Vector2(830, -1630)
+nodes/fragment/11/size = Vector2(900, 500)
+nodes/fragment/11/input_ports = ""
+nodes/fragment/11/output_ports = ""
+nodes/fragment/11/expression = "global uniform vec2 mouse_pos;"
+nodes/fragment/12/node = SubResource("VisualShaderNodeExpression_b0jvg")
+nodes/fragment/12/position = Vector2(870, -1340)
+nodes/fragment/12/size = Vector2(880, 500.00003)
+nodes/fragment/12/input_ports = ""
+nodes/fragment/12/output_ports = "0,3,output0;"
+nodes/fragment/12/expression = "output0 = mouse_pos;"
+nodes/fragment/13/node = SubResource("VisualShaderNodeVectorDistance_ocbam")
+nodes/fragment/13/position = Vector2(1670, -1170)
+nodes/fragment/14/node = SubResource("VisualShaderNodeClamp_y413a")
+nodes/fragment/14/position = Vector2(2000, -1280)
+nodes/fragment/15/node = SubResource("VisualShaderNodeMix_ccdet")
+nodes/fragment/15/position = Vector2(2470, -1670)
+nodes/fragment/16/node = SubResource("VisualShaderNodeCurveTexture_6i48u")
+nodes/fragment/16/position = Vector2(2250, -1300)
+nodes/fragment/17/node = SubResource("VisualShaderNodeInput_33x6w")
+nodes/fragment/17/position = Vector2(1050, -900)
+nodes/fragment/18/node = SubResource("VisualShaderNodeInput_b0jvg")
+nodes/fragment/18/position = Vector2(1800, -2300)
+nodes/fragment/connections = PackedInt32Array(12, 0, 13, 0, 13, 0, 14, 0, 14, 0, 16, 0, 16, 0, 15, 2, 17, 0, 13, 1, 15, 0, 0, 1, 18, 4, 15, 1, 10, 0, 0, 0)

@@ -84,6 +84,7 @@ func _ready() -> void:
 	#anim_player_2.play("Walk")
 	
 	window_stream.visible = true
+	window_player.visible = true
 	for ac in default_key_actions:
 		InputMap.add_action(ac)
 		InputMap.action_add_event(ac, default_key_actions[ac])
