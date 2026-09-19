@@ -288,7 +288,8 @@ func _mod_erase_at(_position: Vector2) -> void:
 
 
 func clear() -> void:
-	OS.move_to_trash(ProjectSettings.globalize_path(DRAWING_CACHE_FILE))
+	if FileAccess.file_exists(DRAWING_CACHE_FILE):
+		OS.move_to_trash(ProjectSettings.globalize_path(DRAWING_CACHE_FILE))
 	clear_queued = true
 	thread_needed = true
 	debug_clear.emit()

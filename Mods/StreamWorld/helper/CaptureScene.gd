@@ -214,8 +214,16 @@ func handle_gh_packet(packet: Dictionary) -> void:
 			new_brush.size = 12
 			#if testing_markers:
 				#new_brush.type = Brush.BrushType.DK
-			new_brush.make_brush()
 			brushes[id] = new_brush
+			if not colors.has(packet.id):
+				var clr := Color(
+								randf_range(0.3, 0.9),
+								randf_range(0.3, 0.9),
+								randf_range(0.3, 0.9),
+								1.0)
+				colors[packet.id] = clr
+				brushes[packet.id].clr = clr
+			new_brush.make_brush()
 		handle_common(packet)
 		var detected_release := false
 		var shift: bool = packet.shift

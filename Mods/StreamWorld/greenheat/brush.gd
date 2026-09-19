@@ -35,6 +35,8 @@ func needs_speedup() -> bool:
 func make_brush() -> void:
 	if type == BrushType.CUSTOM:
 		size = 32
+	elif type == BrushType.ROUND:
+		size = 12
 	brush_image = Image.create_empty(size, size, false, Image.FORMAT_RGBA8)
 	brush_mask = Image.create_empty(size, size, false, Image.FORMAT_LA8)
 	var brush_size: Vector2i = brush_image.get_size()

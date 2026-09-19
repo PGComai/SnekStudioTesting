@@ -265,7 +265,6 @@ shape = SubResource("SphereShape3D_afllp")
 
 [node name="Capture" parent="WorldRoot" unique_id=1942874489 node_paths=PackedStringArray("cast_camera") instance=ExtResource("2_eh1rf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.02901, -2.38955)
-testing_markers = true
 cast_camera = NodePath("../../WindowStream/Camera3DStream")
 
 [node name="Timer5s" type="Timer" parent="." unique_id=1931378675]
