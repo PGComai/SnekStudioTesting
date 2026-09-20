@@ -50,6 +50,7 @@ var viewer_brush_donuts: Dictionary[String, ColorDonut]
 var mod_markers_only := false
 var mod_ids: Array[String] = []
 var smooth_mousepos := Vector2.ZERO
+var last_screen_tex: Texture2D
 # TODO: try to match marker color to chatter color
 
 
@@ -76,6 +77,7 @@ func _ready() -> void:
 
 
 func _texture_changed(texture: Texture2D) -> void:
+	last_screen_tex = texture
 	var mat = StandardMaterial3D.new()
 	mat.albedo_texture = texture
 	mat.emission_texture = texture
@@ -519,3 +521,7 @@ func _on_game_world_drawing_enabled(user_id: String, display_name: String) -> vo
 func _on_check_button_hide_drawing_toggled(toggled_on: bool) -> void:
 	%TextureRect.visible = not toggled_on
 	%TextureRectShadow.visible = not toggled_on
+
+
+func _on_button_save_drawing_pressed() -> void:
+	save_drawing.emit()

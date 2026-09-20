@@ -289,6 +289,7 @@ visible = false
 script = ExtResource("11_qjh7t")
 
 [node name="TimerFade" type="Timer" parent="WindowPaint" unique_id=279829402]
+wait_time = 5.0
 autostart = true
 
 [node name="WindowEraser" type="Window" parent="." unique_id=2093543442]
@@ -362,6 +363,33 @@ bus = &"Marker"
 [node name="TimerModsOnlyDraw" type="Timer" parent="." unique_id=2019899331]
 wait_time = 300.0
 one_shot = true
+
+[node name="WindowTime" type="Window" parent="." unique_id=411484262]
+oversampling_override = 1.0
+title = "Time"
+position = Vector2i(96, 54)
+size = Vector2i(384, 432)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowTime" unique_id=1080027884]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRectTime" type="TextureRect" parent="WindowTime/VBoxContainer" unique_id=1713317954]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 3
+stretch_mode = 5
+
+[node name="TextureRectTimeSwap" type="TextureRect" parent="WindowTime/VBoxContainer" unique_id=359685345]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 3
+stretch_mode = 5
 
 [connection signal="save_drawing" from="." to="WindowPaint" method="_on_capture_scene_save_drawing"]
 [connection signal="screen_interacted" from="." to="WindowPaint" method="_on_node_3d_screen_interacted"]

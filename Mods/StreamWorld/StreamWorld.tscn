@@ -74,6 +74,7 @@ directional_shadow_max_distance = 10.3
 environment = SubResource("Environment_tpcd6")
 
 [node name="WindowTools" type="Window" parent="." unique_id=117356782]
+unique_name_in_owner = true
 disable_3d = true
 oversampling_override = 1.0
 title = "Tools"
@@ -114,6 +115,10 @@ layout_mode = 2
 layout_mode = 2
 focus_mode = 0
 text = "Clear Markers"
+
+[node name="ButtonSaveDrawing" type="Button" parent="WindowTools/VBoxContainer" unique_id=1588417711]
+layout_mode = 2
+text = "Save Drawing"
 
 [node name="Label" type="Label" parent="WindowTools/VBoxContainer" unique_id=1703967874]
 visible = false
@@ -303,6 +308,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -627.0626, -11.598275, 188.94
 [connection signal="toggled" from="WindowTools/VBoxContainer/CheckButtonBRB" to="WorldRoot/Capture" method="_on_check_button_brb_toggled"]
 [connection signal="text_changed" from="WindowTools/VBoxContainer/LineEditText3D" to="WorldRoot/Capture" method="_on_line_edit_text_3d_text_changed"]
 [connection signal="pressed" from="WindowTools/VBoxContainer/ClearMarkers" to="WorldRoot/Capture" method="_on_clear_markers_pressed"]
+[connection signal="pressed" from="WindowTools/VBoxContainer/ButtonSaveDrawing" to="WorldRoot/Capture" method="_on_button_save_drawing_pressed"]
 [connection signal="value_changed" from="WindowTools/VBoxContainer/HBoxContainer/HSliderMarkerAudio" to="WindowTools" method="_on_h_slider_marker_audio_value_changed"]
 [connection signal="mouse_entered" from="WindowPlayer" to="." method="_on_window_player_mouse_entered"]
 [connection signal="mouse_exited" from="WindowPlayer" to="." method="_on_window_player_mouse_exited"]

@@ -16,13 +16,17 @@ const ERASER_SIZE: Vector2 = Vector2(200.0, 100.0)
 const ERASER_SIZE_MOD: Vector2 = Vector2(100.0, 100.0)
 const SAVED_DRAWINGS_DIR: String = "user://drawings"
 const DRAWING_CACHE_FILE: String = "user://drawing.png"
+const DRAWING_FADE_CACHE_FILE: String = "user://drawing_fade_mask.png"
 
 
 var img: Image
 var img_tex: ImageTexture
+var fade_tex: ImageTexture
+var fade_swap_tex: ImageTexture
 var img_fade: Image
 var img_fade_mask: Image
 var img_fade_mask_fade: Image
+var img_fade_swap: Image
 var drags: Dictionary[String, PackedVector2Array] = {}
 var mod_erasings: Dictionary[String, PackedVector2Array] = {}
 var erasings: PackedVector2Array = []
@@ -39,10 +43,11 @@ var queue_thread := false
 var thread_needed := false
 var done_erasing := true
 var clear_queued := false
+var fade_queued := false
 var brush_round: Image
 var brush_round_mask: Image
 var thread_rng: RandomNumberGenerator
-var save_timer: Timer
+var last_cache: int
 
 
 @onready var texture_rect: TextureRect = $TextureRect
@@ -51,17 +56,6 @@ var save_timer: Timer
 
 
 func _ready() -> void:
-	#var temp_size: int = BRUSH_ROUND_SIZE / 2
-	
-	#brush_round_mask.resize(BRUSH_ROUND_SIZE, BRUSH_ROUND_SIZE, Image.INTERPOLATE_BILINEAR)
-	
-	save_timer = Timer.new()
-	save_timer.autostart = false
-	save_timer.one_shot = true
-	save_timer.wait_time = 30.0
-	add_child(save_timer)
-	save_timer.timeout.connect(_on_save_timer_timeout)
-	
 	mutex = Mutex.new()
 	semaphore = Semaphore.new()
 	exit_thread = true
@@ -70,41 +64,37 @@ func _ready() -> void:
 	thread = Thread.new()
 	thread.start(_thread_function, Thread.PRIORITY_HIGH)
 	
-	var loaded_cached:bool = load_cached_drawing()
+	var loaded_cached: bool = load_cached_drawing()
 	if not loaded_cached:
-		img = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_RGBA8)
+		img = Image.create_empty(3840, 2160, false, Image.FORMAT_RGBA8)
 		img.fill(Color(0.0, 0.0, 0.0, 0.0))
+		img_fade_mask = Image.create_empty(3840, 2160, false, Image.FORMAT_LA8)
+		img_fade_mask.fill(Color(0.0, 0.0, 0.0, 1.0))
 	img_tex = ImageTexture.create_from_image(img)
 	texture_rect.texture = img_tex
 	texture_rect_shadow.texture = img_tex
 	
-	img_fade = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_RGBA8)
+	img_fade = Image.create_empty(3840, 2160, false, Image.FORMAT_RGBA8)
 	img_fade.fill(Color(0.0, 0.0, 0.0, 0.0))
-	img_fade_mask = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_LA8)
-	img_fade_mask.fill(Color(0.0, 0.0, 0.0, 0.0))
-	img_fade_mask_fade = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_LA8)
-	img_fade_mask_fade.fill(Color(0.0, 0.0, 0.0, 1.0))
-
-
-func _on_save_timer_timeout() -> void:
-	cache_drawing()
+	
+	fade_tex = ImageTexture.create_from_image(img_fade_mask)
+	
+	#img_fade_swap = Image.create_empty(3840.0, 2160.0, false, Image.FORMAT_LA8)
+	#img_fade_swap.fill(Color(0.0, 0.0, 0.0, 0.0))
+	#fade_swap_tex = ImageTexture.create_from_image(img_fade_swap)
+	%TextureRectTime.texture = fade_tex
+	#%TextureRectTimeSwap.texture = fade_swap_tex
+	
+	img_fade_mask_fade = Image.create_empty(3840, 2160, false, Image.FORMAT_LA8)
+	img_fade_mask_fade.fill(Color(0.0, 0.0, 0.0, 0.01))
+	
+	last_cache = Time.get_ticks_msec()
 
 
 func cache_drawing() -> void:
-	#if capture_scene.mesh_instance_3d.material_overlay:
-		#var mat: StandardMaterial3D = capture_scene.mesh_instance_3d.material_overlay
-		#var tex: Texture2D = mat.albedo_texture
-		#if tex:
-			#var bg: Image = tex.get_image()
-			#if bg.get_size() != img.get_size():
-				#bg.resize(img.get_size().x, img.get_size().y)
-			#if bg.get_format() != img.get_format():
-				#bg.convert(img.get_format())
-			#bg.blend_rect(img, Rect2i(Vector2i.ZERO, img.get_size()), Vector2i.ZERO)
-			#bg.save_png(DRAWING_CACHE_FILE)
-			#print("cached drawing + screen")
-			#return
+	last_cache = Time.get_ticks_msec()
 	img.save_png(DRAWING_CACHE_FILE)
+	img_fade_mask.save_png(DRAWING_FADE_CACHE_FILE)
 	print("cached drawing")
 
 
@@ -115,6 +105,8 @@ func load_cached_drawing() -> bool:
 		var diff: int = current_time - modified_time
 		if diff < 21600:
 			img = Image.load_from_file(DRAWING_CACHE_FILE)
+			if FileAccess.file_exists(DRAWING_FADE_CACHE_FILE):
+				img_fade_mask = Image.load_from_file(DRAWING_FADE_CACHE_FILE)
 			return true
 	return false
 
@@ -169,15 +161,19 @@ func _thread_function() -> void:
 		
 		mutex.lock()
 		
+		var did_a_fade := false
+		var img_changed := false
 		if clear_queued:
 			img.fill(Color(0.0, 0.0, 0.0, 0.0))
+			img_fade_mask.fill(Color.BLACK)
 			img_tex.update.call_deferred(img)
+			fade_tex.update.call_deferred(img_fade_mask)
 			clear_queued = false
+			fade_queued = false
 			erasings_thread.clear()
 			drags_thread.clear()
 			mod_erasings_thread.clear()
 		else:
-			var img_changed := false
 			if drags_thread.size():
 				for id: String in drags_thread.keys():
 					var drag: PackedVector2Array = drags_thread[id]
@@ -239,42 +235,47 @@ func _thread_function() -> void:
 									Vector2i(erasings_thread[i+1])
 								):
 								_erase_at(Vector2(erase_px) - (ERASER_SIZE / 2.0))
-			
-			#img_fade_mask.blend_rect(
-							#img_fade_mask_fade,
-							#Rect2i(Vector2i(0, 0), Vector2i(3840, 2160)),
-							#Vector2i(0, 0)
-							#)
-			#img.blend_rect_mask(
-							#img_fade,
-							#img_fade_mask,
-							#Rect2i(Vector2i(0, 0), Vector2i(3840, 2160)),
-							#Vector2i(0, 0)
-							#)
-			#img.blit_rect_mask(
-							#img_fade,
-							#img_fade_mask,
-							#Rect2i(Vector2i(0, 0), Vector2i(3840, 2160)),
-							#Vector2i(0, 0)
-							#)
-			
 			if img_changed:
+				if not fade_queued:
+					img_tex.update.call_deferred(img)
+					fade_tex.update.call_deferred(img_fade_mask)
+		if fade_queued:
+			fade_queued = false
+			img_fade_mask.blend_rect(img_fade_mask_fade, Rect2i(Vector2i.ZERO, img_fade_mask_fade.get_size()), Vector2i.ZERO)
+			if not img_changed:
+				img = blend_alpha_mask(img, img_fade_mask)
 				img_tex.update.call_deferred(img)
-		
+			fade_tex.update.call_deferred(img_fade_mask)
+			did_a_fade = true
 		
 		mutex.unlock()
 		
 		mutex.lock()
 		exit_thread = true
 		mutex.unlock()
-		save_timer.start.call_deferred()
+
+
+func swap_la(image: Image) -> Image:
+	var data: PackedByteArray = image.get_data()
+	data.bswap16()
+	return Image.create_from_data(image.get_size().x, image.get_size().y, false, Image.FORMAT_LA8, data)
+
+
+func blend_alpha_mask(image: Image, mask: Image) -> Image:
+	var image_data: PackedByteArray = image.get_data()
+	var mask_data: PackedByteArray = mask.get_data()
+	for ia: int in image_data.size() / 4:
+		var idx_image: int = (ia * 4) + 3
+		var idx_mask: int = ia * 2
+		image_data.encode_u8(idx_image, mask_data.decode_u8(idx_mask))
+	return Image.create_from_data(image.get_width(), image.get_height(), false, Image.FORMAT_RGBA8, image_data)
 
 
 func color_brush(brush: Image, clr: Color) -> Image:
 	var brush_img: Image = brush.duplicate()
 	var brush_size: Vector2i = brush_img.get_size()
-	for x in brush_size.x:
-		for y in brush_size.y:
+	for x: int in brush_size.x:
+		for y: int in brush_size.y:
 			var pixel_color: Color = clr
 			pixel_color.a = brush.get_pixel(x, y).a
 			brush_img.set_pixel(x, y, pixel_color)
@@ -295,20 +296,25 @@ func _brush_at(_position: Vector2, brush_img: Image, brush_mask: Image, brush_sp
 		_position += Vector2(thread_rng.randfn(0.0, brush_splatter), thread_rng.randfn(0.0, brush_splatter))
 	var brush_size: Vector2i = brush_img.get_size()
 	img.blend_rect_mask(brush_img, brush_mask, Rect2i(Vector2i.ZERO, brush_size), Vector2i(_position) - (brush_size / 2))
+	img_fade_mask.blend_rect(brush_mask, Rect2i(Vector2i.ZERO, brush_size), Vector2i(_position) - (brush_size / 2))
 	#img.fill_rect(Rect2(_position, Vector2.ONE).grow(brush_thickness), clr)
 
 
 func _erase_at(_position: Vector2) -> void:
 	img.fill_rect(Rect2(_position, ERASER_SIZE), Color.TRANSPARENT)
+	img_fade_mask.fill_rect(Rect2(_position, ERASER_SIZE), Color.BLACK)
 
 
 func _mod_erase_at(_position: Vector2) -> void:
 	img.fill_rect(Rect2(_position, ERASER_SIZE_MOD), Color.TRANSPARENT)
+	img_fade_mask.fill_rect(Rect2(_position, ERASER_SIZE_MOD), Color.BLACK)
 
 
 func clear() -> void:
 	if FileAccess.file_exists(DRAWING_CACHE_FILE):
 		OS.move_to_trash(ProjectSettings.globalize_path(DRAWING_CACHE_FILE))
+	if FileAccess.file_exists(DRAWING_FADE_CACHE_FILE):
+		OS.move_to_trash(ProjectSettings.globalize_path(DRAWING_FADE_CACHE_FILE))
 	clear_queued = true
 	thread_needed = true
 	debug_clear.emit()
@@ -371,29 +377,38 @@ func _on_timer_thread_timeout() -> void:
 	if thread_needed:
 		if exit_thread:
 			exit_thread = false
-			save_timer.stop()
 			semaphore.post()
 		else:
 			queue_thread = true
 		thread_needed = false
+	else:
+		if Time.get_ticks_msec() - last_cache > 90 * 1000:
+			cache_drawing()
 
 
 func _on_timer_fade_timeout() -> void:
-	pass
-	#if thread_needed:
-		#if exit_thread:
-			#exit_thread = false
-			#semaphore.post()
-		#else:
-			#queue_thread = true
-		#thread_needed = false
+	fade_queued = true
+	thread_needed = true
 
 
 func _on_capture_scene_save_drawing() -> void:
+	cache_drawing()
+	
 	var drawings_dir: DirAccess
 	if not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(SAVED_DRAWINGS_DIR)):
 		DirAccess.make_dir_absolute(ProjectSettings.globalize_path(SAVED_DRAWINGS_DIR))
 	drawings_dir = DirAccess.open(SAVED_DRAWINGS_DIR)
 	var num_files: int = drawings_dir.get_files().size()
 	var filename: String = "drawing%s.png" % num_files
-	img.save_png(SAVED_DRAWINGS_DIR.path_join(filename))
+	var filename_jpg: String = "drawing%s.jpg" % num_files
+	
+	var bg: Image = DisplayServer.screen_get_image(0)
+	if bg.get_size() != img.get_size():
+		bg.resize(img.get_size().x, img.get_size().y)
+	if bg.get_format() != img.get_format():
+		bg.convert(img.get_format())
+	bg.blend_rect(img, Rect2i(Vector2i.ZERO, img.get_size()), Vector2i.ZERO)
+	#bg.save_png(SAVED_DRAWINGS_DIR.path_join(filename))
+	bg.save_jpg(SAVED_DRAWINGS_DIR.path_join(filename_jpg))
+	
+	#img.save_png(SAVED_DRAWINGS_DIR.path_join(filename))

@@ -148,6 +148,8 @@ func _ready() -> void:
 		else:
 			revoked_permissions_requested.emit(good_id, good_display_names[good_id])
 	marker_permission_file.close()
+	
+	window_player.position.y = %WindowTools.size.y
 
 
 func load_after(_settings_old : Dictionary, _settings_new : Dictionary) -> void:
