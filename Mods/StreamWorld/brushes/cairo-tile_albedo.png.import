@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://be16r3x2loh88"
+path="res://.godot/imported/cairo-tile_albedo.png-101bfb9a99f4d0505ffd9a97c0e51a68.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/cairo-tile_albedo.png"
+dest_files=["res://.godot/imported/cairo-tile_albedo.png-101bfb9a99f4d0505ffd9a97c0e51a68.image"]
+
+[params]
+

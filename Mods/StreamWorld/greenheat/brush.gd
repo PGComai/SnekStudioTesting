@@ -113,6 +113,8 @@ func make_tile() -> void:
 	custom_tile_mask.blit_rect(custom_mask, Rect2i(size/2, 0, size/2, size/2), Vector2i(0, full_3q))
 	custom_tile_mask.blit_rect(custom_mask, Rect2i(0, size/2, size/2, size/2), Vector2i(full_3q, 0))
 	custom_tile_mask.blit_rect(custom_mask, Rect2i(size/2, size/2, size/2, size/2), Vector2i(0, 0))
+	
+	#custom_tile_image = WindowPaint.blend_alpha_mask(custom_tile_image, custom_tile_mask)
 
 
 func clear_custom_mask() -> void:
@@ -147,6 +149,7 @@ func render_color() -> void:
 		var clr_img := Image.create(size * 2, size * 2, false, Image.FORMAT_RGBA8)
 		clr_img.fill(clr)
 		custom_tile_image.blend_rect_mask(clr_img, custom_tile_mask, Rect2i(0, 0, size * 2, size * 2), Vector2i.ZERO)
+		custom_tile_image = WindowPaint.blend_alpha_mask(custom_tile_image, custom_tile_mask)
 	elif type == BrushType.CUSTOM:
 		var colorized_image: Image = custom_image.duplicate()
 		for x: int in size:
@@ -182,5 +185,6 @@ func render_offset() -> void:
 	var offset_rect := Rect2i(tiling_offset.x % size, tiling_offset.y % size, size, size)
 	brush_image = custom_tile_image.get_region(offset_rect)
 	brush_mask = custom_tile_mask.get_region(offset_rect)
+	#brush_image = WindowPaint.blend_alpha_mask(brush_image, brush_mask)
 	if custom_mask_2:
 		make_secondary_mask()

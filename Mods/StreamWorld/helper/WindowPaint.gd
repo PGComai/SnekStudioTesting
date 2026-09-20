@@ -261,7 +261,7 @@ func swap_la(image: Image) -> Image:
 	return Image.create_from_data(image.get_size().x, image.get_size().y, false, Image.FORMAT_LA8, data)
 
 
-func blend_alpha_mask(image: Image, mask: Image) -> Image:
+static func blend_alpha_mask(image: Image, mask: Image) -> Image:
 	var image_data: PackedByteArray = image.get_data()
 	var mask_data: PackedByteArray = mask.get_data()
 	for ia: int in image_data.size() / 4:

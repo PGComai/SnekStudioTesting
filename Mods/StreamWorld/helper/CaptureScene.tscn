@@ -16,8 +16,10 @@
 [ext_resource type="PackedScene" uid="uid://c73man0k50eti" path="res://Mods/StreamWorld/helper/eraser.glb" id="7_73vr2"]
 [ext_resource type="Shader" uid="uid://b7ign01iy5to4" path="res://Mods/StreamWorld/helper/paint_shadow_shader.tres" id="7_dqwju"]
 [ext_resource type="Image" uid="uid://x7av5awkrido" path="res://Mods/StreamWorld/brushes/bricks/bricks_mask.png" id="7_vt1bh"]
+[ext_resource type="Image" uid="uid://ckpwy2ve458a0" path="res://Mods/StreamWorld/brushes/dots-tile_albedo.png" id="11_mjtuj"]
 [ext_resource type="Script" uid="uid://bxtht5gu5652j" path="res://Mods/StreamWorld/helper/clickview.gd" id="11_qjh7t"]
 [ext_resource type="Image" uid="uid://dyehrbs0xxbi1" path="res://Mods/StreamWorld/brushes/circle/circle_albedo.png" id="11_wb8ux"]
+[ext_resource type="Image" uid="uid://c4rvpkp25gkk6" path="res://Mods/StreamWorld/brushes/dots-tile_mask.png" id="12_3acvq"]
 [ext_resource type="Script" uid="uid://bm2u4mlvjh6v3" path="res://Mods/StreamWorld/helper/marker_sounds.gd" id="12_llkab"]
 [ext_resource type="AudioStream" uid="uid://dygrk02lhhoga" path="res://Mods/StreamWorld/audio/dry erase drag squeak.wav" id="12_wl5gr"]
 [ext_resource type="Image" uid="uid://l4ba1ctj36s4" path="res://Mods/StreamWorld/brushes/pyramid/pyramid_albedo.png" id="13_7l87j"]
@@ -147,8 +149,18 @@ mask = ExtResource("7_vt1bh")
 hit_layer = 32768
 tiled = true
 
+[node name="BrushPreviewDots" type="Sprite3D" parent="BrushStore" unique_id=1428873126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2988531, -9.313226e-10, 0.06713456)
+pixel_size = 0.005
+texture_filter = 2
+script = ExtResource("4_qjh7t")
+img = ExtResource("11_mjtuj")
+mask = ExtResource("12_3acvq")
+hit_layer = 32768
+tiled = true
+
 [node name="BrushPreviewPyramid" type="Sprite3D" parent="BrushStore" unique_id=1800223779]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.29885304, -9.313226e-10, 0.06713456)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09885304, -9.313226e-10, 0.06713456)
 pixel_size = 0.005
 texture_filter = 2
 script = ExtResource("4_qjh7t")
@@ -157,7 +169,7 @@ mask = ExtResource("14_idj4n")
 hit_layer = 32768
 
 [node name="BrushPreviewStar" type="Sprite3D" parent="BrushStore" unique_id=1202407301]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09885304, -9.313226e-10, 0.06713456)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101146966, -9.313226e-10, 0.06713456)
 pixel_size = 0.005
 texture_filter = 2
 script = ExtResource("4_qjh7t")
@@ -367,26 +379,16 @@ one_shot = true
 [node name="WindowTime" type="Window" parent="." unique_id=411484262]
 oversampling_override = 1.0
 title = "Time"
-position = Vector2i(96, 54)
-size = Vector2i(384, 432)
+position = Vector2i(0, 36)
+size = Vector2i(384, 216)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="WindowTime" unique_id=1080027884]
+[node name="TextureRectTime" type="TextureRect" parent="WindowTime" unique_id=1713317954]
+unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="TextureRectTime" type="TextureRect" parent="WindowTime/VBoxContainer" unique_id=1713317954]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-expand_mode = 3
-stretch_mode = 5
-
-[node name="TextureRectTimeSwap" type="TextureRect" parent="WindowTime/VBoxContainer" unique_id=359685345]
-unique_name_in_owner = true
-layout_mode = 2
 size_flags_vertical = 3
 expand_mode = 3
 stretch_mode = 5

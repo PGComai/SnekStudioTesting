@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://ckpwy2ve458a0"
+path="res://.godot/imported/dots-tile_albedo.png-3a3c597ccc8863728a8cff6166ffe0dd.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/dots-tile_albedo.png"
+dest_files=["res://.godot/imported/dots-tile_albedo.png-3a3c597ccc8863728a8cff6166ffe0dd.image"]
+
+[params]
+

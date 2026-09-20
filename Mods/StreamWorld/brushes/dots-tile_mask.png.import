@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://c4rvpkp25gkk6"
+path="res://.godot/imported/dots-tile_mask.png-a61e87d0bb02c534bbfc24ef40a1aa39.image"
+
+[deps]
+
+source_file="res://Mods/StreamWorld/brushes/dots-tile_mask.png"
+dest_files=["res://.godot/imported/dots-tile_mask.png-a61e87d0bb02c534bbfc24ef40a1aa39.image"]
+
+[params]
+
